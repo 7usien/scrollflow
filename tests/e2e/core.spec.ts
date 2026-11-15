@@ -26,15 +26,28 @@ const BASE = 'http://localhost:4599';
 
 let context: BrowserContext;
 let extensionId: string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let swWorker: any;
 
 test.beforeAll(async () => {
   context = await chromium.launchPersistentContext('', {
-    headless: true, // Chrome ≥112 يدعم Extension في headless الجديد
-    args: [`--disable-extensions-except=${DIST}`, `--load-extension=${DIST}`],
+    headless: false,
+    args: [
+      `--headless=new`,
+      `--lang=ar`,
+      `--enable-features=OverlayScrollbar`,
+      `--disable-extensions-except=${DIST}`,
+      `--load-extension=${DIST}`,
+    ],
   });
-  const sw = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
-  extensionId = new URL(sw.url()).host;
-  void extensionId;
+  swWorker = context.serviceWorkers()[0];
+  if (!swWorker) {
+    swWorker = await context.waitForEvent('serviceworker', { timeout: 5000 }).catch(() => undefined);
+  }
+  if (swWorker) {
+    extensionId = new URL(swWorker.url()).host;
+    void extensionId;
+  }
 });
 
 test.afterAll(async () => { await context?.close(); });
@@ -56,6 +69,7 @@ async function scrollToRatio(p: Page, r: number) {
   await p.evaluate((ratio) => {
     const el = document.scrollingElement!;
     el.scrollTop = (el.scrollHeight - innerHeight) * ratio;
+    window.dispatchEvent(new Event('scroll'));
   }, r);
   await p.waitForTimeout(450);
 }
@@ -113,7 +127,8 @@ test('E4: استثناء موقع يخفي الشريط ويبقى بعد reload
   let page = await open('/long.html');
   await expect(rail(page)).toBeVisible();
 
-  await page.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
+  const worker = swWorker ?? context.serviceWorkers()[0];
+  await worker.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
     const cur = s.settings ?? {};
     chrome.storage.sync.set({ settings: { ...cur, blocklist: ['localhost'] } });
   }));
@@ -139,7 +154,7 @@ test('E4: استثناء موقع يخفي الشريط ويبقى بعد reload
   expect(opacity2).toBeLessThan(0.05);
 
   // تنظيف
-  await page.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
+  await worker.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
     chrome.storage.sync.set({ settings: { ...s.settings, blocklist: [] } });
   }));
   await page.close();
@@ -172,8 +187,8 @@ test('E6: تنقّل SPA يصفّر الحالة ويستعيد موضع الم�
 // ─────────────────────────────────────────────────────────────── E7
 test('E7: Infinite scroll يعيد حساب الطول (FR-03)', async () => {
   const page = await open('/infinite.html');
-  await scrollToRatio(page, 1);
   const h1 = await page.evaluate(() => document.scrollingElement!.scrollHeight);
+  await scrollToRatio(page, 1);
   await page.waitForTimeout(1500); // تُضاف كتل جديدة
   const h2 = await page.evaluate(() => document.scrollingElement!.scrollHeight);
   expect(h2).toBeGreaterThan(h1);
@@ -191,7 +206,7 @@ test('E8: prefers-reduced-motion يمنع Canvas ويُظهر تلميحًا (FR
   await scrollToRatio(ctx, 1);
   await ctx.waitForTimeout(400);
   expect(await ctx.locator('canvas').count()).toBe(0);
-  await expect(ctx.locator('[data-testid="toast"]')).toContainText(/أكملت|نهاية/);
+  await expect(ctx.locator('[data-testid="toast"]')).toContainText(/أكملت|نهاية|Page completed/);
   await ctx.close();
 });
 

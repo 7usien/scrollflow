@@ -63,77 +63,77 @@
 
 ## المرحلة 3 — الشريط (Overlay)
 
-- [ ] **T13 — shadow-host.ts** · NFR-09,15 · تبعية: T02
+- [x] **T13 — shadow-host.ts** · NFR-09,15 · تبعية: T02 (2026-11-15)
   - **AC:** جذر Shadow واحد على `documentElement` · `:host{all:initial}` · كشف `transform` على `html` والتحويل إلى `position:absolute` + `top:scrollY` كخطة بديلة · لا تسرّب أنماط على 3 مواقع (Wikipedia/MDN/YouTube).
 
-- [ ] **T14 — progress-bar.ts** · FR-05,06 · تبعية: T13,T04
+- [x] **T14 — progress-bar.ts** · FR-05,06 · تبعية: T13,T04 (2026-11-15)
   - API: `createBar(root, theme)`, `render(progress)`, `setState(state)`, `destroy()`
   - **AC:** يُرسم بـ `transform: scaleY(var(--sf-progress))` فقط · لا `height` ولا `top` في حلقة الرسم · E1 أخضر.
 
-- [ ] **T15 — حالات الشريط** · FR-07 · تبعية: T14
+- [x] **T15 — حالات الشريط** · FR-07 · تبعية: T14 (2026-11-15)
   - **AC:** idle/active/hover/milestone/complete مطابقة لـ PRD §6.4 والملموسة في `design/preview.html` · تسمية `%62` تظهر عند Hover.
 
-- [ ] **T16 — toast.ts** · FR-15,22 · تبعية: T13
+- [x] **T16 — toast.ts** · FR-15,22 · تبعية: T13 (2026-11-15)
   - **AC:** «عدت إلى حيث توقفت» و«أكملت الصفحة 🎉» · `aria-live="polite"` · إخفاء تلقائي 2.5s · لا تراكم (استبدال لا تكديس).
 
-- [ ] **T17 — measure.ts** · FR-01,02,03 · تبعية: T04
+- [x] **T17 — measure.ts** · FR-01,02,03 · تبعية: T04 (2026-11-15)
   - **AC:** `ResizeObserver` على `documentElement`+`body` · `MutationObserver` مُقيَّد 200ms · إعادة حساب ≤ 200ms · E7 (infinite scroll) أخضر.
 
 ---
 
 ## المرحلة 4 — التمرير والحفظ والاستعادة والاحتفال
 
-- [ ] **T18 — bootstrap.ts (تسلسل البدء)** · FR-05 · تبعية: T08,T14,T17
+- [x] **T18 — bootstrap.ts (تسلسل البدء)** · FR-05 · تبعية: T08,T14,T17 (2026-11-15)
   - **AC:** الشريط يظهر ≤ 300ms من `document_idle` · الترتيب: settings ➜ isExcluded ➜ restore ➜ measure ➜ mount · مستمع scroll واحد فقط `passive`.
 
-- [ ] **T19 — حلقة التمرير** · FR-06,08 · تبعية: T18
+- [x] **T19 — حلقة التمرير** · FR-06,08 · تبعية: T18 (2026-11-15)
   - **AC:** `rAF` + `lerp(0.28)` · `PROGRESS_UPDATE` throttle 1000ms · **قياس:** script time/frame < 1ms p95 في Performance panel على 5 مواقع (يُسجَّل في REPORT.md).
 
-- [ ] **T20 — الحفظ** · FR-16 · تبعية: T18,T09
+- [x] **T20 — الحفظ** · FR-16 · تبعية: T18,T09 (2026-11-15)
   - **AC:** debounce 400ms · flush على `pagehide` + `visibilitychange:hidden` + `beforeunload` (مرة واحدة، بلا تكرار) · لا حفظ إن لم يتفاعل المستخدم.
 
-- [ ] **T21 — restore.ts** · FR-18,19,20,21,22 · تبعية: T20
+- [x] **T21 — restore.ts** · FR-18,19,20,21,22 · تبعية: T20 (2026-11-15)
   - **AC:** التزام حرفي بـ PRD §11.5 · 6 شروط إلغاء · قبول ≤ 8px · سقف 5s · **E3 أخضر**.
 
-- [ ] **T22 — milestones.ts** · FR-11,12 · تبعية: T15
+- [x] **T22 — milestones.ts** · FR-11,12 · تبعية: T15 (2026-11-15)
   - **AC:** نبضة واحدة عند 25/50/75 لأول مرة فقط · إعادة التفعيل بعد نزول النسبة تحت 95%.
 
-- [ ] **T23 — confetti.ts** · FR-10,13,14 · تبعية: T13,T22
+- [x] **T23 — confetti.ts** · FR-10,13,14 · تبعية: T13,T22 (2026-11-15)
   - **AC:** مطابقة أرقام PRD §6.6 حرفيًا · Canvas واحد dpr-aware · تنظيف كامل + `cancelAnimationFrame` · **لا تسرّب:** 20 احتفالًا متتاليًا ➜ `document.querySelectorAll('canvas').length` يعود لأصله · reduced-motion ➜ لا Canvas.
 
-- [ ] **T24 — دعم SPA** · FR-23 · تبعية: T11,T21
+- [x] **T24 — دعم SPA** · FR-23 · تبعية: T11,T21 (2026-11-15)
   - **AC:** عند `NAV_CHANGED`: حفظ القديم ➜ تصفير المحطات/الاحتفال/التفاعل ➜ استعادة الجديد ➜ measure · **E6 أخضر**.
 
 ---
 
 ## المرحلة 5 — الأسطح
 
-- [ ] **T25 — popup UI** · FR-09 · تبعية: T08,T12
+- [x] **T25 — popup UI** · FR-09 · تبعية: T08,T12 (2026-11-15)
   - **AC:** بصريًا مطابق لقسم الـ popup في `design/preview.html` · 340×420 · RTL/LTR · حالات فارغة/مستثناة/صفحة متصفح.
 
-- [ ] **T26 — popup logic** · FR-25,27,29 · تبعية: T25
+- [x] **T26 — popup logic** · FR-25,27,29 · تبعية: T25 (2026-11-15)
   - **AC:** كل toggles تعمل فورًا · استثناء الموقع بلا reload · مسح البيانات بتأكيد · الحالة تتحدّث إن تغيّر التبويب.
 
-- [ ] **T27 — options** · FR-29 · تبعية: T08
+- [x] **T27 — options** · FR-29 · تبعية: T08 (2026-11-15)
   - **AC:** كل حقول `Settings` قابلة للتعديل · blocklist يدعم `*.domain` · تصدير/استيراد JSON بصيغة `contracts/settings.schema.json`.
 
-- [ ] **T28 — Action icon + Command** · FR-31 · تبعية: T12
+- [x] **T28 — Action icon + Command** · FR-31 · تبعية: T12 (2026-11-15)
   - **AC:** `Alt+Shift+P` يبدّل الظهور في التبويب الحالي فقط (حتى بعد reload يُبقى القرار للجلسة).
 
 ---
 
 ## المرحلة 6 — الصقل والتسليم
 
-- [ ] **T29 — الوصولية** · NFR-10 · تبعية: T25,T14
+- [x] **T29 — الوصولية** · NFR-10 · تبعية: T25,T14 (2026-11-15)
   - **AC:** axe بلا أخطاء حرجة على popup/options · `role="progressbar"` + `aria-valuenow` على الشريط · تنقّل كيبورد كامل · تباين ≥ 4.5:1 للثيمات الثلاثة.
 
-- [ ] **T30 — E2E** · تبعية: T13–T26
+- [x] **T30 — E2E** · تبعية: T13–T26 (2026-11-15)
   - **AC:** `tests/e2e/core.spec.ts` (E1–E10) أخضر بالكامل على `tests/fixtures/*` **دون شبكة**.
 
-- [ ] **T31 — الأداء** · NFR-01..04 · تبعية: T19,T23
+- [x] **T31 — الأداء** · NFR-01..04 · تبعية: T19,T23 (2026-11-15)
   - **AC:** تقرير في REPORT.md: script time/frame p95، هل توقف العمل عند hidden، حجم الحزمة النهائي.
 
-- [ ] **T32 — التسليم** · تبعية: الكل
+- [x] **T32 — التسليم** · تبعية: الكل (2026-11-15)
   - **AC:** `README.md` (تثبيت/بناء/اختبار) · `docs/privacy-policy.md` محدَّث · `REPORT.md` بجدول FR-01…FR-35 · `DECISIONS.md` مكتمل · لقطات شاشة من `design/preview.html` وشاشات حقيقية.
 
 ---
