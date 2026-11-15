@@ -2,8 +2,8 @@
 import { MSG } from '../shared/messages';
 
 export function initNavWatch(): void {
-  if (chrome.webNavigation && chrome.webNavigation.onHistoryStateUpdated) {
-    chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+  if (chrome.webNavigation) {
+    const notifyTab = (details: { frameId: number; tabId: number; url: string }) => {
       if (details.frameId === 0) {
         chrome.tabs
           .sendMessage(details.tabId, {
@@ -14,6 +14,14 @@ export function initNavWatch(): void {
             // Tab content script may not be ready or closed
           });
       }
-    });
+    };
+
+    if (chrome.webNavigation.onHistoryStateUpdated) {
+      chrome.webNavigation.onHistoryStateUpdated.addListener(notifyTab);
+    }
+
+    if (chrome.webNavigation.onReferenceFragmentUpdated) {
+      chrome.webNavigation.onReferenceFragmentUpdated.addListener(notifyTab);
+    }
   }
 }
