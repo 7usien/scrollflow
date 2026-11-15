@@ -14,6 +14,7 @@ import { computeMetrics, observeMetrics, type MeasureObserver } from './measure'
 import { tryRestore } from './restore';
 import { setNativeScrollbarHidden } from './ui/native-scroll';
 import { setSmoothScrollEnabled } from './ui/smooth-scroll';
+import { createBackToTop, type BackToTopController } from './ui/back-to-top';
 
 let settings: Settings = { ...DEFAULT_SETTINGS };
 let shadowCtx: ShadowContext | null = null;
@@ -21,6 +22,7 @@ let progressBar: ProgressBarController | null = null;
 let toast: ToastController | null = null;
 let milestoneTracker: MilestoneTracker | null = null;
 let measureObserver: MeasureObserver | null = null;
+let backToTop: BackToTopController | null = null;
 
 let currentMetrics: Metrics = computeMetrics();
 let currentUrl = window.location.href;
@@ -69,6 +71,9 @@ function setupUI() {
   });
   toast = createToast(shadowCtx.shadowRoot);
   milestoneTracker = createMilestoneTracker();
+  backToTop = createBackToTop(shadowCtx.shadowRoot, {
+    isRTL: () => document.documentElement.dir === 'rtl' || document.body?.dir === 'rtl',
+  });
 
   updateVisibility();
 }
@@ -79,10 +84,12 @@ function updateVisibility() {
 
   if (!show || !currentMetrics.scrollable) {
     progressBar.setState('hidden');
+    backToTop?.reset();
     setNativeScrollbarHidden(false);
     setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
+    backToTop?.update(smoothedProgress, true);
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
     setSmoothScrollEnabled(settings.smoothScroll);
   }
@@ -123,6 +130,7 @@ async function startInitialMeasurementAndRestoration() {
   const initialProgress = computeProgress(currentMetrics.scrollY, currentMetrics.maxScroll);
   smoothedProgress = initialProgress;
   progressBar?.render(smoothedProgress);
+  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
   updateVisibility();
   sendProgressUpdate();
 
@@ -137,6 +145,7 @@ async function startInitialMeasurementAndRestoration() {
     const targetProgress = computeProgress(currentMetrics.scrollY, currentMetrics.maxScroll);
     smoothedProgress = targetProgress;
     progressBar?.render(smoothedProgress);
+    backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
     sendProgressUpdate();
   });
 }
@@ -193,6 +202,7 @@ function tick() {
     }
   }
 
+  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
   sendProgressUpdate();
 
   // Continue lerping if not close enough
@@ -319,6 +329,7 @@ function setupEvents() {
         smoothedProgress = 0;
         progressBar?.render(0);
         milestoneTracker?.reset();
+        backToTop?.reset();
 
         startInitialMeasurementAndRestoration();
         break;

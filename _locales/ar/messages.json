@@ -90,5 +90,13 @@
   "lblShadow": {
     "message": "إظهار الظل والتوهج",
     "description": "Show shadow and glow"
+  },
+  "btnBackToTop": {
+    "message": "الأعلى",
+    "description": "Back to top button label in Arabic"
+  },
+  "btnBackToTopAria": {
+    "message": "الرجوع إلى أعلى الصفحة",
+    "description": "Back to top button accessibility label in Arabic"
   }
 }

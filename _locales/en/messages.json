@@ -90,5 +90,13 @@
   "lblShadow": {
     "message": "Show Shadow & Glow",
     "description": "Show shadow and glow"
+  },
+  "btnBackToTop": {
+    "message": "UP",
+    "description": "Back to top button label"
+  },
+  "btnBackToTopAria": {
+    "message": "Scroll to top of page",
+    "description": "Back to top button accessibility label"
   }
 }
