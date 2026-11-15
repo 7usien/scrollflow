@@ -44,19 +44,19 @@
 
 ## المرحلة 2 — Service Worker
 
-- [ ] **T08 — settings.ts** · FR-30 · تبعية: T03
+- [x] **T08 — settings.ts** · FR-30 · تبعية: T03 (2026-11-15)
   - **AC:** `SETTINGS_PATCH` تُدمج جزئيًا وتُبثّ `SETTINGS_CHANGED` لكل التبويبات ≤ 500ms · كتابة `storage.sync` مع `version:1`.
 
-- [ ] **T09 — store.ts** · FR-16,24,25 · تبعية: T06
+- [x] **T09 — store.ts** · FR-16,24,25 · تبعية: T06 (2026-11-15)
   - **AC:** `SAVE_POSITION`/`GET_POSITION`/`CLEAR_POSITIONS` تعمل · `chrome.runtime.onStartup` ينظّف TTL+LRU.
 
-- [ ] **T10 — badge.ts** · FR-08 · تبعية: T08
+- [x] **T10 — badge.ts** · FR-08 · تبعية: T08 (2026-11-15)
   - **AC:** badge يعرض النسبة، throttle 1000ms، `✓` لثلاث ثوانٍ عند 100%، فارغ للصفحات غير القابلة للتمرير.
 
-- [ ] **T11 — nav-watch.ts** · FR-23 · تبعية: T08
+- [x] **T11 — nav-watch.ts** · FR-23 · تبعية: T08 (2026-11-15)
   - **AC:** `onHistoryStateUpdated` مع `frameId===0` تُرسل `NAV_CHANGED` مرة واحدة لكل تغيير مسار.
 
-- [ ] **T12 — service-worker.ts (Router + Commands)** · تبعية: T08–T11
+- [x] **T12 — service-worker.ts (Router + Commands)** · تبعية: T08–T11 (2026-11-15)
   - **AC:** كل رسائل PRD §9.4 مستجيبة بـ `{ok,data?,error?}` · `Alt+Shift+P` يرسل `TOGGLE_OVERLAY` للتبويب النشط.
 
 ---
