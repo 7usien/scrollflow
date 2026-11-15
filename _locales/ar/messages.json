@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Extension name"
+  },
+  "extDesc": {
+    "message": "مؤشر تقدّم قراءة رأسي أنيق، حفظ واستعادة موضع التمرير تلقائيًا، واحتفال خفيف عند النهاية.",
+    "description": "Extension description"
+  },
+  "cmdToggle": {
+    "message": "إظهار أو إخفاء شريط التمرير",
+    "description": "Toggle overlay keyboard shortcut command description"
+  },
+  "toastRestored": {
+    "message": "عدت إلى حيث توقفت",
+    "description": "Toast message when scroll position is restored"
+  },
+  "toastComplete": {
+    "message": "أكملت الصفحة 🎉",
+    "description": "Toast message on page completion"
+  }
+}

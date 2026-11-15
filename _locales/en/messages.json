@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Extension name"
+  },
+  "extDesc": {
+    "message": "Vertical reading progress indicator, automatic scroll position restoration, and completion celebration.",
+    "description": "Extension description"
+  },
+  "cmdToggle": {
+    "message": "Toggle reading progress overlay",
+    "description": "Toggle overlay keyboard shortcut command description"
+  },
+  "toastRestored": {
+    "message": "Back to where you left off",
+    "description": "Toast message when scroll position is restored"
+  },
+  "toastComplete": {
+    "message": "Page completed 🎉",
+    "description": "Toast message on page completion"
+  }
+}

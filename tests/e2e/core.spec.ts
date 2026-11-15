@@ -34,6 +34,7 @@ test.beforeAll(async () => {
   });
   const sw = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
   extensionId = new URL(sw.url()).host;
+  void extensionId;
 });
 
 test.afterAll(async () => { await context?.close(); });
@@ -112,7 +113,7 @@ test('E4: استثناء موقع يخفي الشريط ويبقى بعد reload
   let page = await open('/long.html');
   await expect(rail(page)).toBeVisible();
 
-  await page.evaluate(() => chrome.storage.sync.get('settings', (s: any) => {
+  await page.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
     const cur = s.settings ?? {};
     chrome.storage.sync.set({ settings: { ...cur, blocklist: ['localhost'] } });
   }));
@@ -138,7 +139,7 @@ test('E4: استثناء موقع يخفي الشريط ويبقى بعد reload
   expect(opacity2).toBeLessThan(0.05);
 
   // تنظيف
-  await page.evaluate(() => chrome.storage.sync.get('settings', (s: any) => {
+  await page.evaluate(() => chrome.storage.sync.get('settings', (s: { settings?: { blocklist?: string[] } }) => {
     chrome.storage.sync.set({ settings: { ...s.settings, blocklist: [] } });
   }));
   await page.close();

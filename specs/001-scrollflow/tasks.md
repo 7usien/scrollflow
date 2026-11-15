@@ -7,16 +7,16 @@
 
 ## المرحلة 0 — التأسيس
 
-- [ ] **T01 — Scaffold** · تبعية: —
+- [x] **T01 — Scaffold** · تبعية: — (2026-11-15)
   - الملفات: `package.json, tsconfig.json, vite.config.ts, .eslintrc.cjs, .prettierrc, vitest.config.ts, playwright.config.ts`
   - الحزم: `vite @crxjs/vite-plugin typescript vitest @playwright/test eslint prettier @types/chrome`
   - **AC:** `npm run build` ينتج `dist/` تُحمَّل في `chrome://extensions` بلا أخطاء · `npm run verify` أخضر على مشروع فارغ.
 
-- [ ] **T02 — Manifest + Icons + Locales** · تبعية: T01
+- [x] **T02 — Manifest + Icons + Locales** · تبعية: T01 (2026-11-15)
   - الملفات: `manifest.json, public/icons/icon{16,32,48,128}.png, _locales/{ar,en}/messages.json`
   - **AC:** أيقونة الإضافة تظهر، الاسم/الوصف يتبعان اللغة، لا تحذير صلاحيات غير مبرّر.
 
-- [ ] **T03 — Shared layer** · تبعية: T01
+- [x] **T03 — Shared layer** · تبعية: T01 (2026-11-15)
   - الملفات: `src/shared/{types.ts,messages.ts,settings-schema.ts,theme.ts}`
   - **AC:** نسخ حرفي من `contracts/*` · `settings-schema.ts` يصدّر `DEFAULT_SETTINGS` مطابقًا لـ PRD §10.1 · `readSettings()` تُرجع افتراضيات عند بيانات تالفة.
 
@@ -24,19 +24,19 @@
 
 ## المرحلة 1 — النواة النقية (`src/core`, بلا DOM)
 
-- [ ] **T04 — progress.ts** · FR-01,02,04 · تبعية: T03
+- [x] **T04 — progress.ts** · FR-01,02,04 · تبعية: T03 (2026-11-15)
   - الدوال: `clamp01, computeProgress, computeMetricsFrom, isScrollable`
   - **AC:** `tests/unit/progress.test.ts` أخضر بالكامل (يُسلَّم جاهزًا في `tests/unit/`).
 
-- [ ] **T05 — url.ts** · FR-17,27,28 · تبعية: T03
+- [x] **T05 — url.ts** · FR-17,27,28 · تبعية: T03 (2026-11-15)
   - الدوال: `normalizeUrl, isExcluded, matchesHostPattern`
   - **AC:** `tests/unit/url.test.ts` أخضر (يشمل `#/route`, utm/fbclid, `www.`, `chrome://`, `*.example.com`).
 
-- [ ] **T06 — storage-model.ts** · FR-24 · تبعية: T03
+- [x] **T06 — storage-model.ts** · FR-24 · تبعية: T03 (2026-11-15)
   - الدوال: `applyTtl, applyLruCap, makeEntry`
   - **AC:** `tests/unit/storage-model.test.ts` أخضر (1501 سجل ➜ 1500، 91 يومًا ➜ حذف).
 
-- [ ] **T07 — reading.ts** · FR-09 · تبعية: T03
+- [x] **T07 — reading.ts** · FR-09 · تبعية: T03 (2026-11-15)
   - الدوال: `countWords, estimateReadingMinutes, screensOf`
   - **AC:** `tests/unit/reading.test.ts` أخضر (220 wpm، حد أدنى 1 دقيقة).
 
