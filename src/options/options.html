@@ -3,9 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ScrollFlow Options</title>
+  <title>إعدادات ScrollFlow</title>
+  <link rel="stylesheet" href="options.css" />
 </head>
 <body>
-  <div id="app">ScrollFlow Options</div>
+  <div class="container">
+    <header>
+      <h1>ScrollFlow — الإعدادات</h1>
+      <p class="subtitle">تخصيص مؤشر القراءة، الاستعادة، والاحتفال</p>
+    </header>
+
+    <section>
+      <h2>عام</h2>
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">تفعيل الإضافة بشكل عام</span>
+          <span class="setting-desc">إظهار أو إخفاء المؤشر على جميع المواقع</span>
+        </div>
+        <div class="switch" id="enabledSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">استعادة موضع التمرير</span>
+          <span class="setting-desc">العودة تلقائيًا إلى حيث توقفت عند إعادة فتح الصفحة</span>
+        </div>
+        <div class="switch" id="restoreSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">احتفال عند الإكمال</span>
+          <span class="setting-desc">إطلاق Confetti خفيف عند الوصول لنهاية الصفحة</span>
+        </div>
+        <div class="switch" id="celebrateSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">نبضات المحطات</span>
+          <span class="setting-desc">نبضة خفيفة على الشريط عند اجتياز 25% و 50% و 75%</span>
+        </div>
+        <div class="switch" id="milestonesSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">إظهار النسبة على الأيقونة</span>
+          <span class="setting-desc">عرض نسبة التقدّم الحالية على أيقونة الإضافة</span>
+        </div>
+        <div class="switch" id="badgeSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">التلميحات النصية</span>
+          <span class="setting-desc">إظهار إشعارات عند الاستعادة أو الإكمال</span>
+        </div>
+        <div class="switch" id="toastsSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">السماح لصفحات الملفات المحلية</span>
+          <span class="setting-desc">تشغيل الإضافة على روابط file://</span>
+        </div>
+        <div class="switch" id="fileUrlsSwitch" role="switch" aria-checked="false" tabindex="0"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>المظهر</h2>
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">الثيم اللوني</span>
+          <span class="setting-desc">تدرّج ألوان المؤشر</span>
+        </div>
+        <select id="themeSelect">
+          <option value="aurora">Aurora (افتراضي)</option>
+          <option value="sunset">Sunset (وردي دافئ)</option>
+          <option value="mono">Mono (رمادي كلاسيكي)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">موقع الشريط</span>
+          <span class="setting-desc">الجانب الذي يظهر عليه الشريط</span>
+        </div>
+        <select id="sideSelect">
+          <option value="right">اليمين</option>
+          <option value="left">اليسار</option>
+          <option value="auto">تلقائي (حسب اتجاه الصفحة)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">مستوى التباين</span>
+          <span class="setting-desc">وضوح المسار على الخلفيات المختلفة</span>
+        </div>
+        <select id="contrastSelect">
+          <option value="normal">عادي</option>
+          <option value="high">تباين عالٍ</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
+      <h2>المواقع المستثناة (Blocklist)</h2>
+      <p class="setting-desc" style="margin-bottom: 12px;">المواقع التي لا يظهر فيها الشريط. يدعم النطاقات المباشرة مثل <code>example.com</code> أو النطاقات الفرعية مثل <code>*.example.com</code>.</p>
+      <div class="blocklist-input-group">
+        <input type="text" id="blocklistInput" placeholder="أدخل النطاق (مثال: docs.google.com)" />
+        <button id="addBlocklistBtn">إضافة</button>
+      </div>
+      <ul class="blocklist-items" id="blocklistUl"></ul>
+    </section>
+
+    <section>
+      <h2>إدارة البيانات</h2>
+      <div class="data-actions">
+        <button id="exportBtn">تصدير الإعدادات (JSON)</button>
+        <button id="importBtn">استيراد الإعدادات</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;" />
+        <button class="btn-danger" id="clearPositionsBtn">مسح بيانات التمرير المحفوظة</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="options.ts"></script>
 </body>
 </html>

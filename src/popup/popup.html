@@ -4,8 +4,79 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ScrollFlow</title>
+  <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <div id="app">ScrollFlow Popup</div>
+  <header>
+    <b>ScrollFlow</b>
+    <button class="gear" id="optionsBtn" aria-label="الإعدادات">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="body" id="popupBody">
+    <div class="donut-row">
+      <div class="donut">
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          <circle cx="46" cy="46" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/>
+          <circle id="donutArc" cx="46" cy="46" r="40" fill="none" stroke="url(#g)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--sf-brand-start)"/>
+              <stop offset="55%" stop-color="var(--sf-brand-mid)"/>
+              <stop offset="100%" stop-color="var(--sf-brand-end)"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="pct" id="donutPct">0%</div>
+      </div>
+      <div class="stats">
+        <div><b id="statScreens">— شاشة</b><br/><span id="lblScreens">طول الصفحة</span></div>
+        <div><b id="statTime">—</b><br/><span id="lblTime">وقت قراءة مُقدَّر</span></div>
+      </div>
+    </div>
+
+    <button class="site-btn" id="siteBtn" data-action="site-toggle">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="7" y="5" width="4" height="14" rx="1"/>
+        <rect x="13" y="5" width="4" height="14" rx="1"/>
+      </svg>
+      <span id="siteBtnText">إيقاف على هذا الموقع</span>
+    </button>
+
+    <div class="row">
+      <span id="lblRestore">استعادة موضع التمرير</span>
+      <div class="switch" id="restoreSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+
+    <div class="row">
+      <span id="lblCelebrate">احتفال عند الإكمال</span>
+      <div class="switch" id="celebrateSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+
+    <div class="row">
+      <span id="lblTheme">المؤشر</span>
+      <select id="themeSelect">
+        <option value="aurora">Aurora</option>
+        <option value="sunset">Sunset</option>
+        <option value="mono">Mono</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="unsupported-note" id="unsupportedNote">
+    الصفحة غير قابلة للقياس أو لا تدعم الإضافة هنا.
+  </div>
+
+  <div class="foot">
+    <button class="ghost" id="clearBtn">مسح بيانات التمرير</button>
+    <span style="font:600 10px var(--sf-font);color:var(--sf-text-dim)">v1.0.0</span>
+  </div>
+
+  <script type="module" src="popup.ts"></script>
 </body>
 </html>
