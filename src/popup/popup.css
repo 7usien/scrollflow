@@ -15,9 +15,30 @@
 }
 
 [data-theme="sunset"] {
-  --sf-brand-start: #ff6b9a;
-  --sf-brand-mid: #ff8f80;
+  --sf-brand-start: #ff416c;
+  --sf-brand-mid: #ff6b6b;
   --sf-brand-end: #ffb86b;
+}
+
+[data-theme="cyberpunk"] {
+  --sf-brand-start: #ff007f;
+  --sf-brand-mid: #7928ca;
+  --sf-brand-end: #00f0ff;
+  --sf-done: #00ff66;
+}
+
+[data-theme="minimal"] {
+  --sf-brand-start: #64748b;
+  --sf-brand-mid: #94a3b8;
+  --sf-brand-end: #ffffff;
+  --sf-done: #38bdf8;
+}
+
+[data-theme="glass"] {
+  --sf-brand-start: rgba(255, 255, 255, 0.70);
+  --sf-brand-mid: rgba(200, 225, 255, 0.85);
+  --sf-brand-end: rgba(255, 255, 255, 0.95);
+  --sf-done: #ffd166;
 }
 
 [data-theme="mono"] {

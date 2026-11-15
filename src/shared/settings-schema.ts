@@ -1,10 +1,20 @@
 // src/shared/settings-schema.ts
-import { DEFAULT_SETTINGS, type Settings, type Theme, type Side, type Contrast } from './types';
+import {
+  DEFAULT_SETTINGS,
+  type Settings,
+  type Theme,
+  type Side,
+  type Position,
+  type Orientation,
+  type Contrast,
+} from './types';
 
 export { DEFAULT_SETTINGS };
 
-const VALID_THEMES: Set<Theme> = new Set(['aurora', 'sunset', 'mono']);
+const VALID_THEMES: Set<Theme> = new Set(['aurora', 'sunset', 'cyberpunk', 'minimal', 'glass', 'mono']);
 const VALID_SIDES: Set<Side> = new Set(['right', 'left', 'auto']);
+const VALID_POSITIONS: Set<Position> = new Set(['right', 'left', 'top', 'bottom']);
+const VALID_ORIENTATIONS: Set<Orientation> = new Set(['vertical', 'horizontal']);
 const VALID_CONTRASTS: Set<Contrast> = new Set(['normal', 'high']);
 
 export function sanitizeSettings(raw: unknown): Settings {
@@ -21,6 +31,21 @@ export function sanitizeSettings(raw: unknown): Settings {
   const side: Side = typeof obj.side === 'string' && VALID_SIDES.has(obj.side as Side)
     ? (obj.side as Side)
     : DEFAULT_SETTINGS.side;
+
+  const position: Position = typeof obj.position === 'string' && VALID_POSITIONS.has(obj.position as Position)
+    ? (obj.position as Position)
+    : (side === 'left' ? 'left' : DEFAULT_SETTINGS.position);
+
+  let orientation: Orientation = typeof obj.orientation === 'string' && VALID_ORIENTATIONS.has(obj.orientation as Orientation)
+    ? (obj.orientation as Orientation)
+    : (position === 'top' || position === 'bottom' ? 'horizontal' : DEFAULT_SETTINGS.orientation);
+
+  // Maintain consistency between position and orientation
+  if (position === 'top' || position === 'bottom') {
+    orientation = 'horizontal';
+  } else {
+    orientation = 'vertical';
+  }
 
   const contrast: Contrast = typeof obj.contrast === 'string' && VALID_CONTRASTS.has(obj.contrast as Contrast)
     ? (obj.contrast as Contrast)
@@ -44,6 +69,10 @@ export function sanitizeSettings(raw: unknown): Settings {
     showToasts: typeof obj.showToasts === 'boolean' ? obj.showToasts : DEFAULT_SETTINGS.showToasts,
     theme,
     side,
+    position,
+    orientation,
+    hideNativeScrollbar: typeof obj.hideNativeScrollbar === 'boolean' ? obj.hideNativeScrollbar : DEFAULT_SETTINGS.hideNativeScrollbar,
+    smoothScroll: typeof obj.smoothScroll === 'boolean' ? obj.smoothScroll : DEFAULT_SETTINGS.smoothScroll,
     contrast,
     allowFileUrls: typeof obj.allowFileUrls === 'boolean' ? obj.allowFileUrls : DEFAULT_SETTINGS.allowFileUrls,
     blocklist,

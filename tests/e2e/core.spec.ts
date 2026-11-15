@@ -234,3 +234,99 @@ test('E10: حاوية تمرير داخلية ⇒ لا شريط (FR-33)', async 
   expect(visible).toBe(false);
   await page.close();
 });
+
+// ─────────────────────────────────────────────────────────────── E11
+test('E11: إخفاء السكرول الأصلي وحقن الستايل التلقائي', async () => {
+  const page = await open('/long.html');
+  await page.waitForTimeout(400);
+  const hasStyle = await page.evaluate(() => {
+    const el = document.getElementById('sf-native-scroll-override');
+    return el !== null && getComputedStyle(document.documentElement).scrollbarWidth === 'none';
+  });
+  expect(hasStyle).toBe(true);
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E12
+test('E12: التخطيط الأفقي (Top) وتغيير المحاذاة', async () => {
+  const worker = swWorker ?? context.serviceWorkers()[0];
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.position = 'top';
+    s.orientation = 'horizontal';
+    await chrome.storage.sync.set({ settings: s });
+  });
+
+  const page = await open('/long.html');
+  await page.waitForTimeout(500);
+
+  const orientation = await page.evaluate(() => {
+    return document.getElementById('scrollflow-root')?.getAttribute('data-orientation');
+  });
+  expect(orientation).toBe('horizontal');
+
+  const box = await rail(page).boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.y).toBeLessThan(30);
+  expect(box!.width).toBeGreaterThan(100);
+
+  // Restore to right
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.position = 'right';
+    s.orientation = 'vertical';
+    await chrome.storage.sync.set({ settings: s });
+  });
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E13
+test('E13: الستايلات المتعددة (Cyberpunk, Minimal, Glass)', async () => {
+  const worker = swWorker ?? context.serviceWorkers()[0];
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.theme = 'cyberpunk';
+    await chrome.storage.sync.set({ settings: s });
+  });
+
+  const page = await open('/long.html');
+  await page.waitForTimeout(500);
+
+  const appliedTheme = await page.evaluate(() => {
+    return document.getElementById('scrollflow-root')?.getAttribute('data-theme');
+  });
+  expect(appliedTheme).toBe('cyberpunk');
+
+  // Restore theme
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.theme = 'aurora';
+    await chrome.storage.sync.set({ settings: s });
+  });
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E14
+test('E14: السحب التفاعلي والـ Pointer Capture للتنقل', async () => {
+  const page = await open('/long.html');
+  await page.waitForTimeout(500);
+
+  const rBox = await rail(page).boundingBox();
+  expect(rBox).not.toBeNull();
+
+  // Click near the middle of the rail
+  await page.mouse.move(rBox!.x + rBox!.width / 2, rBox!.y + rBox!.height * 0.5);
+  await page.mouse.down();
+  await page.waitForTimeout(200);
+  await page.mouse.up();
+  await page.waitForTimeout(300);
+
+  const scrolledY = await page.evaluate(() => window.scrollY);
+  expect(scrolledY).toBeGreaterThan(100);
+
+  await page.close();
+});

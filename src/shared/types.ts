@@ -1,7 +1,9 @@
 // src/shared/types.ts — نسخة مطابقة لـ contracts/types.ts
 
-export type Theme = 'aurora' | 'sunset' | 'mono';
+export type Theme = 'aurora' | 'sunset' | 'cyberpunk' | 'minimal' | 'glass' | 'mono';
 export type Side = 'right' | 'left' | 'auto';
+export type Orientation = 'vertical' | 'horizontal';
+export type Position = 'right' | 'left' | 'top' | 'bottom';
 export type Contrast = 'normal' | 'high';
 
 export interface Settings {
@@ -14,6 +16,10 @@ export interface Settings {
   showToasts: boolean;
   theme: Theme;
   side: Side;
+  position: Position;
+  orientation: Orientation;
+  hideNativeScrollbar: boolean;
+  smoothScroll: boolean;
   contrast: Contrast;
   allowFileUrls: boolean;
   blocklist: string[];
@@ -30,6 +36,10 @@ export const DEFAULT_SETTINGS: Settings = {
   showToasts: true,
   theme: 'aurora',
   side: 'right',
+  position: 'right',
+  orientation: 'vertical',
+  hideNativeScrollbar: true,
+  smoothScroll: false,
   contrast: 'normal',
   allowFileUrls: false,
   blocklist: [],

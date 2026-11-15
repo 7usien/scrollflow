@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "Vertical reading progress indicator, automatic scroll position restoration, and completion celebration.",
+    "message": "Elegant vertical & horizontal reading progress indicator, native scrollbar concealment, smooth scrolling, scroll restoration, and celebratory confetti.",
     "description": "Extension description"
   },
   "cmdToggle": {
@@ -18,5 +18,53 @@
   "toastComplete": {
     "message": "Page completed 🎉",
     "description": "Toast message on page completion"
+  },
+  "themeAurora": {
+    "message": "Aurora (Cosmic Gradient)",
+    "description": "Theme aurora"
+  },
+  "themeSunset": {
+    "message": "Sunset (Warm Coral)",
+    "description": "Theme sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Cyberpunk (Neon Glow)",
+    "description": "Theme cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Minimal (Sleek Slate)",
+    "description": "Theme minimal"
+  },
+  "themeGlass": {
+    "message": "Glass Pill (Frosted Capsule)",
+    "description": "Theme glass pill"
+  },
+  "themeMono": {
+    "message": "Mono (Classic Gray)",
+    "description": "Theme mono"
+  },
+  "posRight": {
+    "message": "Right (Vertical)",
+    "description": "Position right"
+  },
+  "posLeft": {
+    "message": "Left (Vertical)",
+    "description": "Position left"
+  },
+  "posTop": {
+    "message": "Top (Horizontal)",
+    "description": "Position top"
+  },
+  "posBottom": {
+    "message": "Bottom (Horizontal)",
+    "description": "Position bottom"
+  },
+  "hideNativeScrollbar": {
+    "message": "Hide Native Scrollbar",
+    "description": "Hide native OS scrollbar"
+  },
+  "smoothScroll": {
+    "message": "Smooth Page Scrolling",
+    "description": "Smooth page scrolling"
   }
 }

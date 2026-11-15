@@ -49,6 +49,22 @@
 
       <div class="setting-row">
         <div class="setting-info">
+          <span class="setting-title">إخفاء شريط المتصفح الأصلي</span>
+          <span class="setting-desc">إخفاء شريط التمرير التقليدي لنظام التشغيل واستخدام ScrollFlow بدلاً منه</span>
+        </div>
+        <div class="switch" id="hideScrollbarSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">التصفح السلس للصفحة</span>
+          <span class="setting-desc">جعل التمرير والتنقل بين أقسام الصفحة سلسًا وانسيابيًا (Smooth Scrolling)</span>
+        </div>
+        <div class="switch" id="smoothScrollSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
           <span class="setting-title">إظهار النسبة على الأيقونة</span>
           <span class="setting-desc">عرض نسبة التقدّم الحالية على أيقونة الإضافة</span>
         </div>
@@ -73,28 +89,32 @@
     </section>
 
     <section>
-      <h2>المظهر</h2>
+      <h2>المظهر والتخطيط</h2>
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">الثيم اللوني</span>
-          <span class="setting-desc">تدرّج ألوان المؤشر</span>
+          <span class="setting-title">الستايل والثيم اللوني</span>
+          <span class="setting-desc">تدرّج ومظهر شريط القراءة</span>
         </div>
         <select id="themeSelect">
-          <option value="aurora">Aurora (افتراضي)</option>
-          <option value="sunset">Sunset (وردي دافئ)</option>
+          <option value="aurora">Aurora (تدرج كوني)</option>
+          <option value="sunset">Sunset (غروب دافئ)</option>
+          <option value="cyberpunk">Cyberpunk (نيون متوهج)</option>
+          <option value="minimal">Minimal (نحيف وبسيط)</option>
+          <option value="glass">Glass Pill (كبسولة زجاجية)</option>
           <option value="mono">Mono (رمادي كلاسيكي)</option>
         </select>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">موقع الشريط</span>
-          <span class="setting-desc">الجانب الذي يظهر عليه الشريط</span>
+          <span class="setting-title">موضع وتخطيط الشريط</span>
+          <span class="setting-desc">اختيار الموضع الرأسي أو الأفقي للشريط</span>
         </div>
-        <select id="sideSelect">
-          <option value="right">اليمين</option>
-          <option value="left">اليسار</option>
-          <option value="auto">تلقائي (حسب اتجاه الصفحة)</option>
+        <select id="positionSelect">
+          <option value="right">يمين الشاشة (رأسي)</option>
+          <option value="left">يسار الشاشة (رأسي)</option>
+          <option value="top">أعلى الشاشة (أفقي)</option>
+          <option value="bottom">أسفل الشاشة (أفقي)</option>
         </select>
       </div>
 

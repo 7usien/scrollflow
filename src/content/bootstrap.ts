@@ -12,6 +12,8 @@ import { createMilestoneTracker, type MilestoneTracker } from './milestones';
 import { burstConfetti } from './ui/confetti';
 import { computeMetrics, observeMetrics, type MeasureObserver } from './measure';
 import { tryRestore } from './restore';
+import { setNativeScrollbarHidden } from './ui/native-scroll';
+import { setSmoothScrollEnabled } from './ui/smooth-scroll';
 
 let settings: Settings = { ...DEFAULT_SETTINGS };
 let shadowCtx: ShadowContext | null = null;
@@ -54,7 +56,17 @@ function shouldShowOverlay(): boolean {
 
 function setupUI() {
   shadowCtx = createShadowHost(settings);
-  progressBar = createProgressBar(shadowCtx.shadowRoot);
+  progressBar = createProgressBar(shadowCtx.shadowRoot, {
+    getMaxScroll: () => currentMetrics.maxScroll,
+    getOrientation: () => settings.orientation,
+    isRTL: () => document.documentElement.dir === 'rtl' || document.body?.dir === 'rtl',
+    onScrub: (ratio) => {
+      userInteracted = true;
+      smoothedProgress = ratio;
+      sendProgressUpdate();
+      scheduleSave();
+    },
+  });
   toast = createToast(shadowCtx.shadowRoot);
   milestoneTracker = createMilestoneTracker();
 
@@ -67,8 +79,12 @@ function updateVisibility() {
 
   if (!show || !currentMetrics.scrollable) {
     progressBar.setState('hidden');
+    setNativeScrollbarHidden(false);
+    setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
+    setNativeScrollbarHidden(settings.hideNativeScrollbar);
+    setSmoothScrollEnabled(settings.smoothScroll);
   }
 }
 
@@ -153,17 +169,20 @@ function tick() {
       milestoneTracker.markCelebrated();
       progressBar.setState('complete');
 
-      const isShort = currentMetrics.screens < 2;
-      burstConfetti(shadowCtx!.shadowRoot, {
-        isShort,
-        onComplete: () => {
-          progressBar?.setState('active');
-        },
-      });
-
-      if (settings.showToasts) {
-        const completeMsg = chrome.i18n.getMessage('toastComplete') || 'أكملت الصفحة 🎉';
-        toast?.show(completeMsg);
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (isReduced) {
+        if (settings.showToasts) {
+          const completeMsg = chrome.i18n.getMessage('toastComplete') || 'أكملت الصفحة 🎉';
+          toast?.show(completeMsg);
+        }
+      } else if (shadowCtx) {
+        const isShort = currentMetrics.screens < 2;
+        burstConfetti(shadowCtx.shadowRoot, {
+          isShort,
+          onComplete: () => {
+            progressBar?.setState('active');
+          },
+        });
       }
     } else if (progressBar.element.getAttribute('data-state') !== 'hover') {
       if (pct >= 99.5) {
@@ -192,7 +211,11 @@ function tick() {
 function handleScroll() {
   userInteracted = true;
 
-  if (!isTicking) {
+  if (shouldShowOverlay() && currentMetrics.scrollable) {
+    progressBar?.setState('active');
+  }
+
+  if (!isTicking && !document.hidden) {
     isTicking = true;
     requestAnimationFrame(tick);
   }
@@ -200,33 +223,33 @@ function handleScroll() {
   scheduleSave();
 }
 
-// ── 4. Position Saving (Debounce 400ms + Flush) ──
+// ── 4. Position Saving (Debounced & Flush) ──
 function scheduleSave() {
-  if (saveTimer) clearTimeout(saveTimer);
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+  }
   saveTimer = setTimeout(() => {
     flushSave();
   }, SAVE_DEBOUNCE_MS);
 }
 
-function flushSave(targetUrl = currentUrl) {
+function flushSave(targetUrl?: string) {
   if (saveTimer) {
     clearTimeout(saveTimer);
     saveTimer = null;
   }
 
-  if (!userInteracted && window.scrollY < 60) return;
-  if (!settings.restoreScroll) return;
+  if (!settings.restoreScroll || !shouldShowOverlay() || !userInteracted) {
+    return;
+  }
 
-  const m = computeMetrics();
-  const norm = normalizeUrl(targetUrl);
-  const ratio = computeProgress(m.scrollY, m.maxScroll);
-
+  const urlToSave = targetUrl || currentUrl;
   const entry: ScrollEntry = {
-    url: norm,
-    scrollY: m.scrollY,
-    scrollRatio: ratio,
-    docHeight: m.docHeight,
-    viewportH: m.viewportH,
+    url: normalizeUrl(urlToSave),
+    scrollY: currentMetrics.scrollY,
+    scrollRatio: computeProgress(currentMetrics.scrollY, currentMetrics.maxScroll),
+    docHeight: currentMetrics.docHeight,
+    viewportH: currentMetrics.viewportH,
     ts: Date.now(),
   };
 

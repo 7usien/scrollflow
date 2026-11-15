@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "مؤشر تقدّم قراءة رأسي أنيق، حفظ واستعادة موضع التمرير تلقائيًا، واحتفال خفيف عند النهاية.",
+    "message": "مؤشر تقدّم قراءة رأسي وأفقي أنيق، إخفاء شريط التمرير الأصلي، سكرول سلس، حفظ واستعادة موضع التمرير تلقائيًا، واحتفال خفيف عند النهاية.",
     "description": "Extension description"
   },
   "cmdToggle": {
@@ -18,5 +18,53 @@
   "toastComplete": {
     "message": "أكملت الصفحة 🎉",
     "description": "Toast message on page completion"
+  },
+  "themeAurora": {
+    "message": "Aurora (تدرج كوني)",
+    "description": "Theme aurora"
+  },
+  "themeSunset": {
+    "message": "Sunset (غروب دافئ)",
+    "description": "Theme sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Cyberpunk (نيون متوهج)",
+    "description": "Theme cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Minimal (نحيف وبسيط)",
+    "description": "Theme minimal"
+  },
+  "themeGlass": {
+    "message": "Glass Pill (كبسولة زجاجية)",
+    "description": "Theme glass pill"
+  },
+  "themeMono": {
+    "message": "Mono (رمادي كلاسيكي)",
+    "description": "Theme mono"
+  },
+  "posRight": {
+    "message": "يمين (رأسي)",
+    "description": "Position right"
+  },
+  "posLeft": {
+    "message": "يسار (رأسي)",
+    "description": "Position left"
+  },
+  "posTop": {
+    "message": "أعلى (أفقي)",
+    "description": "Position top"
+  },
+  "posBottom": {
+    "message": "أسفل (أفقي)",
+    "description": "Position bottom"
+  },
+  "hideNativeScrollbar": {
+    "message": "إخفاء شريط المتصفح الأصلي",
+    "description": "Hide native OS scrollbar"
+  },
+  "smoothScroll": {
+    "message": "التصفح السلس للصفحة",
+    "description": "Smooth page scrolling"
   }
 }

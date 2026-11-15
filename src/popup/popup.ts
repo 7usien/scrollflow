@@ -1,6 +1,6 @@
 // src/popup/popup.ts — Popup logic, stats, switches, and site exclusions (FR-09, FR-25, FR-27, FR-29)
 import { MSG } from '../shared/messages';
-import type { Metrics, Settings } from '../shared/types';
+import type { Metrics, Settings, Position } from '../shared/types';
 import { screensOf, estimateReadingMinutes } from '../core/reading';
 
 let currentHostname = '';
@@ -17,6 +17,9 @@ const siteBtnText = document.getElementById('siteBtnText');
 const restoreSwitch = document.getElementById('restoreSwitch');
 const celebrateSwitch = document.getElementById('celebrateSwitch');
 const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
+const positionSelect = document.getElementById('positionSelect') as HTMLSelectElement | null;
+const hideScrollbarSwitch = document.getElementById('hideScrollbarSwitch');
+const smoothScrollSwitch = document.getElementById('smoothScrollSwitch');
 const optionsBtn = document.getElementById('optionsBtn');
 const clearBtn = document.getElementById('clearBtn');
 const popupBody = document.getElementById('popupBody');
@@ -107,6 +110,15 @@ function applySettingsToUI(s: Settings) {
   if (themeSelect) {
     themeSelect.value = s.theme;
   }
+  if (positionSelect) {
+    positionSelect.value = s.position || (s.side === 'left' ? 'left' : 'right');
+  }
+  if (hideScrollbarSwitch) {
+    hideScrollbarSwitch.setAttribute('aria-checked', String(s.hideNativeScrollbar));
+  }
+  if (smoothScrollSwitch) {
+    smoothScrollSwitch.setAttribute('aria-checked', String(s.smoothScroll));
+  }
 }
 
 function updateSiteBtn() {
@@ -145,6 +157,36 @@ themeSelect?.addEventListener('change', async () => {
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
     patch: { theme: newTheme },
+  });
+});
+
+positionSelect?.addEventListener('change', async () => {
+  const newPos = positionSelect.value as Position;
+  const newSide = newPos === 'left' ? 'left' : 'right';
+  const newOrientation = (newPos === 'top' || newPos === 'bottom') ? 'horizontal' : 'vertical';
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { position: newPos, side: newSide, orientation: newOrientation },
+  });
+});
+
+hideScrollbarSwitch?.addEventListener('click', async () => {
+  const cur = hideScrollbarSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  hideScrollbarSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { hideNativeScrollbar: next },
+  });
+});
+
+smoothScrollSwitch?.addEventListener('click', async () => {
+  const cur = smoothScrollSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  smoothScrollSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { smoothScroll: next },
   });
 });
 

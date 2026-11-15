@@ -4,7 +4,7 @@
   "title": "ScrollFlow Settings",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
+  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "position", "orientation", "hideNativeScrollbar", "smoothScroll", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
   "properties": {
     "version": { "const": 1 },
     "enabled": { "type": "boolean", "default": true },
@@ -13,8 +13,12 @@
     "milestones": { "type": "boolean", "default": true },
     "showBadge": { "type": "boolean", "default": true },
     "showToasts": { "type": "boolean", "default": true },
-    "theme": { "enum": ["aurora", "sunset", "mono"], "default": "aurora" },
+    "theme": { "enum": ["aurora", "sunset", "cyberpunk", "minimal", "glass", "mono"], "default": "aurora" },
     "side": { "enum": ["right", "left", "auto"], "default": "right" },
+    "position": { "enum": ["right", "left", "top", "bottom"], "default": "right" },
+    "orientation": { "enum": ["vertical", "horizontal"], "default": "vertical" },
+    "hideNativeScrollbar": { "type": "boolean", "default": true },
+    "smoothScroll": { "type": "boolean", "default": false },
     "contrast": { "enum": ["normal", "high"], "default": "normal" },
     "allowFileUrls": { "type": "boolean", "default": false },
     "blocklist": {

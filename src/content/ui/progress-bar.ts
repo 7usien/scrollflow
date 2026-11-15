@@ -1,5 +1,12 @@
-// src/content/ui/progress-bar.ts — Progress bar rail, fill, thumb, label, and states (FR-05, FR-06, FR-07)
-import type { BarState } from '../../shared/types';
+// src/content/ui/progress-bar.ts — Progress bar rail, fill, thumb, label, states, and interactive scrubbing
+import type { BarState, Orientation } from '../../shared/types';
+
+export interface ProgressBarCallbacks {
+  getMaxScroll?: () => number;
+  onScrub?: (ratio: number) => void;
+  getOrientation?: () => Orientation;
+  isRTL?: () => boolean;
+}
 
 export interface ProgressBarController {
   element: HTMLElement;
@@ -11,7 +18,10 @@ export interface ProgressBarController {
   destroy: () => void;
 }
 
-export function createProgressBar(container: ShadowRoot): ProgressBarController {
+export function createProgressBar(
+  container: ShadowRoot,
+  callbacks?: ProgressBarCallbacks
+): ProgressBarController {
   const rail = document.createElement('div');
   rail.className = 'sf-rail';
   rail.setAttribute('data-testid', 'rail');
@@ -38,18 +48,83 @@ export function createProgressBar(container: ShadowRoot): ProgressBarController 
   label.textContent = '0%';
   rail.appendChild(label);
 
+  let isDragging = false;
+
   // Hover interaction for label and active state
   rail.addEventListener('mouseenter', () => {
-    if (rail.getAttribute('data-state') !== 'hidden') {
+    if (!isDragging && rail.getAttribute('data-state') !== 'hidden') {
       rail.setAttribute('data-state', 'hover');
     }
   });
 
   rail.addEventListener('mouseleave', () => {
-    if (rail.getAttribute('data-state') === 'hover') {
+    if (!isDragging && rail.getAttribute('data-state') === 'hover') {
       rail.setAttribute('data-state', 'idle');
     }
   });
+
+  // ── Scrubbing & Pointer Capture ──
+  const computeScrubRatio = (e: PointerEvent): number => {
+    const rect = rail.getBoundingClientRect();
+    const orientation = callbacks?.getOrientation ? callbacks.getOrientation() : 'vertical';
+    const rtl = callbacks?.isRTL ? callbacks.isRTL() : false;
+
+    if (orientation === 'horizontal') {
+      if (rect.width <= 0) return 0;
+      const offset = rtl ? rect.right - e.clientX : e.clientX - rect.left;
+      return Math.min(1, Math.max(0, offset / rect.width));
+    } else {
+      if (rect.height <= 0) return 0;
+      const offset = e.clientY - rect.top;
+      return Math.min(1, Math.max(0, offset / rect.height));
+    }
+  };
+
+  const handlePointerDown = (e: PointerEvent) => {
+    if (e.button !== 0) return;
+    if (rail.getAttribute('data-state') === 'hidden') return;
+    isDragging = true;
+    try {
+      rail.setPointerCapture(e.pointerId);
+    } catch {
+      // Fail-soft
+    }
+    rail.setAttribute('data-state', 'active');
+    const ratio = computeScrubRatio(e);
+    render(ratio);
+    const max = callbacks?.getMaxScroll ? callbacks.getMaxScroll() : 0;
+    if (max > 0) {
+      window.scrollTo({ top: ratio * max, behavior: 'instant' });
+    }
+    callbacks?.onScrub?.(ratio);
+  };
+
+  const handlePointerMove = (e: PointerEvent) => {
+    if (!isDragging) return;
+    const ratio = computeScrubRatio(e);
+    render(ratio);
+    const max = callbacks?.getMaxScroll ? callbacks.getMaxScroll() : 0;
+    if (max > 0) {
+      window.scrollTo({ top: ratio * max, behavior: 'instant' });
+    }
+    callbacks?.onScrub?.(ratio);
+  };
+
+  const handlePointerUp = (e: PointerEvent) => {
+    if (!isDragging) return;
+    isDragging = false;
+    try {
+      rail.releasePointerCapture(e.pointerId);
+    } catch {
+      // Fail-soft
+    }
+    rail.setAttribute('data-state', 'idle');
+  };
+
+  rail.addEventListener('pointerdown', handlePointerDown, { passive: true });
+  rail.addEventListener('pointermove', handlePointerMove, { passive: true });
+  rail.addEventListener('pointerup', handlePointerUp, { passive: true });
+  rail.addEventListener('pointercancel', handlePointerUp, { passive: true });
 
   container.appendChild(rail);
 
@@ -86,6 +161,10 @@ export function createProgressBar(container: ShadowRoot): ProgressBarController 
 
   const destroy = () => {
     if (pulseTimer) clearTimeout(pulseTimer);
+    rail.removeEventListener('pointerdown', handlePointerDown);
+    rail.removeEventListener('pointermove', handlePointerMove);
+    rail.removeEventListener('pointerup', handlePointerUp);
+    rail.removeEventListener('pointercancel', handlePointerUp);
     if (rail.parentNode) {
       rail.parentNode.removeChild(rail);
     }

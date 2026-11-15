@@ -1,13 +1,13 @@
 // src/options/options.ts — Full settings management and blocklist editor (FR-27, FR-29)
 import { MSG } from '../shared/messages';
-import type { Contrast, Settings, Side, Theme } from '../shared/types';
+import type { Contrast, Settings, Side, Position, Theme } from '../shared/types';
 import { DEFAULT_SETTINGS } from '../shared/types';
 import { sanitizeSettings } from '../shared/settings-schema';
 
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
 
 const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
-const sideSelect = document.getElementById('sideSelect') as HTMLSelectElement | null;
+const positionSelect = document.getElementById('positionSelect') as HTMLSelectElement | null;
 const contrastSelect = document.getElementById('contrastSelect') as HTMLSelectElement | null;
 
 const blocklistInput = document.getElementById('blocklistInput') as HTMLInputElement | null;
@@ -41,12 +41,16 @@ function renderSettings() {
   setSwitch('restoreSwitch', currentSettings.restoreScroll);
   setSwitch('celebrateSwitch', currentSettings.celebrate);
   setSwitch('milestonesSwitch', currentSettings.milestones);
+  setSwitch('hideScrollbarSwitch', currentSettings.hideNativeScrollbar);
+  setSwitch('smoothScrollSwitch', currentSettings.smoothScroll);
   setSwitch('badgeSwitch', currentSettings.showBadge);
   setSwitch('toastsSwitch', currentSettings.showToasts);
   setSwitch('fileUrlsSwitch', currentSettings.allowFileUrls);
 
   if (themeSelect) themeSelect.value = currentSettings.theme;
-  if (sideSelect) sideSelect.value = currentSettings.side;
+  if (positionSelect) {
+    positionSelect.value = currentSettings.position || (currentSettings.side === 'left' ? 'left' : 'right');
+  }
   if (contrastSelect) contrastSelect.value = currentSettings.contrast;
 }
 
@@ -110,6 +114,8 @@ bindSwitch('enabledSwitch', 'enabled');
 bindSwitch('restoreSwitch', 'restoreScroll');
 bindSwitch('celebrateSwitch', 'celebrate');
 bindSwitch('milestonesSwitch', 'milestones');
+bindSwitch('hideScrollbarSwitch', 'hideNativeScrollbar');
+bindSwitch('smoothScrollSwitch', 'smoothScroll');
 bindSwitch('badgeSwitch', 'showBadge');
 bindSwitch('toastsSwitch', 'showToasts');
 bindSwitch('fileUrlsSwitch', 'allowFileUrls');
@@ -118,8 +124,11 @@ themeSelect?.addEventListener('change', () => {
   patch({ theme: themeSelect.value as Theme });
 });
 
-sideSelect?.addEventListener('change', () => {
-  patch({ side: sideSelect.value as Side });
+positionSelect?.addEventListener('change', () => {
+  const newPos = positionSelect.value as Position;
+  const newSide: Side = newPos === 'left' ? 'left' : 'right';
+  const newOrientation = newPos === 'top' || newPos === 'bottom' ? 'horizontal' : 'vertical';
+  patch({ position: newPos, side: newSide, orientation: newOrientation });
 });
 
 contrastSelect?.addEventListener('change', () => {
