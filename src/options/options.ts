@@ -1,6 +1,6 @@
 // src/options/options.ts — Full settings management and blocklist editor (FR-27, FR-29)
 import { MSG } from '../shared/messages';
-import type { Contrast, Settings, Side, Position, Theme } from '../shared/types';
+import type { Contrast, Settings, Side, Position, Theme, BarLength, BarRadius } from '../shared/types';
 import { DEFAULT_SETTINGS } from '../shared/types';
 import { sanitizeSettings } from '../shared/settings-schema';
 
@@ -8,6 +8,8 @@ let currentSettings: Settings = { ...DEFAULT_SETTINGS };
 
 const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
 const positionSelect = document.getElementById('positionSelect') as HTMLSelectElement | null;
+const lengthSelect = document.getElementById('lengthSelect') as HTMLSelectElement | null;
+const radiusSelect = document.getElementById('radiusSelect') as HTMLSelectElement | null;
 const contrastSelect = document.getElementById('contrastSelect') as HTMLSelectElement | null;
 
 const blocklistInput = document.getElementById('blocklistInput') as HTMLInputElement | null;
@@ -43,6 +45,7 @@ function renderSettings() {
   setSwitch('milestonesSwitch', currentSettings.milestones);
   setSwitch('hideScrollbarSwitch', currentSettings.hideNativeScrollbar);
   setSwitch('smoothScrollSwitch', currentSettings.smoothScroll);
+  setSwitch('shadowSwitch', currentSettings.shadow !== false);
   setSwitch('badgeSwitch', currentSettings.showBadge);
   setSwitch('toastsSwitch', currentSettings.showToasts);
   setSwitch('fileUrlsSwitch', currentSettings.allowFileUrls);
@@ -51,6 +54,8 @@ function renderSettings() {
   if (positionSelect) {
     positionSelect.value = currentSettings.position || (currentSettings.side === 'left' ? 'left' : 'right');
   }
+  if (lengthSelect) lengthSelect.value = currentSettings.barLength || 'floating';
+  if (radiusSelect) radiusSelect.value = currentSettings.barRadius || 'subtle';
   if (contrastSelect) contrastSelect.value = currentSettings.contrast;
 }
 
@@ -116,6 +121,7 @@ bindSwitch('celebrateSwitch', 'celebrate');
 bindSwitch('milestonesSwitch', 'milestones');
 bindSwitch('hideScrollbarSwitch', 'hideNativeScrollbar');
 bindSwitch('smoothScrollSwitch', 'smoothScroll');
+bindSwitch('shadowSwitch', 'shadow');
 bindSwitch('badgeSwitch', 'showBadge');
 bindSwitch('toastsSwitch', 'showToasts');
 bindSwitch('fileUrlsSwitch', 'allowFileUrls');
@@ -129,6 +135,14 @@ positionSelect?.addEventListener('change', () => {
   const newSide: Side = newPos === 'left' ? 'left' : 'right';
   const newOrientation = newPos === 'top' || newPos === 'bottom' ? 'horizontal' : 'vertical';
   patch({ position: newPos, side: newSide, orientation: newOrientation });
+});
+
+lengthSelect?.addEventListener('change', () => {
+  patch({ barLength: lengthSelect?.value as BarLength });
+});
+
+radiusSelect?.addEventListener('change', () => {
+  patch({ barRadius: radiusSelect?.value as BarRadius });
 });
 
 contrastSelect?.addEventListener('change', () => {

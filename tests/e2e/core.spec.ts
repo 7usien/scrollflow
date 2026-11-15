@@ -330,3 +330,72 @@ test('E14: السحب التفاعلي والـ Pointer Capture للتنقل', a
 
   await page.close();
 });
+
+// ─────────────────────────────────────────────────────────────── E15
+test('E15: امتداد كامل 100% للشريط، حواف دائرية خفيفة، وإلغاء الظل', async () => {
+  const worker = swWorker ?? context.serviceWorkers()[0];
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.barLength = 'full';
+    s.barRadius = 'subtle';
+    s.shadow = false;
+    await chrome.storage.sync.set({ settings: s });
+  });
+
+  const page = await open('/long.html');
+  await page.waitForTimeout(500);
+
+  // 1. Verify attributes and geometry for Vertical Full (100vh)
+  const hostLength = await page.evaluate(() => {
+    const root = document.getElementById('scrollflow-root');
+    return root?.getAttribute('data-length');
+  });
+  expect(hostLength).toBe('full');
+
+  const boxV = await rail(page).boundingBox();
+  expect(boxV).not.toBeNull();
+  expect(boxV!.y).toBeLessThanOrEqual(5);
+  expect(boxV!.height).toBeGreaterThan(600);
+
+  // 2. Verify subtle border-radius (6px) and no-shadow
+  const { radius, shadow } = await page.evaluate(() => {
+    const r = document.getElementById('scrollflow-root')?.shadowRoot
+      ?.querySelector('[data-testid="rail"]') as HTMLElement;
+    const style = getComputedStyle(r);
+    return {
+      radius: style.borderRadius,
+      shadow: style.boxShadow,
+    };
+  });
+  expect(radius).toBe('6px');
+  expect(shadow).toBe('none');
+
+  // 3. Test Horizontal Full (100vw)
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.position = 'top';
+    s.orientation = 'horizontal';
+    await chrome.storage.sync.set({ settings: s });
+  });
+  await page.waitForTimeout(400);
+
+  const boxH = await rail(page).boundingBox();
+  expect(boxH).not.toBeNull();
+  expect(boxH!.x).toBeLessThanOrEqual(5);
+  expect(boxH!.width).toBeGreaterThan(700);
+
+  // Restore defaults
+  await worker.evaluate(async () => {
+    const stored = await chrome.storage.sync.get('settings');
+    const s = (stored?.settings as Record<string, unknown>) || {};
+    s.barLength = 'floating';
+    s.barRadius = 'subtle';
+    s.shadow = true;
+    s.position = 'right';
+    s.orientation = 'vertical';
+    await chrome.storage.sync.set({ settings: s });
+  });
+  await page.close();
+});

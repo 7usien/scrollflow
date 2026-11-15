@@ -49,7 +49,7 @@ export const THEMES: Record<Theme, ThemeColors> = {
 
 export function applyThemeToHost(
   hostEl: HTMLElement,
-  settings: Pick<Settings, 'theme' | 'side' | 'position' | 'orientation' | 'contrast'>,
+  settings: Pick<Settings, 'theme' | 'side' | 'position' | 'orientation' | 'barLength' | 'barRadius' | 'shadow' | 'contrast'>,
   options?: { isLight?: boolean; isReduced?: boolean }
 ): void {
   const position = settings.position || (settings.side === 'left' ? 'left' : 'right');
@@ -59,6 +59,9 @@ export function applyThemeToHost(
   hostEl.setAttribute('data-side', settings.side);
   hostEl.setAttribute('data-position', position);
   hostEl.setAttribute('data-orientation', orientation);
+  hostEl.setAttribute('data-length', settings.barLength || 'floating');
+  hostEl.setAttribute('data-radius', settings.barRadius || 'subtle');
+  hostEl.setAttribute('data-shadow', String(settings.shadow !== false));
   hostEl.setAttribute('data-contrast', settings.contrast);
 
   const isRtl = document.documentElement.dir === 'rtl' || document.body?.dir === 'rtl';

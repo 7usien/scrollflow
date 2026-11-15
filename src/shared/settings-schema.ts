@@ -6,6 +6,8 @@ import {
   type Side,
   type Position,
   type Orientation,
+  type BarLength,
+  type BarRadius,
   type Contrast,
 } from './types';
 
@@ -15,6 +17,8 @@ const VALID_THEMES: Set<Theme> = new Set(['aurora', 'sunset', 'cyberpunk', 'mini
 const VALID_SIDES: Set<Side> = new Set(['right', 'left', 'auto']);
 const VALID_POSITIONS: Set<Position> = new Set(['right', 'left', 'top', 'bottom']);
 const VALID_ORIENTATIONS: Set<Orientation> = new Set(['vertical', 'horizontal']);
+const VALID_LENGTHS: Set<BarLength> = new Set(['floating', 'full']);
+const VALID_RADII: Set<BarRadius> = new Set(['subtle', 'pill', 'sharp']);
 const VALID_CONTRASTS: Set<Contrast> = new Set(['normal', 'high']);
 
 export function sanitizeSettings(raw: unknown): Settings {
@@ -47,6 +51,18 @@ export function sanitizeSettings(raw: unknown): Settings {
     orientation = 'vertical';
   }
 
+  const barLength: BarLength = typeof obj.barLength === 'string' && VALID_LENGTHS.has(obj.barLength as BarLength)
+    ? (obj.barLength as BarLength)
+    : DEFAULT_SETTINGS.barLength;
+
+  const barRadius: BarRadius = typeof obj.barRadius === 'string' && VALID_RADII.has(obj.barRadius as BarRadius)
+    ? (obj.barRadius as BarRadius)
+    : DEFAULT_SETTINGS.barRadius;
+
+  const shadow: boolean = typeof obj.shadow === 'boolean'
+    ? obj.shadow
+    : DEFAULT_SETTINGS.shadow;
+
   const contrast: Contrast = typeof obj.contrast === 'string' && VALID_CONTRASTS.has(obj.contrast as Contrast)
     ? (obj.contrast as Contrast)
     : DEFAULT_SETTINGS.contrast;
@@ -71,6 +87,9 @@ export function sanitizeSettings(raw: unknown): Settings {
     side,
     position,
     orientation,
+    barLength,
+    barRadius,
+    shadow,
     hideNativeScrollbar: typeof obj.hideNativeScrollbar === 'boolean' ? obj.hideNativeScrollbar : DEFAULT_SETTINGS.hideNativeScrollbar,
     smoothScroll: typeof obj.smoothScroll === 'boolean' ? obj.smoothScroll : DEFAULT_SETTINGS.smoothScroll,
     contrast,

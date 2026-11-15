@@ -4,7 +4,7 @@
   "title": "ScrollFlow Settings",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "position", "orientation", "hideNativeScrollbar", "smoothScroll", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
+  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "position", "orientation", "barLength", "barRadius", "shadow", "hideNativeScrollbar", "smoothScroll", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
   "properties": {
     "version": { "const": 1 },
     "enabled": { "type": "boolean", "default": true },
@@ -17,6 +17,9 @@
     "side": { "enum": ["right", "left", "auto"], "default": "right" },
     "position": { "enum": ["right", "left", "top", "bottom"], "default": "right" },
     "orientation": { "enum": ["vertical", "horizontal"], "default": "vertical" },
+    "barLength": { "enum": ["floating", "full"], "default": "floating" },
+    "barRadius": { "enum": ["subtle", "pill", "sharp"], "default": "subtle" },
+    "shadow": { "type": "boolean", "default": true },
     "hideNativeScrollbar": { "type": "boolean", "default": true },
     "smoothScroll": { "type": "boolean", "default": false },
     "contrast": { "enum": ["normal", "high"], "default": "normal" },

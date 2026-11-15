@@ -66,5 +66,29 @@
   "smoothScroll": {
     "message": "Smooth Page Scrolling",
     "description": "Smooth page scrolling"
+  },
+  "lenFloating": {
+    "message": "Centered Floating (60%)",
+    "description": "Floating bar length"
+  },
+  "lenFull": {
+    "message": "Full 100%",
+    "description": "Full bar length"
+  },
+  "radSubtle": {
+    "message": "Subtle Rounded (6px)",
+    "description": "Subtle rounded border radius"
+  },
+  "radPill": {
+    "message": "Pill Capsule (999px)",
+    "description": "Pill capsule border radius"
+  },
+  "radSharp": {
+    "message": "Sharp Rectangle (2px)",
+    "description": "Sharp border radius"
+  },
+  "lblShadow": {
+    "message": "Show Shadow & Glow",
+    "description": "Show shadow and glow"
   }
 }

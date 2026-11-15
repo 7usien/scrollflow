@@ -5,6 +5,8 @@ export type Theme = 'aurora' | 'sunset' | 'cyberpunk' | 'minimal' | 'glass' | 'm
 export type Side = 'right' | 'left' | 'auto';
 export type Orientation = 'vertical' | 'horizontal';
 export type Position = 'right' | 'left' | 'top' | 'bottom';
+export type BarLength = 'floating' | 'full';
+export type BarRadius = 'subtle' | 'pill' | 'sharp';
 export type Contrast = 'normal' | 'high';
 
 export interface Settings {
@@ -19,6 +21,9 @@ export interface Settings {
   side: Side;
   position: Position;
   orientation: Orientation;
+  barLength: BarLength;
+  barRadius: BarRadius;
+  shadow: boolean;
   hideNativeScrollbar: boolean;
   smoothScroll: boolean;
   contrast: Contrast;
@@ -39,6 +44,9 @@ export const DEFAULT_SETTINGS: Settings = {
   side: 'right',
   position: 'right',
   orientation: 'vertical',
+  barLength: 'floating',
+  barRadius: 'subtle',
+  shadow: true,
   hideNativeScrollbar: true,
   smoothScroll: false,
   contrast: 'normal',

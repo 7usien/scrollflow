@@ -55,13 +55,14 @@
 
 body {
   width: 340px;
-  min-height: 420px;
+  max-height: 580px;
   background: var(--sf-surface);
   color: var(--sf-text);
   font-family: var(--sf-font);
   direction: rtl;
   user-select: none;
-  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 body[dir="ltr"] {

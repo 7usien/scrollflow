@@ -66,5 +66,29 @@
   "smoothScroll": {
     "message": "التصفح السلس للصفحة",
     "description": "Smooth page scrolling"
+  },
+  "lenFloating": {
+    "message": "عائم متمركز (60%)",
+    "description": "Floating bar length"
+  },
+  "lenFull": {
+    "message": "كامل 100%",
+    "description": "Full bar length"
+  },
+  "radSubtle": {
+    "message": "دائرية خفيفة (6px)",
+    "description": "Subtle rounded border radius"
+  },
+  "radPill": {
+    "message": "كبسولة كاملة (999px)",
+    "description": "Pill capsule border radius"
+  },
+  "radSharp": {
+    "message": "مستطيلة حادة (2px)",
+    "description": "Sharp border radius"
+  },
+  "lblShadow": {
+    "message": "إظهار الظل والتوهج",
+    "description": "Show shadow and glow"
   }
 }

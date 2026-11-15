@@ -1,6 +1,6 @@
 // src/popup/popup.ts — Popup logic, stats, switches, and site exclusions (FR-09, FR-25, FR-27, FR-29)
 import { MSG } from '../shared/messages';
-import type { Metrics, Settings, Position } from '../shared/types';
+import type { Metrics, Settings, Position, BarLength, BarRadius } from '../shared/types';
 import { screensOf, estimateReadingMinutes } from '../core/reading';
 
 let currentHostname = '';
@@ -18,6 +18,9 @@ const restoreSwitch = document.getElementById('restoreSwitch');
 const celebrateSwitch = document.getElementById('celebrateSwitch');
 const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
 const positionSelect = document.getElementById('positionSelect') as HTMLSelectElement | null;
+const lengthSelect = document.getElementById('lengthSelect') as HTMLSelectElement | null;
+const radiusSelect = document.getElementById('radiusSelect') as HTMLSelectElement | null;
+const shadowSwitch = document.getElementById('shadowSwitch');
 const hideScrollbarSwitch = document.getElementById('hideScrollbarSwitch');
 const smoothScrollSwitch = document.getElementById('smoothScrollSwitch');
 const optionsBtn = document.getElementById('optionsBtn');
@@ -113,6 +116,15 @@ function applySettingsToUI(s: Settings) {
   if (positionSelect) {
     positionSelect.value = s.position || (s.side === 'left' ? 'left' : 'right');
   }
+  if (lengthSelect) {
+    lengthSelect.value = s.barLength || 'floating';
+  }
+  if (radiusSelect) {
+    radiusSelect.value = s.barRadius || 'subtle';
+  }
+  if (shadowSwitch) {
+    shadowSwitch.setAttribute('aria-checked', String(s.shadow !== false));
+  }
   if (hideScrollbarSwitch) {
     hideScrollbarSwitch.setAttribute('aria-checked', String(s.hideNativeScrollbar));
   }
@@ -167,6 +179,32 @@ positionSelect?.addEventListener('change', async () => {
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
     patch: { position: newPos, side: newSide, orientation: newOrientation },
+  });
+});
+
+lengthSelect?.addEventListener('change', async () => {
+  const newLen = lengthSelect.value as BarLength;
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { barLength: newLen },
+  });
+});
+
+radiusSelect?.addEventListener('change', async () => {
+  const newRad = radiusSelect.value as BarRadius;
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { barRadius: newRad },
+  });
+});
+
+shadowSwitch?.addEventListener('click', async () => {
+  const cur = shadowSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  shadowSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { shadow: next },
   });
 });
 

@@ -3,6 +3,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { sanitizeSettings, DEFAULT_SETTINGS } from '../../src/shared/settings-schema';
+import type { BarLength, BarRadius } from '../../src/shared/types';
 
 describe('sanitizeSettings', () => {
   it('يعيد القيم الافتراضية عند تمرير null أو undefined أو كائن فارغ', () => {
@@ -48,5 +49,23 @@ describe('sanitizeSettings', () => {
     const defaults = sanitizeSettings({});
     expect(defaults.hideNativeScrollbar).toBe(true);
     expect(defaults.smoothScroll).toBe(false);
+  });
+
+  it('يضبط خيارات طول الشريط وانحناء الحواف والظل بشكل صحيح', () => {
+    const full = sanitizeSettings({ barLength: 'full', barRadius: 'subtle', shadow: false });
+    expect(full.barLength).toBe('full');
+    expect(full.barRadius).toBe('subtle');
+    expect(full.shadow).toBe(false);
+
+    const pill = sanitizeSettings({ barRadius: 'pill', shadow: true });
+    expect(pill.barRadius).toBe('pill');
+    expect(pill.shadow).toBe(true);
+
+    const sharp = sanitizeSettings({ barRadius: 'sharp' });
+    expect(sharp.barRadius).toBe('sharp');
+
+    const invalid = sanitizeSettings({ barLength: 'huge' as unknown as BarLength, barRadius: 'round' as unknown as BarRadius });
+    expect(invalid.barLength).toBe('floating');
+    expect(invalid.barRadius).toBe('subtle');
   });
 });

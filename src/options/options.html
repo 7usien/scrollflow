@@ -120,6 +120,37 @@
 
       <div class="setting-row">
         <div class="setting-info">
+          <span class="setting-title">امتداد وطول الشريط</span>
+          <span class="setting-desc">كامل بنسبة 100% (بارتفاع أو عرض الشاشة كاملاً) أو عائم متمركز (60%)</span>
+        </div>
+        <select id="lengthSelect">
+          <option value="floating">عائم متمركز (60%)</option>
+          <option value="full">كامل 100% (امتداد كامل)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">انحناء زوايا الشريط</span>
+          <span class="setting-desc">تحديد شكل الحواف والزوايا للشريط والمؤشر</span>
+        </div>
+        <select id="radiusSelect">
+          <option value="subtle">دائرية خفيفة (6px - دائرية بعض الشيء)</option>
+          <option value="pill">كبسولة دائرية كاملة (999px)</option>
+          <option value="sharp">مستطيلة حادة (2px)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">إظهار الظل والتوهج</span>
+          <span class="setting-desc">تفعيل الظل الزجاجي العائم وتوهج المؤشر أو استخدام مظهر مسطح (Flat)</span>
+        </div>
+        <div class="switch" id="shadowSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
           <span class="setting-title">مستوى التباين</span>
           <span class="setting-desc">وضوح المسار على الخلفيات المختلفة</span>
         </div>
