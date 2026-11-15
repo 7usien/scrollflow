@@ -1,0 +1,14 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>Infinite Scroll</title>
+<style>body{font-family:system-ui;margin:0;padding:40px;line-height:1.9;max-width:720px;margin:auto}
+#sentinel{height:40px}</style></head><body>
+<h1>Infinite Scroll</h1>
+<div id="blocks"></div>
+<div id="sentinel"></div>
+<script>
+const p='كتلة محتوى تُضاف تدريجيًا لاختبار إعادة حساب طول الصفحة (E7 / FR-03). ';
+let n=0; function add(){ const f=document.createDocumentFragment();
+  for(let i=0;i<10;i++){const d=document.createElement('p');d.textContent=(n++)+' — '+p;f.appendChild(d);} 
+  document.getElementById('blocks').appendChild(f);}
+add(); add();
+new IntersectionObserver((es)=>{ if(es[0].isIntersecting) add(); }).observe(document.getElementById('sentinel'));
+</script></body></html>

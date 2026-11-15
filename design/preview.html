@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="aurora" data-scheme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScrollFlow — النموذج المرجعي البصري (Visual Source of Truth)</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════
+  ScrollFlow — REFERENCE PROTOTYPE
+  هذا الملف هو "الحقيقة البصرية" التي يجب أن يطابقها التنفيذ الفعلي.
+  • الألوان/المقاسات/الحركات هنا = design/tokens.css حرفيًا
+  • في الإضافة الحقيقية: كل هذا يعيش داخل ShadowRoot واحد
+    مع :host { all: initial } — هنا وضعناه في الصفحة مباشرة للعرض فقط.
+  • لا يوجد أي مورد خارجي (خطوط/صور/سكربتات) — ملف واحد مكتفٍ بذاته.
+  ══════════════════════════════════════════════════════════════════════
+-->
+<style>
+/* ══════════ 1. TOKENS (نسخة حرفية من design/tokens.css) ══════════ */
+:root{
+  --sf-brand-start:#6d5bff; --sf-brand-mid:#4e8cff; --sf-brand-end:#00d4ff; --sf-done:#ffd166;
+  --sf-confetti-1:#6d5bff; --sf-confetti-2:#00d4ff; --sf-confetti-3:#34e5a0; --sf-confetti-4:#ffd166; --sf-confetti-5:#ff6b9a;
+  --sf-track:rgba(255,255,255,.14); --sf-surface:rgba(17,20,32,.55); --sf-border:rgba(255,255,255,.10);
+  --sf-text:#e9ecf5; --sf-text-dim:#9aa3b8; --sf-blur:blur(12px); --sf-shadow:0 8px 32px rgba(0,0,0,.28);
+  --sf-rail-w:6px; --sf-rail-w-active:8px; --sf-rail-w-hover:10px;
+  --sf-rail-h:60vh; --sf-rail-top:20vh; --sf-rail-inset:6px; --sf-thumb:12px; --sf-radius:999px;
+  --sf-font:Inter,"Segoe UI",system-ui,-apple-system,"Noto Sans Arabic",sans-serif;
+  --sf-fs-label:11px;
+  --sf-ease:cubic-bezier(.4,0,.2,1); --sf-ease-pop:cubic-bezier(.34,1.56,.64,1);
+  --sf-t-fast:180ms; --sf-t-pulse:240ms; --sf-t-toast:220ms; --sf-z:2147483000;
+}
+html[data-theme="sunset"]{--sf-brand-start:#ff6b9a;--sf-brand-mid:#ff8f80;--sf-brand-end:#ffb86b}
+html[data-theme="mono"]{--sf-brand-start:#8e9aaf;--sf-brand-mid:#b6bfd0;--sf-brand-end:#dde3ee}
+html[data-reduced="true"]{--sf-t-fast:0ms;--sf-t-pulse:0ms;--sf-t-toast:0ms}
+html[data-side="left"] .sf-rail{right:auto;left:var(--sf-rail-inset)}
+html[data-scheme="light"]{
+  --sf-track:rgba(15,18,30,.10); --sf-surface:rgba(255,255,255,.72); --sf-border:rgba(15,18,30,.08);
+  --sf-text:#141824; --sf-text-dim:#5b6478; --sf-shadow:0 8px 32px rgba(15,18,30,.14);
+}
+
+/* ══════════ 2. الصفحة المضيفة المحاكاة ══════════ */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sf-font);
+  background:#0a0c14; color:var(--sf-text);
+  line-height:1.9; -webkit-font-smoothing:antialiased;
+}
+html[data-scheme="light"] body{background:#f7f8fb;color:#141824}
+.ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.ambient::before,.ambient::after{
+  content:"";position:absolute;width:60vw;height:60vw;border-radius:50%;filter:blur(90px);opacity:.28;
+}
+.ambient::before{background:radial-gradient(circle,#6d5bff,transparent 65%);top:-18vw;right:-14vw}
+.ambient::after{background:radial-gradient(circle,#00d4ff,transparent 65%);bottom:-22vw;left:-16vw;opacity:.18}
+html[data-scheme="light"] .ambient{opacity:.55}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:72px 28px 45vh}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sf-text-dim);margin:0 0 14px}
+h1{font-size:clamp(28px,4.6vw,46px);line-height:1.25;margin:0 0 18px;letter-spacing:-.02em}
+h1 .grad{background:linear-gradient(100deg,var(--sf-brand-start),var(--sf-brand-mid),var(--sf-brand-end));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;color:var(--sf-text-dim);margin:0 0 34px}
+h2{font-size:24px;margin:52px 0 14px;letter-spacing:-.01em}
+h3{font-size:18px;margin:30px 0 8px}
+p{margin:0 0 18px;color:var(--sf-text);opacity:.9}
+.card{background:var(--sf-surface);border:1px solid var(--sf-border);border-radius:16px;padding:20px 22px;backdrop-filter:var(--sf-blur)}
+.hero-img{height:230px;border-radius:16px;margin:32px 0;background:
+  radial-gradient(circle at 25% 30%,#6d5bff55,transparent 55%),
+  radial-gradient(circle at 75% 70%,#00d4ff55,transparent 55%),
+  linear-gradient(135deg,#151a2b,#0d1020);border:1px solid var(--sf-border)}
+blockquote{margin:26px 0;padding:14px 20px;border-inline-start:3px solid var(--sf-brand-mid);background:rgba(255,255,255,.03);border-radius:0 12px 12px 0}
+hr{border:0;border-top:1px solid var(--sf-border);margin:44px 0}
+ul{padding-inline-start:22px;margin:0 0 18px}
+li{margin:0 0 8px;opacity:.9}
+
+/* ══════════ 3. الشريط (progress-bar.css) ══════════ */
+.sf-rail{
+  position:fixed; top:var(--sf-rail-top); right:var(--sf-rail-inset);
+  height:var(--sf-rail-h); width:var(--sf-rail-w);
+  border-radius:var(--sf-radius);
+  background:var(--sf-track);
+  backdrop-filter:var(--sf-blur); -webkit-backdrop-filter:var(--sf-blur);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+  z-index:var(--sf-z);
+  opacity:.55;
+  transition:opacity var(--sf-t-fast) var(--sf-ease), width var(--sf-t-fast) var(--sf-ease);
+  cursor:default;
+}
+.sf-rail[data-state="active"]{opacity:1;width:var(--sf-rail-w-active)}
+.sf-rail[data-state="hover"],.sf-rail:hover{opacity:1;width:var(--sf-rail-w-hover)}
+.sf-rail[data-hidden="true"]{opacity:0!important;pointer-events:none;width:0!important}
+
+.sf-fill{
+  position:absolute; inset:0; border-radius:var(--sf-radius);
+  background:linear-gradient(180deg,var(--sf-brand-start),var(--sf-brand-mid),var(--sf-brand-end));
+  transform-origin:top center;
+  transform:scaleY(var(--sf-progress,0));
+  will-change:transform;
+  transition:transform 90ms linear;
+}
+.sf-rail[data-state="complete"] .sf-fill{background:var(--sf-done)}
+.sf-thumb{
+  position:absolute; left:50%; top:calc(var(--sf-progress,0) * 100%);
+  width:var(--sf-thumb); height:var(--sf-thumb); border-radius:50%;
+  background:#fff; box-shadow:0 0 10px 2px var(--sf-brand-end);
+  transform:translate(-50%,-50%);
+  transition:top 90ms linear, box-shadow var(--sf-t-fast) var(--sf-ease);
+}
+.sf-rail[data-state="complete"] .sf-thumb{box-shadow:0 0 14px 3px var(--sf-done)}
+.sf-label{
+  position:absolute; top:calc(var(--sf-progress,0) * 100%); right:calc(100% + 10px);
+  transform:translateY(-50%);
+  background:var(--sf-surface); border:1px solid var(--sf-border);
+  backdrop-filter:var(--sf-blur); -webkit-backdrop-filter:var(--sf-blur);
+  color:var(--sf-text); font-family:var(--sf-font); font-size:var(--sf-fs-label); font-weight:700;
+  padding:3px 8px; border-radius:8px; white-space:nowrap; direction:ltr;
+  opacity:0; transition:opacity var(--sf-t-fast) var(--sf-ease);
+  pointer-events:none;
+}
+html[data-side="left"] .sf-label{right:auto;left:calc(100% + 10px)}
+.sf-rail:hover .sf-label,.sf-rail[data-state="hover"] .sf-label{opacity:1}
+.sf-rail[data-pulse="true"]{animation:sf-pulse var(--sf-t-pulse) var(--sf-ease-pop)}
+@keyframes sf-pulse{
+  0%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}
+  45%{transform:scale(1.12);filter:drop-shadow(0 0 10px var(--sf-brand-end))}
+  100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}
+}
+
+/* ══════════ 4. التلميح (toast.ts) ══════════ */
+.sf-toast{
+  position:fixed; z-index:var(--sf-z); bottom:26px; right:26px;
+  display:flex; align-items:center; gap:9px;
+  background:var(--sf-surface); border:1px solid var(--sf-border);
+  backdrop-filter:var(--sf-blur); -webkit-backdrop-filter:var(--sf-blur);
+  color:var(--sf-text); font-family:var(--sf-font); font-size:13px; font-weight:600;
+  padding:10px 15px; border-radius:12px; box-shadow:var(--sf-shadow);
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity var(--sf-t-toast) var(--sf-ease), transform var(--sf-t-toast) var(--sf-ease);
+}
+.sf-toast[data-show="true"]{opacity:1;transform:translateY(0)}
+.sf-toast .dot{width:9px;height:9px;border-radius:2px;background:linear-gradient(135deg,var(--sf-brand-start),var(--sf-brand-end));box-shadow:0 0 8px var(--sf-brand-end);transform:rotate(45deg)}
+
+/* ══════════ 5. الـ Confetti ══════════ */
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:calc(var(--sf-z) - 1)}
+
+/* ══════════ 6. لوحة التحكم (للعرض فقط — ليست جزءًا من المنتج) ══════════ */
+.hud{
+  position:fixed; left:16px; bottom:16px; z-index:2147483001;
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center; max-width:min(660px,calc(100vw - 32px));
+  background:rgba(12,14,24,.82); border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(16px); border-radius:14px; padding:10px 12px;
+  font:600 12px/1 var(--sf-font); color:#cfd6e6; direction:rtl;
+  box-shadow:0 12px 40px rgba(0,0,0,.45);
+}
+.hud .sep{width:1px;height:22px;background:rgba(255,255,255,.12);margin:0 2px}
+.hud button,.hud select{
+  font:600 12px/1 var(--sf-font); color:#e9ecf5; background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12); border-radius:9px; padding:7px 10px; cursor:pointer;
+  transition:background 150ms,border-color 150ms;
+}
+.hud button:hover,.hud select:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24)}
+.hud button[aria-pressed="true"]{background:linear-gradient(100deg,#6d5bff,#00d4ff);border-color:transparent;color:#fff}
+.hud label{display:flex;align-items:center;gap:6px;color:#aab3c7;font-weight:600}
+.hud .title{color:#fff;font-weight:800;letter-spacing:-.01em}
+.hud .title span{background:linear-gradient(100deg,#6d5bff,#00d4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ══════════ 7. Popup Mock (340×420) ══════════ */
+.popup{
+  position:fixed; left:16px; top:16px; z-index:2147483002; width:340px;
+  background:var(--sf-surface); border:1px solid var(--sf-border); border-radius:16px;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  box-shadow:var(--sf-shadow); color:var(--sf-text); direction:rtl;
+  font-family:var(--sf-font); overflow:hidden; display:none;
+}
+.popup[data-open="true"]{display:block}
+.popup header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--sf-border)}
+.popup header b{font-size:14px;letter-spacing:-.01em}
+.popup header .gear{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:13px;opacity:.8}
+.popup .body{padding:16px;display:grid;gap:14px}
+.donut-row{display:flex;align-items:center;gap:16px}
+.donut{position:relative;width:92px;height:92px;flex:0 0 auto}
+.donut svg{transform:rotate(-90deg)}
+.donut .pct{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.stats{display:grid;gap:6px;font-size:12px;color:var(--sf-text-dim)}
+.stats b{color:var(--sf-text);font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+.switch{width:44px;height:24px;border-radius:999px;background:rgba(255,255,255,.16);position:relative;transition:background 160ms}
+.switch::after{content:"";position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 160ms var(--sf-ease)}
+.switch[aria-checked="true"]{background:linear-gradient(100deg,var(--sf-brand-start),var(--sf-brand-end))}
+.switch[aria-checked="true"]::after{transform:translateX(-20px)}
+.popup .site-btn{width:100%;padding:10px;border-radius:11px;border:1px solid var(--sf-border);background:rgba(255,255,255,.06);color:var(--sf-text);font:700 12px var(--sf-font);cursor:pointer}
+.popup .foot{padding:12px 16px;border-top:1px solid var(--sf-border);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.popup .ghost{font:700 11px var(--sf-font);color:var(--sf-text-dim);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* ══════════ 8. بطاقات مواصفة (عرض فقط) ══════════ */
+.spec{position:fixed;z-index:2147483003;display:none;pointer-events:none}
+html[data-specs="true"] .spec{display:block}
+.spec span{
+  display:inline-block;font:700 10px/1 ui-monospace,monospace;color:#0a0c14;background:#ffd166;
+  padding:4px 6px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.35);white-space:nowrap;
+}
+.spec-w{top:32vh;left:8px}
+.spec-h{top:calc(20vh - 18px);left:8px}
+.spec-t{top:calc(20vh + 60vh * 0.62);left:8px}
+.spec-note{position:fixed;bottom:110px;left:16px;z-index:2147483003;display:none;max-width:300px;
+  font:600 11px/1.7 var(--sf-font);color:#ffd166;background:rgba(12,14,24,.86);border:1px solid rgba(255,209,102,.3);
+  border-radius:12px;padding:12px 14px;direction:rtl}
+html[data-specs="true"] .spec-note{display:block}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- ══ المحتوى المضيف المحاكى ══ -->
+<main class="wrap" id="article">
+  <p class="kicker">ScrollFlow · النموذج المرجعي</p>
+  <h1>نسبة إنجازك في قراءة أي صفحة، <span class="grad">أمام عينك دائمًا</span></h1>
+  <p class="lede">مرّر للأسفل 👇 — لاحظ الشريط على الحافة. عند الوصول إلى النهاية سيحدث احتفال صغير. هذه الصفحة موجودة فقط لتوضيح الشكل والسلوك المطلوبين حرفيًا في التنفيذ.</p>
+  <div class="hero-img" role="img" aria-label="رسم تجريدي"></div>
+  <div class="card">
+    <b>ما الذي يُقاس هنا:</b>
+    <ul style="margin-top:10px">
+      <li>النسبة = <code>scrollY / (scrollHeight − innerHeight)</code></li>
+      <li>الشريط يُرسم بـ <code>transform: scaleY()</code> فقط — بلا layout</li>
+      <li>التنعيم: <code>lerp(prev, target, 0.28)</code> داخل <code>requestAnimationFrame</code></li>
+      <li>نبضة واحدة عند 25% / 50% / 75%</li>
+      <li>احتفال عند ≥ 99.5% مع cooldown 60 ثانية</li>
+    </ul>
+  </div>
+  <div id="content"></div>
+</main>
+
+<!-- ══ واجهات الإضافة ══ -->
+<div class="sf-rail" id="rail" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="نسبة التصفح من الصفحة" data-state="idle" style="--sf-progress:0">
+  <div class="sf-fill"></div>
+  <div class="sf-thumb"></div>
+  <div class="sf-label" id="railLabel">0%</div>
+</div>
+
+<div class="sf-toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toastText"></span></div>
+
+<!-- بطاقات المواصفة -->
+<div class="spec spec-w"><span>rail width: 6px → 8px (active) → 10px (hover)</span></div>
+<div class="spec spec-h"><span>rail height: 60vh · inset 6px · radius 999px</span></div>
+<div class="spec spec-t"><span>thumb 12px · track rgba(255,255,255,.14)</span></div>
+<div class="spec-note">🎯 هذه القيم مقيسة من design/tokens.css — التنفيذ يجب أن يطابقها دون اجتهاد.</div>
+
+<!-- Popup Mock -->
+<div class="popup" id="popup" aria-hidden="true">
+  <header>
+    <b>ScrollFlow</b>
+    <div class="gear"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div>
+  </header>
+  <div class="body">
+    <div class="donut-row">
+      <div class="donut">
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          <circle cx="46" cy="46" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/>
+          <circle id="donutArc" cx="46" cy="46" r="40" fill="none" stroke="url(#g)" stroke-width="8"
+                  stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--sf-brand-start)"/>
+            <stop offset="55%" stop-color="var(--sf-brand-mid)"/>
+            <stop offset="100%" stop-color="var(--sf-brand-end)"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="pct" id="donutPct">0%</div>
+      </div>
+      <div class="stats">
+        <div><b id="statScreens">— شاشة</b><br/>طول الصفحة</div>
+        <div><b id="statTime">—</b><br/>وقت قراءة مُقدَّر</div>
+      </div>
+    </div>
+    <button class="site-btn" style="display:flex;align-items:center;justify-content:center;gap:7px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="4" height="14" rx="1"/><rect x="13" y="5" width="4" height="14" rx="1"/></svg> إيقاف على هذا الموقع</button>
+    <div class="row"><span>استعادة موضع التمرير</span><div class="switch" role="switch" aria-checked="true"></div></div>
+    <div class="row"><span>احتفال عند الإكمال</span><div class="switch" role="switch" aria-checked="true"></div></div>
+    <div class="row"><span>المؤشر</span><select style="font:600 12px var(--sf-font);background:rgba(255,255,255,.07);color:var(--sf-text);border:1px solid var(--sf-border);border-radius:8px;padding:4px 6px"><option>Aurora</option><option>Sunset</option><option>Mono</option></select></div>
+  </div>
+  <div class="foot">
+    <button class="ghost">مسح بيانات التمرير</button>
+    <span style="font:600 10px var(--sf-font);color:var(--sf-text-dim)">v1.0.0</span>
+  </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div class="hud">
+  <span class="title">Scroll<span>Flow</span></span>
+  <span class="sep"></span>
+  <select id="themeSel" aria-label="الثيم">
+    <option value="aurora">Aurora</option>
+    <option value="sunset">Sunset</option>
+    <option value="mono">Mono</option>
+  </select>
+  <button id="sideBtn" aria-pressed="false">الجانب: يمين</button>
+  <button id="schemeBtn" aria-pressed="false">ثيم فاتح</button>
+  <button id="reducedBtn" aria-pressed="false">تقليل الحركة</button>
+  <button id="specsBtn" aria-pressed="false">بطاقات المواصفة</button>
+  <button id="popupBtn" aria-pressed="false">البوب-أب</button>
+  <button id="jump50">50%</button>
+  <button id="jump62">62%</button>
+  <button id="burstBtn" style="display:inline-flex;align-items:center;gap:6px">اختبار الاحتفال <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg></button>
+  <button id="resetBtn">إعادة</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   1. محتوى محاكى (لتوليد صفحة طويلة واقعية)
+   ═══════════════════════════════════════════════════════════════ */
+const P = [
+ "التمرير هو أكثر تفاعل يقوم به الإنسان على الويب. يمرّر مئات المرات في اليوم، ومع ذلك لا يعرف في أي لحظة: كم بقي؟ هل أنا في المنتصف؟ هل ضاع مني شيء؟ هذه الأسئلة الصغيرة تتجمع لتصنع شعورًا بالضياع، خاصة في الصفحات التي تتجاوز عشرة آلاف بكسل.",
+ "التغذية الراجعة المرئية ليست ترفًا. عندما يرى الدماغ تقدّمًا ملموسًا، يفرز دافعًا للإكمال. هذا ما يسميه علماء النفس أثر التدرّج نحو الهدف: كلما اقترب المرء من خط النهاية، زادت سرعته. الشريط الجانبي هو ترجمة بصرية صامتة لهذه الفكرة.",
+ "المشكلة الثانية أخطر: فقدان المكان. تقرأ مقالًا طويلًا، تفتح تبويبًا آخر، تعود فتصلك الصفحة من أولها. هنا يموت الانتباه، وتضيع عشر دقائق في البحث عن الفقرة التي كنت فيها. الحل التقني بسيط، لكن أثره النفسي كبير: موضع محفوظ يعني وعدًا بالاستمرار من حيث توقفت.",
+ "التصميم الجيد يختفي. الشريط الذي نتحدث عنه لا يغطي نصًا، لا يقفز، لا يطلب انتباهك. ستة بكسلات على الحافة، بشفافية منخفضة، تزداد وضوحًا فقط عندما تتمزج بها. هذا هو الفرق بين أداة تُستخدم وأداة تُلغى بعد يومين.",
+ "الاحتفال عند النهاية فكرة طفولية في ظاهرها، عميقة في جوهرها. الدماغ البشري يحب الإغلاق، يحب الإشارة الواضحة التي تقول: انتهى. وميض من الورق الملوّن لمدة ثانية ونصف كافٍ لتثبيت السلوك، بشرط ألا يتكرر بما يجعله إزعاجًا.",
+ "الاحترام هو الأساس. احترام الأداء يعني ألا تكلف الصفحة أكثر من ملّي ثانية في الإطار. احترام الحركة يعني أن تُصمت كل شيء عند تفعيل تقليل الحركة. احترام الخصوصية يعني ألا يغادر رقم واحد جهاز المستخدم. هذه ليست شعارات، بل شروط قبول.",
+ "على الجانب التقني، كل شيء يعتمد على قياس واحد: المسافة القابلة للتمرير. إن كانت صفرًا فلا معنى للشريط. وإن تغيّرت أثناء التحميل — كما يحدث في الصفحات التي تُحمّل صورها تدريجيًا — يجب إعادة الحساب بهدوء دون أن يقفز الموضع المحفوظ.",
+ "الاستعادة الذكية ليست قفزة واحدة. المتصفح يحتاج وقتًا ليعرف الطول الحقيقي. لذلك نحاول، ننتظر، نقيس، ونحاول مرة أخرى، حتى يستقر الطول. وإن بدأ المستخدم بالتمرير بنفسه، نتوقف فورًا: قراره أهم من قرارنا.",
+ "الصفحات الحديثة لا تُعاد تحميلها. المسار يتغير والنص يتبدّل والمستخدم لا يشعر. على الإضافة أن تلاحظ ذلك، فتحفظ موضع الرحلة السابقة، وتصفّر حالة المحطات، وتبدأ دورة جديدة للمسار الجديد. تفصيل صغير يفرق بين إضافة محترمة وأخرى مزعجة.",
+ "أخيرًا، القيمة الحقيقية ليست في المؤشر نفسه، بل في الأثر التراكمي: قراءة أطول، عودة أسرع، وإحساس متكرر بالإنجاز على أشياء صغيرة. هذا ما يجعل الأدوات الصغيرة تُدمن، وهذا ما نبنيه الآن.",
+ "الوضوح في المواصفة يوفّر أسبوعًا في التنفيذ. عندما تُكتب القيم بالأرقام — ستة بكسلات، ستون بالمئة، 0.28، ثمانية بكسلات — يتحول النقاش من الأذواق إلى القياس. وهذا هو الفرق بين فريق يجادل وفريق يبني.",
+ "وهكذا، تبقى القاعدة الأخيرة: المواصفة أولًا، ثم الكود، ثم الاختبار. لا شيء يُبنى على الذاكرة، ولا شيء يُترك للتخمين. الجهاز يقرأ الأرقام، والإنسان يقرأ النية، والملف الجيد يخاطب الاثنين معًا."
+];
+const TITLES = ["لماذا المؤشر؟","الإحساس بالإنجاز","فقدان الموضع","التصميم الذي يختفي","الاحتفال الصغير","الاحترام أولًا","القياس الصحيح","الاستعادة الذكية","الصفحات التي لا تُحمّل","الأثر التراكمي","الوضوح في المواصفة","القاعدة الأخيرة"];
+const c = document.getElementById('content');
+TITLES.forEach((t,i)=>{
+  const h = document.createElement('h2'); h.textContent = (i+1)+'. '+t; c.appendChild(h);
+  for(let k=0;k<3;k++){
+    const p = document.createElement('p'); p.textContent = P[(i+k)%P.length]; c.appendChild(p);
+  }
+  if(i===3){ const img=document.createElement('div'); img.className='hero-img'; c.appendChild(img); }
+  if(i===6){ const q=document.createElement('blockquote'); q.textContent='«أعطني ستة بكسلات على الحافة، وسأعرف دائمًا أين أنا.»'; c.appendChild(q); }
+  if(i===8){ const ul=document.createElement('ul');
+    ['حفظ عند توقف التمرير 400ms','حفظ عند إخفاء التبويب','حفظ عند pagehide','قبول الاستعادة بفارق ≤ 8px'].forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
+    c.appendChild(ul); }
+});
+// نص ختامي لزيادة الطول
+for(let i=0;i<6;i++){ const p=document.createElement('p'); p.textContent=P[i%P.length]; c.appendChild(p); }
+
+/* ═══════════════════════════════════════════════════════════════
+   2. حالة الصفحة + محرك القياس (يقابل src/core/progress.ts)
+   ═══════════════════════════════════════════════════════════════ */
+const state = {
+  smooth:0, target:0, active:false, complete:false,
+  fired:new Set(), lastCelebration:0, reduced:false, idleTimer:0
+};
+const rail = document.getElementById('rail');
+const label = document.getElementById('railLabel');
+const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function metrics(){
+  const el = document.scrollingElement || document.documentElement;
+  const docHeight = Math.max(el.scrollHeight, document.body.scrollHeight);
+  const viewportH = window.innerHeight;
+  const scrollY = el.scrollTop;
+  const maxScroll = Math.max(0, docHeight - viewportH);
+  return {docHeight, viewportH, scrollY, maxScroll, scrollable:maxScroll >= viewportH*0.2, screens:docHeight/viewportH};
+}
+
+let ticking = false;
+addEventListener('scroll', ()=>{
+  if(ticking) return; ticking = true;
+  requestAnimationFrame(()=>{ ticking=false; onScroll(); });
+}, {passive:true});
+
+function onScroll(){
+  const m = metrics();
+  state.target = m.maxScroll <= 0 ? 0 : Math.min(1, Math.max(0, m.scrollY/m.maxScroll));
+  markActive();
+  checkMilestones(state.target*100);
+  checkComplete(state.target*100);
+  updateBadgeUI(state.target*100);
+}
+
+/* ── hard visual jump (لا تنعيم) عند القفزات البرمجية */
+function onScrollHard(){ state.smooth = state.target; paint(); }
+
+function paint(){
+  const p = state.smooth.toFixed(4);
+  rail.style.setProperty('--sf-progress', p);
+  label.textContent = Math.round(state.smooth*100)+'%';
+  rail.setAttribute('aria-valuenow', String(Math.round(state.smooth*100)));
+}
+
+/* ── حلقة التنعيم: lerp(0.28) في rAF ── */
+function loop(){
+  const d = state.target - state.smooth;
+  state.smooth += d * 0.28;
+  if(Math.abs(d) < 0.0005) state.smooth = state.target;
+  paint();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function markActive(){
+  rail.dataset.state = state.complete ? 'complete' : 'active';
+  state.active = true;
+  clearTimeout(state.idleTimer);
+  state.idleTimer = setTimeout(()=>{ if(!state.complete) rail.dataset.state='idle'; }, 1400);
+}
+
+/* ── المحطات ── */
+function checkMilestones(pct){
+  [25,50,75].forEach(m=>{
+    if(pct >= m && !state.fired.has(m)){
+      state.fired.add(m);
+      if(state.reduced) return;
+      rail.dataset.pulse='true';
+      setTimeout(()=>{ rail.dataset.pulse='false'; }, 260);
+    }
+  });
+}
+function checkComplete(pct){
+  if(pct >= 99.5 && !state.complete){
+    state.complete = true;
+    rail.dataset.state='complete';
+    if(Date.now()-state.lastCelebration > 60000){
+      state.lastCelebration = Date.now();
+      state.reduced ? glowPulse() : Confetti.burst({count: confettiCount(), originX: window.innerWidth - 8, originY: window.innerHeight*0.88});
+      showToast('أكملت الصفحة', 2500);
+    }
+  }
+  if(pct < 95 && state.complete){
+    state.complete=false; rail.dataset.state='active';
+  }
+}
+function confettiCount(){
+  const m=metrics();
+  const base = Math.min(140, Math.max(60, Math.floor(window.innerWidth/10)));
+  return m.screens < 2 ? 30 : base;
+}
+function glowPulse(){
+  rail.animate?.([{filter:'drop-shadow(0 0 0 transparent)'},{filter:'drop-shadow(0 0 16px var(--sf-done))'},{filter:'drop-shadow(0 0 0 transparent)'}],{duration:600});
+}
+
+/* ── تلميح ── */
+let toastTimer;
+function showToast(text, ms=2500){
+  const t=document.getElementById('toast');
+  document.getElementById('toastText').textContent=text;
+  t.dataset.show='true'; clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{ t.dataset.show='false'; }, ms);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3. محرك الـ Confetti — مطابق لـ PRD §6.6
+      جاذبية 0.32 · مقاومة 0.995 · 3 أشكال · dpr-aware · تنظيف كامل
+   ═══════════════════════════════════════════════════════════════ */
+const Confetti = (() => {
+  let canvas=null, ctx=null, raf=0, particles=[], start=0, W=0, H=0, dpr=1;
+  const COLORS=['#6d5bff','#00d4ff','#34e5a0','#ffd166','#ff6b9a'];
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+
+  function spawnParticle(x,y){
+    const shape = Math.random()<0.6?'rect':(Math.random()<0.75?'circle':'triangle');
+    return {x,y,
+      vx:rnd(-4.5,4.5), vy:rnd(-11,-5),
+      size:rnd(4,9), rot:rnd(0,Math.PI*2), vrot:rnd(-0.22,0.22),
+      color:COLORS[(Math.random()*COLORS.length)|0],
+      shape, born:performance.now(), ttl:rnd(1600,2200)};
+  }
+
+  function ensure(){
+    if(canvas) return;
+    const orphan = document.getElementById('confetti');
+    if(orphan && orphan.parentNode) orphan.parentNode.removeChild(orphan);
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas = document.createElement('canvas');
+    canvas.id='confetti';
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2147482999';
+    document.body.appendChild(canvas);
+    ctx = canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+  }
+  function destroy(){
+    cancelAnimationFrame(raf); raf=0;
+    if(canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    canvas=null; ctx=null; particles=[];
+  }
+  function draw(p, now){
+    const age=(now-p.born)/p.ttl;
+    const alpha = age<0.75 ? 1 : Math.max(0, 1-(age-0.75)/0.25);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    if(p.shape==='rect'){
+      ctx.scale(Math.cos(p.rot*1.7)*0.9+0.3, 1); // تدوير 3D محاكى
+      ctx.fillRect(-p.size/2,-p.size/3,p.size,p.size*0.66);
+    } else if(p.shape==='circle'){
+      ctx.beginPath(); ctx.arc(0,0,p.size/2,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.moveTo(0,-p.size/2);
+      ctx.lineTo(p.size/2,p.size/2); ctx.lineTo(-p.size/2,p.size/2);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function frame(now){
+    if(!ctx) return;
+    if(document.hidden){ raf=requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    let alive=0;
+    for(const p of particles){
+      if(now-p.born >= p.ttl) continue;
+      p.vy += 0.32; p.vx *= 0.995; p.vy *= 0.995;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+      if(p.y < H+40) alive++;
+      draw(p, now);
+    }
+    if(alive>0 && now-start < 2600){ raf=requestAnimationFrame(frame); }
+    else { destroy(); }
+  }
+  return {
+    burst({count=100, originX, originY}){
+      ensure();
+      particles=[];
+      for(let i=0;i<count;i++) particles.push(spawnParticle(originX, originY));
+      start = performance.now();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(frame);
+    },
+    get active(){ return !!canvas; },
+    destroy
+  };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   4. Popup mock (يقابل src/popup)
+   ═══════════════════════════════════════════════════════════════ */
+const C_ARC = 2*Math.PI*40;
+function updateBadgeUI(pct){
+  const m=metrics();
+  document.getElementById('donutPct').textContent = Math.round(pct)+'%';
+  document.getElementById('donutArc').style.strokeDashoffset = String(C_ARC*(1-pct/100));
+  document.getElementById('statScreens').textContent = m.screens.toFixed(1)+' شاشة';
+  const words = document.getElementById('content').innerText.trim().split(/\s+/).length;
+  const mins = Math.max(1, Math.round(words/220));
+  document.getElementById('statTime').textContent = mins+' دقيقة';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. لوحة التحكم
+   ═══════════════════════════════════════════════════════════════ */
+const html = document.documentElement;
+document.getElementById('themeSel').onchange = e => { html.dataset.theme = e.target.value; };
+document.getElementById('sideBtn').onclick = e => {
+  const left = html.dataset.side !== 'left';
+  html.dataset.side = left ? 'left' : 'right';
+  e.currentTarget.textContent = 'الجانب: ' + (left?'يسار':'يمين');
+  e.currentTarget.setAttribute('aria-pressed', String(left));
+};
+document.getElementById('schemeBtn').onclick = e => {
+  const light = html.dataset.scheme !== 'light';
+  html.dataset.scheme = light ? 'light' : 'dark';
+  e.currentTarget.setAttribute('aria-pressed', String(light));
+};
+document.getElementById('reducedBtn').onclick = e => {
+  state.reduced = !state.reduced;
+  html.dataset.reduced = String(state.reduced);
+  e.currentTarget.setAttribute('aria-pressed', String(state.reduced));
+  if(state.reduced) Confetti.destroy();
+};
+document.getElementById('specsBtn').onclick = e => {
+  const on = html.dataset.specs !== 'true';
+  html.dataset.specs = String(on);
+  e.currentTarget.setAttribute('aria-pressed', String(on));
+};
+document.getElementById('popupBtn').onclick = e => {
+  const p = document.getElementById('popup');
+  const open = p.dataset.open !== 'true';
+  p.dataset.open = String(open);
+  e.currentTarget.setAttribute('aria-pressed', String(open));
+  updateBadgeUI(state.target*100);
+};
+document.getElementById('jump50').onclick = ()=>{ jumpToRatio(0.5); };
+document.getElementById('jump62').onclick = ()=>{ jumpToRatio(0.62); };
+function jumpToRatio(r){
+  const m=metrics();
+  window.scrollTo({top: m.maxScroll*r, behavior:'auto'});
+  state.target=r; state.smooth=r; paint(); markActive();
+}
+document.getElementById('burstBtn').onclick = ()=>{
+  Confetti.burst({count: confettiCount(), originX: window.innerWidth-10, originY: window.innerHeight*0.88});
+  showToast('اختبار الاحتفال', 2000);
+};
+document.getElementById('resetBtn').onclick = ()=>{
+  Confetti.destroy();
+  state.complete=false; state.fired.clear(); state.lastCelebration=0;
+  rail.dataset.state='idle';
+  window.scrollTo({top:0,behavior:'smooth'});
+  state.target=0; state.smooth=0; paint();
+  showToast('تمت الإعادة — موضع 0%', 1600);
+};
+// يبدأ الشريط بحالة idle بشفافية 0.55 كما في المواصفة
+rail.dataset.state='idle'; paint();
+
+/* ═══════════════════════════════════════════════════════════════
+   6. استعادة الموضع (محاكاة مبسّطة لـ PRD §11.5 على localStorage)
+   ═══════════════════════════════════════════════════════════════ */
+const KEY = 'sf-preview-pos';
+addEventListener('pagehide', ()=>{
+  try{ localStorage.setItem(KEY, JSON.stringify({y:window.scrollY, r:state.target, h:document.documentElement.scrollHeight, ts:Date.now()})); }catch(_){}
+});
+addEventListener('DOMContentLoaded', ()=>{}, {once:true});
+(function restore(){
+  let saved;
+  try{ saved = JSON.parse(localStorage.getItem(KEY)||'null'); }catch(_){ saved=null; }
+  if(!saved || Date.now()-saved.ts > 90*24*3600e3 || saved.y < 60) return;
+  // محاولات متباعدة حتى استقرار الطول (نسخة العرض: 4 محاولات)
+  const delays=[0,150,400,800];
+  let i=0;
+  (function attempt(){
+    if(i>=delays.length) return;
+    const d=delays[i++];
+    setTimeout(()=>{
+      if(window.scrollY>40 && state.target>0){ return; } // المستخدم بدأ
+      const m=metrics();
+      if(!m.scrollable) return attempt();
+      const targetY = Math.abs(m.docHeight-saved.h) <= saved.h*0.15
+        ? Math.min(saved.y, m.maxScroll)
+        : Math.min(saved.r*m.maxScroll, m.maxScroll);
+      window.scrollTo({top:targetY});
+      state.target = m.maxScroll? targetY/m.maxScroll : 0;
+      state.smooth = state.target; paint();
+      if(Math.abs(window.scrollY-targetY)<=8){
+        showToast('عدت إلى حيث توقفت', 2500);
+        return;
+      }
+      attempt();
+    }, d);
+  })();
+})();
+</script>
+</body>
+</html>

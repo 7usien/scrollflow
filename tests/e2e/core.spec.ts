@@ -1,0 +1,220 @@
+/**
+ * ══════════════════════════════════════════════════════════════════════════
+ * tests/e2e/core.spec.ts — السيناريوهات E1…E10 (PRD §14.2)
+ * ══════════════════════════════════════════════════════════════════════════
+ * المتطلبات المسبقة:
+ *   1) `npm run build` ينتج dist/ (playwright.config.ts يشغّله عبر build أولًا)
+ *   2) `playwright.config.ts` يضبط webServer:  command: 'node tests/fixtures/serve.mjs'
+ *      و baseURL: 'http://localhost:4599'
+ *   3) hooks الاختبار المتفق عليها في التنفيذ (إلزامية):
+ *        - عنصر الجذر:        id="scrollflow-root"  (داخل ShadowRoot: data-testid="rail")
+ *        - الشريط:            [data-testid="rail"]
+ *        - التعبئة:           [data-testid="fill"]  (له --sf-progress)
+ *        - التلميح:           [data-testid="toast"]
+ *        - لوحة الإضافة:      لا شيء (نستخدم storage API مباشرة)
+ *
+ * ملاحظة: Playwright يخترق الـ open Shadow DOM تلقائيًا في محددات CSS.
+ * ══════════════════════════════════════════════════════════════════════════
+ */
+import { test, expect, chromium, type BrowserContext, type Page } from '@playwright/test';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const DIST = resolve(ROOT, 'dist');
+const BASE = 'http://localhost:4599';
+
+let context: BrowserContext;
+let extensionId: string;
+
+test.beforeAll(async () => {
+  context = await chromium.launchPersistentContext('', {
+    headless: true, // Chrome ≥112 يدعم Extension في headless الجديد
+    args: [`--disable-extensions-except=${DIST}`, `--load-extension=${DIST}`],
+  });
+  const sw = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  extensionId = new URL(sw.url()).host;
+});
+
+test.afterAll(async () => { await context?.close(); });
+
+/** يفتح صفحة وينتظر ظهور جذر الإضافة */
+async function open(path: string): Promise<Page> {
+  const page = await context.newPage();
+  await page.goto(BASE + path, { waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('#scrollflow-root', { state: 'attached', timeout: 5000 });
+  return page;
+}
+
+const rail = (p: Page) => p.locator('[data-testid="rail"]');
+const progress = (p: Page) =>
+  p.evaluate(() => Number(getComputedStyle(document.getElementById('scrollflow-root')!
+    .shadowRoot!.querySelector('[data-testid="fill"]')!).getPropertyValue('--sf-progress')) || 0);
+
+async function scrollToRatio(p: Page, r: number) {
+  await p.evaluate((ratio) => {
+    const el = document.scrollingElement!;
+    el.scrollTop = (el.scrollHeight - innerHeight) * ratio;
+  }, r);
+  await p.waitForTimeout(450);
+}
+
+// ─────────────────────────────────────────────────────────────── E1
+test('E1: الشريط يظهر ويتحرك مع التمرير (FR-01,05,06)', async () => {
+  const page = await open('/long.html');
+  await expect(rail(page)).toHaveCount(1);
+  const p0 = await progress(page);
+  expect(p0).toBeLessThan(0.02);
+
+  await scrollToRatio(page, 0.5);
+  await page.waitForTimeout(300);
+  const p50 = await progress(page);
+  expect(p50).toBeGreaterThan(0.44);
+  expect(p50).toBeLessThan(0.56);
+
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E2
+test('E2: Confetti يظهر عند النهاية ثم يُنظَّف (FR-10, §6.6)', async () => {
+  const page = await open('/long.html');
+  expect(await page.locator('canvas').count()).toBe(0);
+
+  await scrollToRatio(page, 1);
+  await page.waitForTimeout(400);
+  expect(await page.locator('canvas').count()).toBe(1);
+
+  await page.waitForTimeout(3000); // مدة الاحتفال 1.6–2.2s + هامش
+  expect(await page.locator('canvas').count()).toBe(0); // تنظيف كامل
+
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E3
+test('E3: استعادة موضع التمرير بعد إعادة التحميل (FR-18,19,22)', async () => {
+  let page = await open('/long.html');
+  await scrollToRatio(page, 0.6);
+  const before = await page.evaluate(() => window.scrollY);
+  await page.evaluate(() => window.dispatchEvent(new Event('pagehide')));
+  await page.waitForTimeout(600); // يسمح للـ debounce/الحفظ بالوصول
+  await page.close();
+
+  page = await open('/long.html');
+  await page.waitForTimeout(2500); // نافذة محاولات الاستعادة
+  const after = await page.evaluate(() => window.scrollY);
+  expect(Math.abs(after - before)).toBeLessThanOrEqual(8);
+
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E4
+test('E4: استثناء موقع يخفي الشريط ويبقى بعد reload (FR-27)', async () => {
+  let page = await open('/long.html');
+  await expect(rail(page)).toBeVisible();
+
+  await page.evaluate(() => chrome.storage.sync.get('settings', (s: any) => {
+    const cur = s.settings ?? {};
+    chrome.storage.sync.set({ settings: { ...cur, blocklist: ['localhost'] } });
+  }));
+  await page.waitForTimeout(600);
+
+  // إخفاء فوري دون reload
+  const opacity = await page.evaluate(() => {
+    const r = document.getElementById('scrollflow-root')!.shadowRoot!
+      .querySelector('[data-testid="rail"]') as HTMLElement;
+    return getComputedStyle(r).opacity;
+  });
+  expect(Number(opacity)).toBeLessThan(0.05);
+  await page.close();
+
+  page = await open('/long.html');
+  await page.waitForTimeout(1200);
+  const opacity2 = await page.evaluate(() => {
+    const root = document.getElementById('scrollflow-root');
+    if (!root?.shadowRoot) return 0;
+    const r = root.shadowRoot.querySelector('[data-testid="rail"]') as HTMLElement | null;
+    return r ? Number(getComputedStyle(r).opacity) : 0;
+  });
+  expect(opacity2).toBeLessThan(0.05);
+
+  // تنظيف
+  await page.evaluate(() => chrome.storage.sync.get('settings', (s: any) => {
+    chrome.storage.sync.set({ settings: { ...s.settings, blocklist: [] } });
+  }));
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E5
+test('E5: صفحة قصيرة ⇒ لا شريط (FR-02)', async () => {
+  const page = await open('/short.html');
+  await page.waitForTimeout(800);
+  const visible = await page.evaluate(() => {
+    const r = document.getElementById('scrollflow-root')?.shadowRoot
+      ?.querySelector('[data-testid="rail"]') as HTMLElement | null;
+    return r ? Number(getComputedStyle(r).opacity) > 0.05 : false;
+  });
+  expect(visible).toBe(false);
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E6
+test('E6: تنقّل SPA يصفّر الحالة ويستعيد موضع المسار الجديد (FR-23)', async () => {
+  const page = await open('/spa.html');
+  await scrollToRatio(page, 0.5);
+  await page.evaluate(() => history.pushState({}, '', '/spa.html#/route-b'));
+  await page.waitForTimeout(1200);
+  const p = await progress(page);
+  expect(p).toBeLessThan(0.1); // مسار جديد بلا موضع محفوظ ⇒ يبدأ من الأعلى
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E7
+test('E7: Infinite scroll يعيد حساب الطول (FR-03)', async () => {
+  const page = await open('/infinite.html');
+  await scrollToRatio(page, 1);
+  const h1 = await page.evaluate(() => document.scrollingElement!.scrollHeight);
+  await page.waitForTimeout(1500); // تُضاف كتل جديدة
+  const h2 = await page.evaluate(() => document.scrollingElement!.scrollHeight);
+  expect(h2).toBeGreaterThan(h1);
+  const p = await progress(page);
+  expect(p).toBeLessThan(0.98); // النسبة تنخفض منطقيًا بعد إضافة محتوى
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E8
+test('E8: prefers-reduced-motion يمنع Canvas ويُظهر تلميحًا (FR-13)', async () => {
+  const ctx = await context.newPage();
+  await ctx.emulateMedia({ reducedMotion: 'reduce' });
+  await ctx.goto(BASE + '/long.html', { waitUntil: 'domcontentloaded' });
+  await ctx.waitForSelector('#scrollflow-root', { state: 'attached' });
+  await scrollToRatio(ctx, 1);
+  await ctx.waitForTimeout(400);
+  expect(await ctx.locator('canvas').count()).toBe(0);
+  await expect(ctx.locator('[data-testid="toast"]')).toContainText(/أكملت|نهاية/);
+  await ctx.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E9
+test('E9: نافذة ضيقة 320px — الشريط لا يغطي المحتوى (NFR-10)', async () => {
+  const page = await open('/long.html');
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.waitForTimeout(400);
+  const box = await rail(page).boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeLessThanOrEqual(12); // ≤ 10px + هامش
+  expect(box!.x).toBeGreaterThan(320 - 12);
+  await page.close();
+});
+
+// ─────────────────────────────────────────────────────────────── E10
+test('E10: حاوية تمرير داخلية ⇒ لا شريط (FR-33)', async () => {
+  const page = await open('/nested-scroll.html');
+  await page.waitForTimeout(900);
+  const visible = await page.evaluate(() => {
+    const r = document.getElementById('scrollflow-root')?.shadowRoot
+      ?.querySelector('[data-testid="rail"]') as HTMLElement | null;
+    return r ? Number(getComputedStyle(r).opacity) > 0.05 : false;
+  });
+  expect(visible).toBe(false);
+  await page.close();
+});

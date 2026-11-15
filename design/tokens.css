@@ -1,0 +1,100 @@
+/* ─────────────────────────────────────────────────────────────
+   design/tokens.css — ملف التصميم المرجعي لـ ScrollFlow
+   يُحقن كنص داخل ShadowRoot عبر src/content/ui/shadow-host.ts
+   ⚠️ هذه هي نقطة الحقيقة البصرية. أي قيمة هنا مقيسة في design/preview.html
+   ───────────────────────────────────────────────────────────── */
+
+:host {
+  all: initial;
+
+  /* ── Brand (Aurora = الافتراضي) ── */
+  --sf-brand-start: #6d5bff;
+  --sf-brand-mid:   #4e8cff;
+  --sf-brand-end:   #00d4ff;
+  --sf-done:        #ffd166;
+
+  /* ── Confetti ── */
+  --sf-confetti-1: #6d5bff;
+  --sf-confetti-2: #00d4ff;
+  --sf-confetti-3: #34e5a0;
+  --sf-confetti-4: #ffd166;
+  --sf-confetti-5: #ff6b9a;
+
+  /* ── Surfaces ── */
+  --sf-track:   rgba(255, 255, 255, 0.14);
+  --sf-surface: rgba(17, 20, 32, 0.55);
+  --sf-border:  rgba(255, 255, 255, 0.10);
+  --sf-text:    #e9ecf5;
+  --sf-text-dim:#9aa3b8;
+  --sf-blur:    blur(12px);
+  --sf-shadow:  0 8px 32px rgba(0, 0, 0, 0.28);
+
+  /* ── Geometry ── */
+  --sf-rail-w:      6px;
+  --sf-rail-w-active: 8px;
+  --sf-rail-w-hover:  10px;
+  --sf-rail-h:     60vh;
+  --sf-rail-top:   20vh;
+  --sf-rail-inset: 6px;
+  --sf-thumb:      12px;
+  --sf-radius:     999px;
+
+  /* ── Typography ── */
+  --sf-font: Inter, "Segoe UI", system-ui, -apple-system, "Noto Sans Arabic", sans-serif;
+  --sf-fs-label: 11px;
+
+  /* ── Motion ── */
+  --sf-ease:    cubic-bezier(0.4, 0, 0.2, 1);
+  --sf-ease-pop:cubic-bezier(0.34, 1.56, 0.64, 1);
+  --sf-t-fast:  180ms;
+  --sf-t-pulse: 240ms;
+  --sf-t-toast: 220ms;
+
+  /* ── Layer ── */
+  --sf-z: 2147483000;
+
+  font-family: var(--sf-font);
+}
+
+/* فاتح: يفعّله shadow-host عند اكتشاف خلفية الصفحة الفاتحة */
+:host([data-scheme="light"]) {
+  --sf-track:   rgba(15, 18, 30, 0.10);
+  --sf-surface: rgba(255, 255, 255, 0.72);
+  --sf-border:  rgba(15, 18, 30, 0.08);
+  --sf-text:    #141824;
+  --sf-text-dim:#5b6478;
+  --sf-shadow:  0 8px 32px rgba(15, 18, 30, 0.14);
+}
+
+/* ── الثيمات ── */
+:host([data-theme="sunset"]) {
+  --sf-brand-start: #ff6b9a;
+  --sf-brand-mid:   #ff8f80;
+  --sf-brand-end:   #ffb86b;
+}
+:host([data-theme="mono"]) {
+  --sf-brand-start: #8e9aaf;
+  --sf-brand-mid:   #b6bfd0;
+  --sf-brand-end:   #dde3ee;
+}
+/* تباين عالٍ (contrast: 'high') */
+:host([data-contrast="high"]) {
+  --sf-track: rgba(255, 255, 255, 0.30);
+}
+:host([data-contrast="high"][data-scheme="light"]) {
+  --sf-track: rgba(15, 18, 30, 0.28);
+}
+
+/* ── احترام تقليل الحركة ── */
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    --sf-t-fast: 0ms;
+    --sf-t-pulse: 0ms;
+    --sf-t-toast: 0ms;
+  }
+}
+:host([data-reduced="true"]) {
+  --sf-t-fast: 0ms;
+  --sf-t-pulse: 0ms;
+  --sf-t-toast: 0ms;
+}

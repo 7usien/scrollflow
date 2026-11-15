@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scrollflow.dev/schemas/settings.json",
+  "title": "ScrollFlow Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
+  "properties": {
+    "version": { "const": 1 },
+    "enabled": { "type": "boolean", "default": true },
+    "restoreScroll": { "type": "boolean", "default": true },
+    "celebrate": { "type": "boolean", "default": true },
+    "milestones": { "type": "boolean", "default": true },
+    "showBadge": { "type": "boolean", "default": true },
+    "showToasts": { "type": "boolean", "default": true },
+    "theme": { "enum": ["aurora", "sunset", "mono"], "default": "aurora" },
+    "side": { "enum": ["right", "left", "auto"], "default": "right" },
+    "contrast": { "enum": ["normal", "high"], "default": "normal" },
+    "allowFileUrls": { "type": "boolean", "default": false },
+    "blocklist": {
+      "type": "array", "maxItems": 500,
+      "items": { "type": "string", "pattern": "^\\*?\\.?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$" }
+    },
+    "hiddenOnce": { "type": "array", "maxItems": 500, "items": { "type": "string" } }
+  }
+}
