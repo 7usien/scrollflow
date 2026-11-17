@@ -3,105 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>إعدادات ScrollFlow</title>
+  <title>ScrollFlow — Settings</title>
   <link rel="stylesheet" href="options.css" />
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>ScrollFlow — الإعدادات</h1>
-      <p class="subtitle">تخصيص مؤشر القراءة، الاستعادة، والاحتفال</p>
+      <div class="header-main">
+        <div>
+          <h1 id="pageTitle">ScrollFlow — الإعدادات</h1>
+          <p class="subtitle" id="pageSubtitle">تخصيص مؤشر القراءة، الاستعادة، والاحتفال</p>
+        </div>
+        <button id="langToggleBtn" class="lang-toggle-btn" type="button" title="تبديل اللغة / Switch Language">
+          🌐 English
+        </button>
+      </div>
     </header>
 
     <section>
-      <h2>عام</h2>
+      <h2 id="secGeneral">عام</h2>
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">تفعيل الإضافة بشكل عام</span>
-          <span class="setting-desc">إظهار أو إخفاء المؤشر على جميع المواقع</span>
+          <span class="setting-title" id="titleEnabled">تفعيل الإضافة بشكل عام</span>
+          <span class="setting-desc" id="descEnabled">إظهار أو إخفاء المؤشر على جميع المواقع</span>
         </div>
         <div class="switch" id="enabledSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">استعادة موضع التمرير</span>
-          <span class="setting-desc">العودة تلقائيًا إلى حيث توقفت عند إعادة فتح الصفحة</span>
+          <span class="setting-title" id="titleRestore">استعادة موضع التمرير</span>
+          <span class="setting-desc" id="descRestore">العودة تلقائيًا إلى حيث توقفت عند إعادة فتح الصفحة</span>
         </div>
         <div class="switch" id="restoreSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">احتفال عند الإكمال</span>
-          <span class="setting-desc">إطلاق Confetti خفيف عند الوصول لنهاية الصفحة</span>
+          <span class="setting-title" id="titleCelebrate">احتفال عند الإكمال</span>
+          <span class="setting-desc" id="descCelebrate">إطلاق Confetti خفيف عند الوصول لنهاية الصفحة</span>
         </div>
         <div class="switch" id="celebrateSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">نبضات المحطات</span>
-          <span class="setting-desc">نبضة خفيفة على الشريط عند اجتياز 25% و 50% و 75%</span>
+          <span class="setting-title" id="titleMilestones">نبضات المحطات</span>
+          <span class="setting-desc" id="descMilestones">نبضة خفيفة على الشريط عند اجتياز 25% و 50% و 75%</span>
         </div>
         <div class="switch" id="milestonesSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">إخفاء شريط المتصفح الأصلي</span>
-          <span class="setting-desc">إخفاء شريط التمرير التقليدي لنظام التشغيل واستخدام ScrollFlow بدلاً منه</span>
+          <span class="setting-title" id="titleHideScrollbar">إخفاء شريط المتصفح الأصلي</span>
+          <span class="setting-desc" id="descHideScrollbar">إخفاء شريط التمرير التقليدي لنظام التشغيل واستخدام ScrollFlow بدلاً منه</span>
         </div>
         <div class="switch" id="hideScrollbarSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">التصفح السلس للصفحة</span>
-          <span class="setting-desc">جعل التمرير والتنقل بين أقسام الصفحة سلسًا وانسيابيًا (Smooth Scrolling)</span>
+          <span class="setting-title" id="titleSmoothScroll">التصفح السلس للصفحة</span>
+          <span class="setting-desc" id="descSmoothScroll">جعل التمرير والتنقل بين أقسام الصفحة سلسًا وانسيابيًا (Smooth Scrolling)</span>
         </div>
         <div class="switch" id="smoothScrollSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">هوامش ونقاط الصفحة</span>
-          <span class="setting-desc">إظهار خيار إضافة هامش عند تظليل النص وعرض نقاط التنقل على الشريط</span>
+          <span class="setting-title" id="titleBookmarks">هوامش ونقاط الصفحة</span>
+          <span class="setting-desc" id="descBookmarks">إظهار خيار إضافة هامش عند تظليل النص وعرض نقاط التنقل على الشريط</span>
         </div>
         <div class="switch" id="bookmarksSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">إظهار النسبة على الأيقونة</span>
-          <span class="setting-desc">عرض نسبة التقدّم الحالية على أيقونة الإضافة</span>
+          <span class="setting-title" id="titleBadge">إظهار النسبة على الأيقونة</span>
+          <span class="setting-desc" id="descBadge">عرض نسبة التقدّم الحالية على أيقونة الإضافة</span>
         </div>
         <div class="switch" id="badgeSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">التلميحات النصية</span>
-          <span class="setting-desc">إظهار إشعارات عند الاستعادة أو الإكمال</span>
+          <span class="setting-title" id="titleToasts">التلميحات النصية</span>
+          <span class="setting-desc" id="descToasts">إظهار إشعارات عند الاستعادة أو الإكمال</span>
         </div>
         <div class="switch" id="toastsSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">السماح لصفحات الملفات المحلية</span>
-          <span class="setting-desc">تشغيل الإضافة على روابط file://</span>
+          <span class="setting-title" id="titleFileUrls">السماح لصفحات الملفات المحلية</span>
+          <span class="setting-desc" id="descFileUrls">تشغيل الإضافة على روابط file://</span>
         </div>
         <div class="switch" id="fileUrlsSwitch" role="switch" aria-checked="false" tabindex="0"></div>
       </div>
     </section>
 
     <section>
-      <h2>المظهر والتخطيط</h2>
+      <h2 id="secAppearance">المظهر والتخطيط</h2>
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">الستايل والثيم اللوني</span>
-          <span class="setting-desc">تدرّج ومظهر شريط القراءة</span>
+          <span class="setting-title" id="titleTheme">الستايل والثيم اللوني</span>
+          <span class="setting-desc" id="descTheme">تدرّج ومظهر شريط القراءة</span>
         </div>
         <select id="themeSelect">
           <option value="aurora">Aurora (تدرج كوني)</option>
@@ -115,8 +122,8 @@
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">موضع وتخطيط الشريط</span>
-          <span class="setting-desc">اختيار الموضع الرأسي أو الأفقي للشريط</span>
+          <span class="setting-title" id="titlePosition">موضع وتخطيط الشريط</span>
+          <span class="setting-desc" id="descPosition">اختيار الموضع الرأسي أو الأفقي للشريط</span>
         </div>
         <select id="positionSelect">
           <option value="right">يمين الشاشة (رأسي)</option>
@@ -128,8 +135,8 @@
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">امتداد وطول الشريط</span>
-          <span class="setting-desc">كامل بنسبة 100% (بارتفاع أو عرض الشاشة كاملاً) أو عائم متمركز (60%)</span>
+          <span class="setting-title" id="titleLength">امتداد وطول الشريط</span>
+          <span class="setting-desc" id="descLength">كامل بنسبة 100% (بارتفاع أو عرض الشاشة كاملاً) أو عائم متمركز (60%)</span>
         </div>
         <select id="lengthSelect">
           <option value="floating">عائم متمركز (60%)</option>
@@ -139,8 +146,8 @@
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">انحناء زوايا الشريط</span>
-          <span class="setting-desc">تحديد شكل الحواف والزوايا للشريط والمؤشر</span>
+          <span class="setting-title" id="titleRadius">انحناء زوايا الشريط</span>
+          <span class="setting-desc" id="descRadius">تحديد شكل الحواف والزوايا للشريط والمؤشر</span>
         </div>
         <select id="radiusSelect">
           <option value="subtle">دائرية خفيفة (6px - دائرية بعض الشيء)</option>
@@ -151,16 +158,16 @@
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">إظهار الظل والتوهج</span>
-          <span class="setting-desc">تفعيل الظل الزجاجي العائم وتوهج المؤشر أو استخدام مظهر مسطح (Flat)</span>
+          <span class="setting-title" id="titleShadow">إظهار الظل والتوهج</span>
+          <span class="setting-desc" id="descShadow">تفعيل الظل الزجاجي العائم وتوهج المؤشر أو استخدام مظهر مسطح (Flat)</span>
         </div>
         <div class="switch" id="shadowSwitch" role="switch" aria-checked="true" tabindex="0"></div>
       </div>
 
       <div class="setting-row">
         <div class="setting-info">
-          <span class="setting-title">مستوى التباين</span>
-          <span class="setting-desc">وضوح المسار على الخلفيات المختلفة</span>
+          <span class="setting-title" id="titleContrast">مستوى التباين</span>
+          <span class="setting-desc" id="descContrast">وضوح المسار على الخلفيات المختلفة</span>
         </div>
         <select id="contrastSelect">
           <option value="normal">عادي</option>
@@ -170,8 +177,8 @@
     </section>
 
     <section>
-      <h2>المواقع المستثناة (Blocklist)</h2>
-      <p class="setting-desc" style="margin-bottom: 12px;">المواقع التي لا يظهر فيها الشريط. يدعم النطاقات المباشرة مثل <code>example.com</code> أو النطاقات الفرعية مثل <code>*.example.com</code>.</p>
+      <h2 id="secBlocklist">المواقع المستثناة (Blocklist)</h2>
+      <p class="setting-desc" id="descBlocklist" style="margin-bottom: 12px;">المواقع التي لا يظهر فيها الشريط. يدعم النطاقات المباشرة مثل <code>example.com</code> أو النطاقات الفرعية مثل <code>*.example.com</code>.</p>
       <div class="blocklist-input-group">
         <input type="text" id="blocklistInput" placeholder="أدخل النطاق (مثال: docs.google.com)" />
         <button id="addBlocklistBtn">إضافة</button>
@@ -180,7 +187,7 @@
     </section>
 
     <section>
-      <h2>إدارة البيانات</h2>
+      <h2 id="secData">إدارة البيانات</h2>
       <div class="data-actions">
         <button id="exportBtn">تصدير الإعدادات (JSON)</button>
         <button id="importBtn">استيراد الإعدادات</button>

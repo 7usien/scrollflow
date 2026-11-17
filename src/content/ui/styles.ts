@@ -694,18 +694,20 @@ export const OVERLAY_STYLES = `
   top: calc(var(--sf-marker-progress, 0) * 100%);
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--sf-brand-end);
-  box-shadow: 0 0 6px 1px var(--sf-brand-end);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 8px 2px var(--sf-brand-end), 0 2px 4px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   pointer-events: auto;
   z-index: 2;
   transition:
     transform 150ms var(--sf-ease),
     box-shadow 150ms var(--sf-ease),
-    background 150ms var(--sf-ease);
+    background 150ms var(--sf-ease),
+    border-color 150ms var(--sf-ease);
 }
 
 /* Generous invisible hitbox for effortless targeting */
@@ -715,9 +717,9 @@ export const OVERLAY_STYLES = `
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 32px;
-  height: 28px;
-  border-radius: 6px;
+  width: 36px;
+  height: 32px;
+  border-radius: 8px;
   pointer-events: auto;
 }
 
@@ -728,11 +730,11 @@ export const OVERLAY_STYLES = `
   top: 50%;
   right: 50%;
   transform: translateY(-50%);
-  width: 10px;
-  height: 4px;
+  width: 12px;
+  height: 5px;
   background: var(--sf-brand-end);
   border-radius: 3px 0 0 3px;
-  opacity: 0.85;
+  opacity: 0.9;
   transition: width 150ms var(--sf-ease), opacity 150ms var(--sf-ease), background 150ms var(--sf-ease);
   pointer-events: auto;
 }
@@ -746,15 +748,16 @@ export const OVERLAY_STYLES = `
 
 .sf-marker:hover,
 .sf-marker[data-active="true"] {
-  transform: translate(-50%, -50%) scale(1.6);
+  transform: translate(-50%, -50%) scale(1.4);
   background: #ffffff;
-  box-shadow: 0 0 10px 2px var(--sf-brand-mid);
+  border-color: #ffffff;
+  box-shadow: 0 0 14px 4px var(--sf-brand-mid), 0 2px 8px rgba(0, 0, 0, 0.5);
   z-index: 3;
 }
 
 .sf-marker:hover::after,
 .sf-marker[data-active="true"]::after {
-  width: 14px;
+  width: 16px;
   opacity: 1;
   background: #ffffff;
   box-shadow: 0 0 8px var(--sf-brand-mid);
@@ -853,10 +856,10 @@ export const OVERLAY_STYLES = `
 /* ── Bookmarks Quick Index Trigger ── */
 .sf-bookmarks-trigger {
   position: fixed;
-  top: calc(var(--sf-rail-top) - 34px);
-  right: calc(var(--sf-rail-inset) - 9px);
-  width: 24px;
-  height: 24px;
+  top: calc(var(--sf-rail-top) - 38px);
+  right: calc(var(--sf-rail-inset) - 11px);
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--sf-surface);
   border: 1px solid var(--sf-border);
@@ -894,7 +897,7 @@ export const OVERLAY_STYLES = `
 :host([data-side="left"]) .sf-bookmarks-trigger,
 :host([data-position="left"]) .sf-bookmarks-trigger {
   right: auto;
-  left: calc(var(--sf-rail-inset) - 9px);
+  left: calc(var(--sf-rail-inset) - 11px);
 }
 
 :host([data-orientation="horizontal"]) .sf-bookmarks-trigger {
@@ -927,8 +930,8 @@ export const OVERLAY_STYLES = `
 }
 
 .sf-bookmarks-trigger-icon {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.2;
@@ -938,14 +941,14 @@ export const OVERLAY_STYLES = `
   position: absolute;
   top: -4px;
   right: -4px;
-  min-width: 14px;
-  height: 14px;
-  padding: 0 3px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--sf-brand-start), var(--sf-brand-end));
   color: #ffffff;
   font-family: var(--sf-font);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
