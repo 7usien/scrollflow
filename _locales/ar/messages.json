@@ -98,5 +98,17 @@
   "btnBackToTopAria": {
     "message": "الرجوع إلى أعلى الصفحة",
     "description": "Back to top button accessibility label in Arabic"
+  },
+  "lblBookmarks": {
+    "message": "هوامش ونقاط الصفحة",
+    "description": "Bookmarks and navigation dots toggle"
+  },
+  "bookmarkAdded": {
+    "message": "تم حفظ الهامش 🔖",
+    "description": "Toast message on bookmark creation"
+  },
+  "bookmarkDeleted": {
+    "message": "تم حذف الهامش",
+    "description": "Toast message on bookmark deletion"
   }
 }

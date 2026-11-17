@@ -4,7 +4,7 @@
   "title": "ScrollFlow Settings",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "position", "orientation", "barLength", "barRadius", "shadow", "hideNativeScrollbar", "smoothScroll", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
+  "required": ["version", "enabled", "restoreScroll", "celebrate", "milestones", "showBadge", "showToasts", "theme", "side", "position", "orientation", "barLength", "barRadius", "shadow", "hideNativeScrollbar", "smoothScroll", "bookmarks", "contrast", "allowFileUrls", "blocklist", "hiddenOnce"],
   "properties": {
     "version": { "const": 1 },
     "enabled": { "type": "boolean", "default": true },
@@ -22,6 +22,7 @@
     "shadow": { "type": "boolean", "default": true },
     "hideNativeScrollbar": { "type": "boolean", "default": true },
     "smoothScroll": { "type": "boolean", "default": false },
+    "bookmarks": { "type": "boolean", "default": true },
     "contrast": { "enum": ["normal", "high"], "default": "normal" },
     "allowFileUrls": { "type": "boolean", "default": false },
     "blocklist": {

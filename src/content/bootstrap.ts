@@ -15,6 +15,10 @@ import { tryRestore } from './restore';
 import { setNativeScrollbarHidden } from './ui/native-scroll';
 import { setSmoothScrollEnabled } from './ui/smooth-scroll';
 import { createBackToTop, type BackToTopController } from './ui/back-to-top';
+import { createSelectionBubble, type SelectionBubbleController } from './ui/selection-bubble';
+import { createMarkersManager, type MarkersController } from './ui/markers';
+import { createBookmarkEntry } from '../core/bookmarks';
+import type { BookmarkEntry } from '../shared/types';
 
 let settings: Settings = { ...DEFAULT_SETTINGS };
 let shadowCtx: ShadowContext | null = null;
@@ -23,6 +27,9 @@ let toast: ToastController | null = null;
 let milestoneTracker: MilestoneTracker | null = null;
 let measureObserver: MeasureObserver | null = null;
 let backToTop: BackToTopController | null = null;
+let selectionBubble: SelectionBubbleController | null = null;
+let markersManager: MarkersController | null = null;
+let currentBookmarks: BookmarkEntry[] = [];
 
 let currentMetrics: Metrics = computeMetrics();
 let currentUrl = window.location.href;
@@ -95,7 +102,76 @@ function setupUI() {
     isRTL: checkIsRTL,
   });
 
+  if (settings.bookmarks) {
+    markersManager = createMarkersManager(progressBar.element, {
+      isRTL: checkIsRTL,
+      onJumpToBookmark: (b) => {
+        userInteracted = true;
+        const targetY = b.scrollRatio * currentMetrics.maxScroll;
+        const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: targetY, behavior: isReduced ? 'instant' : 'smooth' });
+      },
+      onDeleteBookmark: async (id) => {
+        currentBookmarks = currentBookmarks.filter((b) => b.id !== id);
+        markersManager?.render(currentBookmarks);
+        try {
+          const norm = normalizeUrl(currentUrl);
+          await chrome.runtime.sendMessage({
+            type: MSG.BOOKMARK_REMOVE,
+            url: norm,
+            id,
+          });
+          const deletedMsg = chrome.i18n.getMessage('bookmarkDeleted') || 'تم حذف الهامش';
+          toast?.show(deletedMsg);
+        } catch {
+          // fail-soft
+        }
+      },
+    });
+
+    selectionBubble = createSelectionBubble(shadowCtx.shadowRoot, {
+      isRTL: checkIsRTL,
+      onCreateBookmark: async (text) => {
+        const entry = createBookmarkEntry({
+          url: normalizeUrl(currentUrl),
+          text,
+          scrollY: currentMetrics.scrollY,
+          maxScroll: currentMetrics.maxScroll,
+        });
+        currentBookmarks.push(entry);
+        markersManager?.render(currentBookmarks);
+        try {
+          await chrome.runtime.sendMessage({
+            type: MSG.BOOKMARK_ADD,
+            bookmark: entry,
+          });
+          const toastMsg = chrome.i18n.getMessage('bookmarkAdded') || 'تم حفظ الهامش 🔖';
+          toast?.show(toastMsg);
+        } catch {
+          // fail-soft
+        }
+      },
+    });
+  }
+
   updateVisibility();
+}
+
+async function loadBookmarks() {
+  if (!settings.bookmarks) return;
+  try {
+    const norm = normalizeUrl(currentUrl);
+    const res = await chrome.runtime.sendMessage({
+      type: MSG.BOOKMARK_GET,
+      url: norm,
+    });
+    if (res?.ok && Array.isArray(res.data)) {
+      currentBookmarks = res.data;
+      markersManager?.render(currentBookmarks);
+    }
+  } catch {
+    // fail-soft
+  }
 }
 
 function updateVisibility() {
@@ -105,10 +181,12 @@ function updateVisibility() {
   if (!show || !currentMetrics.scrollable) {
     progressBar.setState('hidden');
     backToTop?.reset();
+    selectionBubble?.element.style.setProperty('display', 'none');
     setNativeScrollbarHidden(false);
     setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
+    selectionBubble?.element.style.removeProperty('display');
     const remainingPixels = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
     backToTop?.update(smoothedProgress, true, remainingPixels);
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
@@ -155,6 +233,7 @@ async function startInitialMeasurementAndRestoration() {
   backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingInitial);
   updateVisibility();
   sendProgressUpdate();
+  loadBookmarks();
 
   // Start continuous observer for dynamic height (infinite scroll / resize)
   if (measureObserver) {
@@ -169,6 +248,9 @@ async function startInitialMeasurementAndRestoration() {
     progressBar?.render(smoothedProgress);
     const remainingObs = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
     backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingObs);
+    if (currentBookmarks.length > 0) {
+      markersManager?.render(currentBookmarks);
+    }
     sendProgressUpdate();
   });
 }
@@ -366,6 +448,8 @@ function setupEvents() {
         progressBar?.render(0);
         milestoneTracker?.reset();
         backToTop?.reset();
+        currentBookmarks = [];
+        markersManager?.render([]);
 
         startInitialMeasurementAndRestoration();
         break;

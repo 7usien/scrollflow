@@ -25,6 +25,7 @@ export interface Settings {
   shadow: boolean;
   hideNativeScrollbar: boolean;
   smoothScroll: boolean;
+  bookmarks: boolean;
   contrast: Contrast;
   allowFileUrls: boolean;
   blocklist: string[];
@@ -48,6 +49,7 @@ export const DEFAULT_SETTINGS: Settings = {
   shadow: true,
   hideNativeScrollbar: true,
   smoothScroll: false,
+  bookmarks: true,
   contrast: 'normal',
   allowFileUrls: false,
   blocklist: [],
@@ -62,6 +64,18 @@ export interface ScrollEntry {
   docHeight: number;
   viewportH: number;
   ts: number;
+}
+
+/** مفتاح سجلات الهوامش في storage.local: `marks:${normalizedUrl}` */
+export interface BookmarkEntry {
+  id: string;
+  url: string;
+  text: string;
+  title?: string;
+  scrollY: number;
+  scrollRatio: number; // 0..1
+  selector?: string;
+  createdAt: number;
 }
 
 export interface Metrics {

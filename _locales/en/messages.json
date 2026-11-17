@@ -98,5 +98,17 @@
   "btnBackToTopAria": {
     "message": "Scroll to top of page",
     "description": "Back to top button accessibility label"
+  },
+  "lblBookmarks": {
+    "message": "Page Margins & Markers",
+    "description": "Bookmarks and navigation dots toggle"
+  },
+  "bookmarkAdded": {
+    "message": "Bookmark saved 🔖",
+    "description": "Toast message on bookmark creation"
+  },
+  "bookmarkDeleted": {
+    "message": "Bookmark removed",
+    "description": "Toast message on bookmark deletion"
   }
 }

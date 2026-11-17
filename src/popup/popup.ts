@@ -23,6 +23,7 @@ const radiusSelect = document.getElementById('radiusSelect') as HTMLSelectElemen
 const shadowSwitch = document.getElementById('shadowSwitch');
 const hideScrollbarSwitch = document.getElementById('hideScrollbarSwitch');
 const smoothScrollSwitch = document.getElementById('smoothScrollSwitch');
+const bookmarksSwitch = document.getElementById('bookmarksSwitch');
 const optionsBtn = document.getElementById('optionsBtn');
 const clearBtn = document.getElementById('clearBtn');
 const popupBody = document.getElementById('popupBody');
@@ -131,6 +132,9 @@ function applySettingsToUI(s: Settings) {
   if (smoothScrollSwitch) {
     smoothScrollSwitch.setAttribute('aria-checked', String(s.smoothScroll));
   }
+  if (bookmarksSwitch) {
+    bookmarksSwitch.setAttribute('aria-checked', String(s.bookmarks !== false));
+  }
 }
 
 function updateSiteBtn() {
@@ -225,6 +229,16 @@ smoothScrollSwitch?.addEventListener('click', async () => {
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
     patch: { smoothScroll: next },
+  });
+});
+
+bookmarksSwitch?.addEventListener('click', async () => {
+  const cur = bookmarksSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  bookmarksSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { bookmarks: next },
   });
 });
 

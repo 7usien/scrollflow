@@ -632,4 +632,177 @@ export const OVERLAY_STYLES = `
 :host([data-reduced="true"]) .sf-back-to-top:hover {
   transform: none !important;
 }
+
+/* ── Selection Action Bubble ── */
+.sf-selection-bubble {
+  position: fixed;
+  z-index: calc(var(--sf-z) + 10);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius, 999px);
+  backdrop-filter: var(--sf-blur);
+  -webkit-backdrop-filter: var(--sf-blur);
+  color: var(--sf-text);
+  font-family: var(--sf-font);
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(6px) scale(0.92);
+  transition:
+    opacity 160ms var(--sf-ease),
+    transform 160ms var(--sf-ease-pop),
+    background 150ms var(--sf-ease),
+    border-color 150ms var(--sf-ease);
+}
+
+.sf-selection-bubble[data-show="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.sf-selection-bubble:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--sf-brand-mid);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 10px 1px var(--sf-brand-end);
+}
+
+:host([data-scheme="light"]) .sf-selection-bubble:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: var(--sf-brand-start);
+}
+
+.sf-selection-bubble-icon {
+  width: 13px;
+  height: 13px;
+  stroke: var(--sf-brand-end);
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* ── Rail Marker Dots ── */
+.sf-marker {
+  position: absolute;
+  top: calc(var(--sf-marker-progress, 0) * 100%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sf-brand-end);
+  box-shadow: 0 0 6px 1px var(--sf-brand-end);
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 2;
+  transition:
+    transform 150ms var(--sf-ease),
+    box-shadow 150ms var(--sf-ease),
+    background 150ms var(--sf-ease);
+}
+
+.sf-marker:hover,
+.sf-marker[data-active="true"] {
+  transform: translate(-50%, -50%) scale(1.6);
+  background: #ffffff;
+  box-shadow: 0 0 10px 2px var(--sf-brand-mid);
+  z-index: 3;
+}
+
+/* ── Marker Preview Card ── */
+.sf-marker-card {
+  position: absolute;
+  top: calc(var(--sf-marker-progress, 0) * 100%);
+  transform: translateY(-50%);
+  right: calc(100% + 12px);
+  width: max-content;
+  max-width: 260px;
+  min-width: 160px;
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: 12px;
+  backdrop-filter: var(--sf-blur);
+  -webkit-backdrop-filter: var(--sf-blur);
+  box-shadow: var(--sf-shadow);
+  padding: 10px 12px;
+  color: var(--sf-text);
+  font-family: var(--sf-font);
+  font-size: 11px;
+  line-height: 1.45;
+  pointer-events: auto;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.95);
+  transition: opacity 160ms var(--sf-ease), transform 160ms var(--sf-ease);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:host([data-side="left"]) .sf-marker-card,
+:host([data-position="left"]) .sf-marker-card {
+  right: auto;
+  left: calc(100% + 12px);
+}
+
+.sf-marker-card[data-show="true"] {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.sf-marker-card-text {
+  color: var(--sf-text);
+  font-size: 12px;
+  font-weight: 500;
+  word-break: break-word;
+  max-height: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.sf-marker-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--sf-border);
+  padding-top: 6px;
+  font-size: 10px;
+  color: var(--sf-text-dim);
+}
+
+.sf-marker-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: var(--sf-text-dim);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: color 120ms, background 120ms;
+}
+
+.sf-marker-card-btn:hover {
+  color: var(--sf-text);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sf-marker-card-btn.delete:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.15);
+}
 `;

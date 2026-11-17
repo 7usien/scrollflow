@@ -1,5 +1,5 @@
 // contracts/messages.ts — عقد الرسائل. يُنسخ إلى src/shared/messages.ts
-import type { Metrics, ScrollEntry, Settings } from './types';
+import type { Metrics, ScrollEntry, Settings, BookmarkEntry } from './types';
 
 export const MSG = {
   PROGRESS_UPDATE: 'PROGRESS_UPDATE',
@@ -13,6 +13,9 @@ export const MSG = {
   CLEAR_POSITIONS: 'CLEAR_POSITIONS',
   NAV_CHANGED: 'NAV_CHANGED',
   TOGGLE_OVERLAY: 'TOGGLE_OVERLAY',
+  BOOKMARK_ADD: 'BOOKMARK_ADD',
+  BOOKMARK_REMOVE: 'BOOKMARK_REMOVE',
+  BOOKMARK_GET: 'BOOKMARK_GET',
 } as const;
 
 export type Result<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -29,6 +32,9 @@ export interface Req {
   [MSG.CLEAR_POSITIONS]: Record<string, never>;
   [MSG.NAV_CHANGED]: { url: string };
   [MSG.TOGGLE_OVERLAY]: Record<string, never>;
+  [MSG.BOOKMARK_ADD]: { bookmark: BookmarkEntry };
+  [MSG.BOOKMARK_REMOVE]: { url: string; id: string };
+  [MSG.BOOKMARK_GET]: { url: string };
 }
 
 export interface Res {
@@ -43,6 +49,9 @@ export interface Res {
   [MSG.CLEAR_POSITIONS]: Result<{ cleared: number }>;
   [MSG.NAV_CHANGED]: never;
   [MSG.TOGGLE_OVERLAY]: never;
+  [MSG.BOOKMARK_ADD]: Result<BookmarkEntry>;
+  [MSG.BOOKMARK_REMOVE]: Result<{ removed: boolean }>;
+  [MSG.BOOKMARK_GET]: Result<BookmarkEntry[]>;
 }
 
 export type MsgType = keyof Req;

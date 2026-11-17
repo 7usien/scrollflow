@@ -140,3 +140,17 @@
   4. ضبط `observeMetrics` ليتحقق من التغير الفعلي للأبعاد فقط.
 - **الأثر:** `src/content/bootstrap.ts`, `src/background/nav-watch.ts`, `src/content/measure.ts`, `src/core/back-to-top.ts`, `src/content/ui/back-to-top.ts`.
 - **قابل للعكس؟** نعم.
+
+---
+
+### D-011 — نظام هوامش الصفحة والنقاط الرأسية المستوحى من ChatGPT (Marginalia & Navigation Dots)
+- **التاريخ:** 2026-11-17
+- **المهمة:** هوامش جانبية تفاعلية ونقاط تنقل رأسية عند تظليل النص
+- **السياق:** رغبة المستخدم في تمكين تظليل أي فقرة/نص في الصفحة، ليظهر زر عائم صغير يُنشئ هامشاً يرتبط بارتفاع الصفحة وموضعها، وتظهر كنقاط مضيئة على مسار شريط التمرير (مثل تنقل محادثات ChatGPT)، وعند المرور عليها يظهر مقتطف النص، وعند النقر عليها تقفز الصفحة بسلاسة لموضع الفقرة.
+- **القرارات:**
+  1. رصد التظليل عبر `selectionchange` و `pointerup` وتوليد كبسولة عائمة `.sf-selection-bubble` داخل الـ Shadow Root فقط دون التأثير على DOM الصفحة.
+  2. حفظ الهوامش محلياً في `chrome.storage.local` بمفتاح `marks:${url}` يحوي مقتطف النص ونسبة التمرير والإحداثيات الرأسية.
+  3. تمثيل الهوامش بنقاط مضيئة `.sf-marker` على مسار الـ `sf-rail` وبطاقة معاينة عائمة `.sf-marker-card` توفر إمكانية القفز السلس أو الحذف.
+  4. ربط الميزة بمفتاح تفعيل واختيار `bookmarks: boolean` في الإعدادات والبوب-أب لضمان خفة الإضافة لمن يفضل السكرول البسيط.
+- **الأثر:** `src/core/bookmarks.ts`, `src/content/ui/selection-bubble.ts`, `src/content/ui/markers.ts`, `src/content/bootstrap.ts`, `src/background/store.ts`, `src/background/service-worker.ts`, `contracts/*`, `_locales/*`.
+- **قابل للعكس؟** نعم.

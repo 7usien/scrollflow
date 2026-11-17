@@ -45,6 +45,7 @@ function renderSettings() {
   setSwitch('milestonesSwitch', currentSettings.milestones);
   setSwitch('hideScrollbarSwitch', currentSettings.hideNativeScrollbar);
   setSwitch('smoothScrollSwitch', currentSettings.smoothScroll);
+  setSwitch('bookmarksSwitch', currentSettings.bookmarks !== false);
   setSwitch('shadowSwitch', currentSettings.shadow !== false);
   setSwitch('badgeSwitch', currentSettings.showBadge);
   setSwitch('toastsSwitch', currentSettings.showToasts);
@@ -121,6 +122,7 @@ bindSwitch('celebrateSwitch', 'celebrate');
 bindSwitch('milestonesSwitch', 'milestones');
 bindSwitch('hideScrollbarSwitch', 'hideNativeScrollbar');
 bindSwitch('smoothScrollSwitch', 'smoothScroll');
+bindSwitch('bookmarksSwitch', 'bookmarks');
 bindSwitch('shadowSwitch', 'shadow');
 bindSwitch('badgeSwitch', 'showBadge');
 bindSwitch('toastsSwitch', 'showToasts');

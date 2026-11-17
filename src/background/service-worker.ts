@@ -2,7 +2,7 @@
 import { MSG, type Req } from '../shared/messages';
 import type { Metrics } from '../shared/types';
 import { getSettings, patchSettings, listenSettingsSync } from './settings';
-import { savePosition, getPosition, clearPositions, prunePositions } from './store';
+import { savePosition, getPosition, clearPositions, prunePositions, addBookmark, removeBookmark, getBookmarks } from './store';
 import { updateBadge, clearTabBadge } from './badge';
 import { initNavWatch } from './nav-watch';
 
@@ -119,6 +119,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case MSG.CLEAR_POSITIONS: {
         const cleared = await clearPositions();
         return { ok: true, data: { cleared } };
+      }
+
+      case MSG.BOOKMARK_ADD: {
+        const payload = message as Req[typeof MSG.BOOKMARK_ADD];
+        const saved = await addBookmark(payload.bookmark);
+        return { ok: true, data: saved };
+      }
+
+      case MSG.BOOKMARK_REMOVE: {
+        const payload = message as Req[typeof MSG.BOOKMARK_REMOVE];
+        const removed = await removeBookmark(payload.url, payload.id);
+        return { ok: true, data: { removed } };
+      }
+
+      case MSG.BOOKMARK_GET: {
+        const payload = message as Req[typeof MSG.BOOKMARK_GET];
+        const bookmarks = await getBookmarks(payload.url);
+        return { ok: true, data: bookmarks };
       }
 
       default:

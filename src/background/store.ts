@@ -1,8 +1,9 @@
-// src/background/store.ts — Position persistence with TTL & LRU pruning (FR-16, FR-24, FR-25)
-import type { ScrollEntry } from '../shared/types';
+// src/background/store.ts — Position persistence with TTL & LRU pruning (FR-16, FR-24, FR-25, FR-36)
+import type { ScrollEntry, BookmarkEntry } from '../shared/types';
 import { applyTtl, applyLruCap } from '../core/storage-model';
 
 const POS_PREFIX = 'pos:';
+const MARKS_PREFIX = 'marks:';
 
 export async function savePosition(entry: ScrollEntry): Promise<void> {
   const key = `${POS_PREFIX}${entry.url}`;
@@ -20,6 +21,49 @@ export async function getPosition(url: string): Promise<ScrollEntry | null> {
     return (res?.[key] as ScrollEntry) || null;
   } catch {
     return null;
+  }
+}
+
+export async function addBookmark(bookmark: BookmarkEntry): Promise<BookmarkEntry> {
+  const key = `${MARKS_PREFIX}${bookmark.url}`;
+  try {
+    const res = await chrome.storage.local.get(key);
+    const existing: BookmarkEntry[] = Array.isArray(res?.[key]) ? res[key] : [];
+    const filtered = existing.filter((b) => b.id !== bookmark.id);
+    filtered.push(bookmark);
+    await chrome.storage.local.set({ [key]: filtered });
+    return bookmark;
+  } catch (err) {
+    console.error('Failed to save bookmark to storage.local:', err);
+    return bookmark;
+  }
+}
+
+export async function removeBookmark(url: string, id: string): Promise<boolean> {
+  const key = `${MARKS_PREFIX}${url}`;
+  try {
+    const res = await chrome.storage.local.get(key);
+    const existing: BookmarkEntry[] = Array.isArray(res?.[key]) ? res[key] : [];
+    const filtered = existing.filter((b) => b.id !== id);
+    if (filtered.length === 0) {
+      await chrome.storage.local.remove(key);
+    } else {
+      await chrome.storage.local.set({ [key]: filtered });
+    }
+    return true;
+  } catch (err) {
+    console.error('Failed to remove bookmark from storage.local:', err);
+    return false;
+  }
+}
+
+export async function getBookmarks(url: string): Promise<BookmarkEntry[]> {
+  const key = `${MARKS_PREFIX}${url}`;
+  try {
+    const res = await chrome.storage.local.get(key);
+    return Array.isArray(res?.[key]) ? res[key] : [];
+  } catch {
+    return [];
   }
 }
 
