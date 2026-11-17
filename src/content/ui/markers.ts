@@ -10,6 +10,7 @@ export interface MarkersCallbacks {
 
 export interface MarkersController {
   render: (bookmarks: BookmarkEntry[]) => void;
+  highlight: (id: string | null) => void;
   destroy: () => void;
 }
 
@@ -125,6 +126,10 @@ export function createMarkersManager(
       dot.addEventListener('mouseenter', () => showCard(b));
       dot.addEventListener('mouseleave', scheduleHideCard);
 
+      dot.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+
       dot.addEventListener('click', (e) => {
         e.stopPropagation();
         callbacks.onJumpToBookmark(b);
@@ -132,6 +137,16 @@ export function createMarkersManager(
 
       railElement.appendChild(dot);
       markerElements.set(b.id, dot);
+    }
+  };
+
+  const highlight = (id: string | null) => {
+    for (const [markId, el] of markerElements.entries()) {
+      if (id && markId === id) {
+        el.setAttribute('data-active', 'true');
+      } else {
+        el.removeAttribute('data-active');
+      }
     }
   };
 
@@ -143,6 +158,7 @@ export function createMarkersManager(
 
   return {
     render,
+    highlight,
     destroy,
   };
 }

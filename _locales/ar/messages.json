@@ -110,5 +110,17 @@
   "bookmarkDeleted": {
     "message": "تم حذف الهامش",
     "description": "Toast message on bookmark deletion"
+  },
+  "bookmarksIndexTitle": {
+    "message": "هوامش الصفحة",
+    "description": "Page bookmarks index menu title"
+  },
+  "bookmarksEmpty": {
+    "message": "لا توجد هوامش محفوظة بعد",
+    "description": "Empty state in bookmarks index menu"
+  },
+  "bookmarksTriggerAria": {
+    "message": "فهرس هوامش الصفحة",
+    "description": "Aria label for page bookmarks trigger button"
   }
 }

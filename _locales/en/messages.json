@@ -110,5 +110,17 @@
   "bookmarkDeleted": {
     "message": "Bookmark removed",
     "description": "Toast message on bookmark deletion"
+  },
+  "bookmarksIndexTitle": {
+    "message": "Page Bookmarks",
+    "description": "Page bookmarks index menu title"
+  },
+  "bookmarksEmpty": {
+    "message": "No bookmarks saved yet",
+    "description": "Empty state in bookmarks index menu"
+  },
+  "bookmarksTriggerAria": {
+    "message": "Page Bookmarks Index",
+    "description": "Aria label for page bookmarks trigger button"
   }
 }

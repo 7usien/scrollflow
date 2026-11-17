@@ -17,6 +17,7 @@ import { setSmoothScrollEnabled } from './ui/smooth-scroll';
 import { createBackToTop, type BackToTopController } from './ui/back-to-top';
 import { createSelectionBubble, type SelectionBubbleController } from './ui/selection-bubble';
 import { createMarkersManager, type MarkersController } from './ui/markers';
+import { createBookmarksMenu, type BookmarksMenuController } from './ui/bookmarks-menu';
 import { createBookmarkEntry } from '../core/bookmarks';
 import type { BookmarkEntry } from '../shared/types';
 
@@ -29,6 +30,7 @@ let measureObserver: MeasureObserver | null = null;
 let backToTop: BackToTopController | null = null;
 let selectionBubble: SelectionBubbleController | null = null;
 let markersManager: MarkersController | null = null;
+let bookmarksMenu: BookmarksMenuController | null = null;
 let currentBookmarks: BookmarkEntry[] = [];
 
 let currentMetrics: Metrics = computeMetrics();
@@ -103,29 +105,43 @@ function setupUI() {
   });
 
   if (settings.bookmarks) {
+    const handleJumpToBookmark = (b: BookmarkEntry) => {
+      userInteracted = true;
+      const targetY = b.scrollRatio * currentMetrics.maxScroll;
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: targetY, behavior: isReduced ? 'instant' : 'smooth' });
+    };
+
+    const handleDeleteBookmark = async (id: string) => {
+      currentBookmarks = currentBookmarks.filter((b) => b.id !== id);
+      markersManager?.render(currentBookmarks);
+      bookmarksMenu?.render(currentBookmarks);
+      try {
+        const norm = normalizeUrl(currentUrl);
+        await chrome.runtime.sendMessage({
+          type: MSG.BOOKMARK_REMOVE,
+          url: norm,
+          id,
+        });
+        const deletedMsg = chrome.i18n.getMessage('bookmarkDeleted') || 'تم حذف الهامش';
+        toast?.show(deletedMsg);
+      } catch {
+        // fail-soft
+      }
+    };
+
     markersManager = createMarkersManager(progressBar.element, {
       isRTL: checkIsRTL,
-      onJumpToBookmark: (b) => {
-        userInteracted = true;
-        const targetY = b.scrollRatio * currentMetrics.maxScroll;
-        const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: targetY, behavior: isReduced ? 'instant' : 'smooth' });
-      },
-      onDeleteBookmark: async (id) => {
-        currentBookmarks = currentBookmarks.filter((b) => b.id !== id);
-        markersManager?.render(currentBookmarks);
-        try {
-          const norm = normalizeUrl(currentUrl);
-          await chrome.runtime.sendMessage({
-            type: MSG.BOOKMARK_REMOVE,
-            url: norm,
-            id,
-          });
-          const deletedMsg = chrome.i18n.getMessage('bookmarkDeleted') || 'تم حذف الهامش';
-          toast?.show(deletedMsg);
-        } catch {
-          // fail-soft
-        }
+      onJumpToBookmark: handleJumpToBookmark,
+      onDeleteBookmark: handleDeleteBookmark,
+    });
+
+    bookmarksMenu = createBookmarksMenu(shadowCtx.shadowRoot, {
+      isRTL: checkIsRTL,
+      onJumpToBookmark: handleJumpToBookmark,
+      onDeleteBookmark: handleDeleteBookmark,
+      onHoverBookmark: (id) => {
+        markersManager?.highlight(id);
       },
     });
 
@@ -140,6 +156,7 @@ function setupUI() {
         });
         currentBookmarks.push(entry);
         markersManager?.render(currentBookmarks);
+        bookmarksMenu?.render(currentBookmarks);
         try {
           await chrome.runtime.sendMessage({
             type: MSG.BOOKMARK_ADD,
@@ -168,6 +185,7 @@ async function loadBookmarks() {
     if (res?.ok && Array.isArray(res.data)) {
       currentBookmarks = res.data;
       markersManager?.render(currentBookmarks);
+      bookmarksMenu?.render(currentBookmarks);
     }
   } catch {
     // fail-soft
@@ -182,11 +200,13 @@ function updateVisibility() {
     progressBar.setState('hidden');
     backToTop?.reset();
     selectionBubble?.element.style.setProperty('display', 'none');
+    bookmarksMenu?.triggerElement.style.setProperty('display', 'none');
     setNativeScrollbarHidden(false);
     setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
     selectionBubble?.element.style.removeProperty('display');
+    bookmarksMenu?.triggerElement.style.removeProperty('display');
     const remainingPixels = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
     backToTop?.update(smoothedProgress, true, remainingPixels);
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
@@ -450,6 +470,7 @@ function setupEvents() {
         backToTop?.reset();
         currentBookmarks = [];
         markersManager?.render([]);
+        bookmarksMenu?.render([]);
 
         startInitialMeasurementAndRestoration();
         break;

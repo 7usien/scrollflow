@@ -6,6 +6,7 @@ import {
   computeMarkerRatio,
   createBookmarkEntry,
   sortBookmarks,
+  resolveBookmarksLocale,
 } from '../../src/core/bookmarks';
 
 describe('isValidSelection', () => {
@@ -90,3 +91,20 @@ describe('sortBookmarks', () => {
     expect(sorted[2].text).toBe('bottom');
   });
 });
+
+describe('resolveBookmarksLocale', () => {
+  it('resolves Arabic configuration for RTL pages', () => {
+    const config = resolveBookmarksLocale(true);
+    expect(config.title).toBe('هوامش الصفحة');
+    expect(config.empty).toBe('لا توجد هوامش محفوظة بعد');
+    expect(config.triggerAria).toBe('فهرس هوامش الصفحة');
+  });
+
+  it('resolves English configuration for LTR pages', () => {
+    const config = resolveBookmarksLocale(false);
+    expect(config.title).toBe('Page Bookmarks');
+    expect(config.empty).toBe('No bookmarks saved yet');
+    expect(config.triggerAria).toBe('Page Bookmarks Index');
+  });
+});
+

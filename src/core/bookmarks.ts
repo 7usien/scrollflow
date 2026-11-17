@@ -67,3 +67,36 @@ export function createBookmarkEntry(params: {
 export function sortBookmarks(bookmarks: BookmarkEntry[]): BookmarkEntry[] {
   return [...bookmarks].sort((a, b) => a.scrollRatio - b.scrollRatio);
 }
+
+export interface BookmarksLocaleConfig {
+  title: string;
+  empty: string;
+  triggerAria: string;
+  closeAria: string;
+  jumpAria: string;
+  deleteAria: string;
+}
+
+/**
+ * Resolves localized strings for bookmarks UI (menu, trigger, empty state).
+ */
+export function resolveBookmarksLocale(isRTL: boolean): BookmarksLocaleConfig {
+  return isRTL
+    ? {
+        title: 'هوامش الصفحة',
+        empty: 'لا توجد هوامش محفوظة بعد',
+        triggerAria: 'فهرس هوامش الصفحة',
+        closeAria: 'إغلاق الفهرس',
+        jumpAria: 'انتقال للهامش',
+        deleteAria: 'حذف الهامش',
+      }
+    : {
+        title: 'Page Bookmarks',
+        empty: 'No bookmarks saved yet',
+        triggerAria: 'Page Bookmarks Index',
+        closeAria: 'Close Index',
+        jumpAria: 'Jump to bookmark',
+        deleteAria: 'Delete bookmark',
+      };
+}
+
