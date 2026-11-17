@@ -173,3 +173,19 @@
 - **الأثر:** `src/core/bookmarks.ts`, `src/content/ui/styles.ts`, `src/content/ui/markers.ts`, `src/content/ui/bookmarks-menu.ts`, `src/content/bootstrap.ts`, `tests/unit/bookmarks.test.ts`, `_locales/*`.
 - **قابل للعكس؟** نعم.
 
+---
+
+### D-013 — الحزمة التنافسية المتقدمة: الفهرس التلقائي، تلوين الهوامش، التصدير لـ Markdown، ووضع الزن (Zen Auto-Hide)
+- **التاريخ:** 2026-11-18
+- **المهمة:** تنفيذ المقترحات 1، 2، 3، 6 من دراسة المنافسين على متجر كروم
+- **السياق:** توسيع إمكانيات ScrollFlow لتتفوق على المنافسين (مثل Notion Web Clipper وReading Progress Bar وChrome Extensions المماثلة) بميزات إنتاجية عالية دون التضحية بالخفة والأداء والصفر مكتبات.
+- **المزايا المنفذة:**
+  1. **فهرس العناوين التلقائي (Auto-Generated TOC)**: استخراج ديناميكي لعناوين H1..H3 عبر `MutationObserver` مقيد ومراقبة الحجم، مع ترشيح العناوين غير الدالة (الفوتر، التعليقات، إلخ) وعرض شُرط أنيقة `.sf-toc-tick` على المسار وقائمة فصول في الدرج.
+  2. **تلوين وتصنيف الهوامش (Color-Coded Margins)**: 5 ألوان منتقاة (أصفر، أخضر، بنفسجي، أزرق، أحمر) في كبسولة التظليل، مع فلتر لوني سريع في القائمة ونقاط ملونة متناسقة على الشريط.
+  3. **تصدير هوامش الصفحة بنقرة واحدة (Export to Markdown)**: زر مدمج في أسفل الدرج ينسخ الهوامش كملف Markdown منسق مع الروابط والنسب والتصنيفات للحافظة جاهزاً لـ Notion وObsidian.
+  4. **وضع القراءة الهادئ (Zen Auto-Hide Mode)**: تلاشي تدريجي ذكي للشريط والمؤشر عند التوقف عن التمرير لمدة 2.5 ثانية، ويعود فور الحركة أو التمرير أو التحويم.
+- **التبرير:** استجابة لمتطلبات القراءة الاحترافية والإنتاجية، مع الحفاظ على الحجم النهائي أقل من 20KB gzipped، وصفر مكتبات طرف ثالث وصفر طلبات شبكة.
+- **الأثر:** `src/core/toc.ts`, `src/core/export.ts`, `src/core/zen.ts`, `src/content/toc-observer.ts`, `src/content/ui/bookmarks-menu.ts`, `src/content/ui/markers.ts`, `src/content/ui/selection-bubble.ts`, `src/content/ui/styles.ts`, `src/content/bootstrap.ts`, `src/options/*`, `src/popup/*`, `tests/unit/*`.
+- **قابل للعكس؟** نعم.
+
+

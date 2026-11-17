@@ -1,16 +1,19 @@
-// src/content/ui/markers.ts — Vertical navigation dots and preview cards along the scrollbar rail
-import type { BookmarkEntry } from '../../shared/types';
-import { truncateSnippet } from '../../core/bookmarks';
+// src/content/ui/markers.ts — Vertical navigation dots, TOC ticks, and preview cards along the scrollbar rail
+import type { BookmarkEntry, TocEntry } from '../../shared/types';
+import { truncateSnippet, BOOKMARK_COLORS } from '../../core/bookmarks';
 
 export interface MarkersCallbacks {
   onJumpToBookmark: (bookmark: BookmarkEntry) => void;
   onDeleteBookmark: (id: string) => void;
+  onJumpToToc?: (entry: TocEntry) => void;
   isRTL?: () => boolean;
 }
 
 export interface MarkersController {
   render: (bookmarks: BookmarkEntry[]) => void;
+  renderToc: (tocEntries: TocEntry[]) => void;
   highlight: (id: string | null) => void;
+  highlightToc: (id: string | null) => void;
   destroy: () => void;
 }
 
@@ -20,8 +23,9 @@ export function createMarkersManager(
 ): MarkersController {
   let currentBookmarks: BookmarkEntry[] = [];
   const markerElements = new Map<string, HTMLElement>();
+  const tocElements = new Map<string, HTMLElement>();
 
-  // Single shared card for previewing hovered marker
+  // Single shared card for previewing hovered marker or TOC entry
   const card = document.createElement('div');
   card.className = 'sf-marker-card';
   card.setAttribute('data-testid', 'marker-card');
@@ -59,15 +63,18 @@ export function createMarkersManager(
   railElement.appendChild(card);
 
   let activeBookmark: BookmarkEntry | null = null;
+  let activeToc: TocEntry | null = null;
   let hideCardTimer: ReturnType<typeof setTimeout> | null = null;
 
   const showCard = (bookmark: BookmarkEntry) => {
     if (hideCardTimer) clearTimeout(hideCardTimer);
     activeBookmark = bookmark;
+    activeToc = null;
 
     const isRtl = callbacks.isRTL?.();
     jumpBtn.textContent = isRtl ? 'انتقال ↗' : 'Jump ↗';
     deleteBtn.textContent = isRtl ? 'حذف 🗑️' : 'Delete 🗑️';
+    deleteBtn.style.display = 'inline-flex';
 
     textEl.textContent = truncateSnippet(bookmark.text, 140);
     const pct = Math.round(bookmark.scrollRatio * 100);
@@ -77,10 +84,28 @@ export function createMarkersManager(
     card.setAttribute('data-show', 'true');
   };
 
+  const showTocCard = (toc: TocEntry) => {
+    if (hideCardTimer) clearTimeout(hideCardTimer);
+    activeToc = toc;
+    activeBookmark = null;
+
+    const isRtl = callbacks.isRTL?.();
+    jumpBtn.textContent = isRtl ? 'انتقال ↗' : 'Jump ↗';
+    deleteBtn.style.display = 'none';
+
+    textEl.textContent = `[H${toc.level}] ${truncateSnippet(toc.text, 120)}`;
+    const pct = Math.round(toc.scrollRatio * 100);
+    pctSpan.textContent = `${pct}%`;
+
+    card.style.setProperty('--sf-marker-progress', toc.scrollRatio.toString());
+    card.setAttribute('data-show', 'true');
+  };
+
   const scheduleHideCard = () => {
     hideCardTimer = setTimeout(() => {
       card.setAttribute('data-show', 'false');
       activeBookmark = null;
+      activeToc = null;
     }, 200);
   };
 
@@ -93,6 +118,8 @@ export function createMarkersManager(
     e.stopPropagation();
     if (activeBookmark) {
       callbacks.onJumpToBookmark(activeBookmark);
+    } else if (activeToc && callbacks.onJumpToToc) {
+      callbacks.onJumpToToc(activeToc);
     }
     card.setAttribute('data-show', 'false');
   });
@@ -112,6 +139,13 @@ export function createMarkersManager(
     markerElements.clear();
   };
 
+  const clearTocTicks = () => {
+    for (const el of tocElements.values()) {
+      el.remove();
+    }
+    tocElements.clear();
+  };
+
   const render = (bookmarks: BookmarkEntry[]) => {
     currentBookmarks = bookmarks;
     clearDots();
@@ -122,6 +156,11 @@ export function createMarkersManager(
       dot.setAttribute('data-testid', `marker-${b.id}`);
       dot.setAttribute('title', b.title || b.text.slice(0, 30));
       dot.style.setProperty('--sf-marker-progress', b.scrollRatio.toString());
+
+      const colorHex = b.color ? BOOKMARK_COLORS[b.color]?.hex : undefined;
+      if (colorHex) {
+        dot.style.setProperty('--sf-marker-color', colorHex);
+      }
 
       dot.addEventListener('mouseenter', () => showCard(b));
       dot.addEventListener('mouseleave', scheduleHideCard);
@@ -140,6 +179,34 @@ export function createMarkersManager(
     }
   };
 
+  const renderToc = (entries: TocEntry[]) => {
+    clearTocTicks();
+
+    for (const t of entries) {
+      const tick = document.createElement('div');
+      tick.className = 'sf-toc-tick';
+      tick.setAttribute('data-testid', `toc-tick-${t.id}`);
+      tick.setAttribute('data-level', String(t.level));
+      tick.style.setProperty('--sf-toc-progress', t.scrollRatio.toString());
+      tick.setAttribute('title', `[H${t.level}] ${t.text}`);
+
+      tick.addEventListener('mouseenter', () => showTocCard(t));
+      tick.addEventListener('mouseleave', scheduleHideCard);
+
+      tick.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+
+      tick.addEventListener('click', (e) => {
+        e.stopPropagation();
+        callbacks.onJumpToToc?.(t);
+      });
+
+      railElement.appendChild(tick);
+      tocElements.set(t.id, tick);
+    }
+  };
+
   const highlight = (id: string | null) => {
     for (const [markId, el] of markerElements.entries()) {
       if (id && markId === id) {
@@ -150,15 +217,28 @@ export function createMarkersManager(
     }
   };
 
+  const highlightToc = (id: string | null) => {
+    for (const [tocId, el] of tocElements.entries()) {
+      if (id && tocId === id) {
+        el.setAttribute('data-active', 'true');
+      } else {
+        el.removeAttribute('data-active');
+      }
+    }
+  };
+
   const destroy = () => {
     if (hideCardTimer) clearTimeout(hideCardTimer);
     clearDots();
+    clearTocTicks();
     card.remove();
   };
 
   return {
     render,
+    renderToc,
     highlight,
+    highlightToc,
     destroy,
   };
 }

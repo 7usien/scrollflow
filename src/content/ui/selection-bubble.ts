@@ -1,8 +1,9 @@
-// src/content/ui/selection-bubble.ts — Floating action badge appearing on text selection
+// src/content/ui/selection-bubble.ts — Floating action badge appearing on text selection with color swatches
 import { isValidSelection } from '../../core/bookmarks';
+import type { BookmarkColor } from '../../shared/types';
 
 export interface SelectionBubbleCallbacks {
-  onCreateBookmark: (text: string) => void;
+  onCreateBookmark: (text: string, color?: BookmarkColor) => void;
   isRTL?: () => boolean;
 }
 
@@ -15,11 +16,15 @@ export function createSelectionBubble(
   container: ShadowRoot,
   callbacks: SelectionBubbleCallbacks
 ): SelectionBubbleController {
-  const bubble = document.createElement('button');
-  bubble.type = 'button';
+  const bubble = document.createElement('div');
   bubble.className = 'sf-selection-bubble';
   bubble.setAttribute('data-testid', 'selection-bubble');
   bubble.setAttribute('data-show', 'false');
+
+  // Main Action Button
+  const mainBtn = document.createElement('button');
+  mainBtn.type = 'button';
+  mainBtn.className = 'sf-selection-bubble-main';
 
   // Bookmark SVG Icon
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -36,8 +41,41 @@ export function createSelectionBubble(
   const textSpan = document.createElement('span');
   textSpan.textContent = callbacks.isRTL?.() ? 'أضف هامشاً 🔖' : 'Bookmark 🔖';
 
-  bubble.appendChild(svg);
-  bubble.appendChild(textSpan);
+  mainBtn.appendChild(svg);
+  mainBtn.appendChild(textSpan);
+  bubble.appendChild(mainBtn);
+
+  // Divider
+  const divider = document.createElement('div');
+  divider.className = 'sf-selection-bubble-divider';
+  bubble.appendChild(divider);
+
+  // Color Swatches Container
+  const colorsContainer = document.createElement('div');
+  colorsContainer.className = 'sf-selection-bubble-colors';
+
+  const colors: BookmarkColor[] = ['yellow', 'green', 'purple', 'blue', 'red'];
+  for (const c of colors) {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'sf-color-dot';
+    dot.setAttribute('data-color', c);
+    dot.setAttribute('data-testid', `color-dot-${c}`);
+    dot.setAttribute('aria-label', c);
+
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (currentSelectedText && isValidSelection(currentSelectedText)) {
+        callbacks.onCreateBookmark(currentSelectedText, c);
+      }
+      hide();
+    });
+
+    colorsContainer.appendChild(dot);
+  }
+
+  bubble.appendChild(colorsContainer);
   container.appendChild(bubble);
 
   let currentSelectedText = '';
@@ -48,16 +86,14 @@ export function createSelectionBubble(
     currentSelectedText = '';
   };
 
-  const handleClick = (e: MouseEvent) => {
+  mainBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
     if (currentSelectedText && isValidSelection(currentSelectedText)) {
-      callbacks.onCreateBookmark(currentSelectedText);
+      callbacks.onCreateBookmark(currentSelectedText, 'blue');
     }
     hide();
-  };
-
-  bubble.addEventListener('click', handleClick);
+  });
 
   const handleSelection = () => {
     if (hideTimer) clearTimeout(hideTimer);
@@ -98,48 +134,48 @@ export function createSelectionBubble(
       currentSelectedText = text;
       textSpan.textContent = callbacks.isRTL?.() ? 'أضف هامشاً 🔖' : 'Bookmark 🔖';
 
-      // Position bubble centered above selection (or below if too close to viewport top)
-      const bubbleWidth = 120;
-      const bubbleHeight = 32;
+      // Position bubble above the selection center
+      const bubbleW = 210;
+      const bubbleH = 34;
 
-      let left = rect.left + rect.width / 2 - bubbleWidth / 2;
-      left = Math.max(10, Math.min(window.innerWidth - bubbleWidth - 10, left));
+      let left = rect.left + rect.width / 2 - bubbleW / 2;
+      let top = rect.top - bubbleH - 10;
 
-      let top = rect.top - bubbleHeight - 8;
-      if (top < 10) {
-        top = rect.bottom + 8; // flip below selection
+      // Keep within viewport boundaries
+      if (left < 10) left = 10;
+      if (left + bubbleW > window.innerWidth - 10) {
+        left = window.innerWidth - bubbleW - 10;
       }
 
-      bubble.style.left = `${left}px`;
-      bubble.style.top = `${top}px`;
+      // If selection is too close to top of viewport, show bubble below
+      if (top < 10) {
+        top = rect.bottom + 10;
+      }
+
+      bubble.style.left = `${Math.round(left)}px`;
+      bubble.style.top = `${Math.round(top)}px`;
       bubble.setAttribute('data-show', 'true');
-    }, 120);
+    }, 150);
   };
 
-  const handlePointerDown = (e: MouseEvent) => {
-    // If clicking outside bubble and selection, dismiss bubble
-    const target = e.target as Node | null;
-    if (target && !bubble.contains(target)) {
-      const sel = window.getSelection();
-      if (!sel || sel.isCollapsed) {
-        hide();
-      }
+  const handlePointerDownOutside = (e: MouseEvent) => {
+    // If click is outside the bubble, hide
+    const path = e.composedPath ? e.composedPath() : [];
+    if (!path.includes(bubble)) {
+      hide();
     }
   };
 
   document.addEventListener('selectionchange', handleSelection, { passive: true });
-  window.addEventListener('pointerup', handleSelection, { passive: true });
-  window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+  document.addEventListener('pointerup', handleSelection, { passive: true });
+  document.addEventListener('pointerdown', handlePointerDownOutside, { passive: true });
 
   const destroy = () => {
     if (hideTimer) clearTimeout(hideTimer);
     document.removeEventListener('selectionchange', handleSelection);
-    window.removeEventListener('pointerup', handleSelection);
-    window.removeEventListener('pointerdown', handlePointerDown);
-    bubble.removeEventListener('click', handleClick);
-    if (bubble.parentNode) {
-      bubble.parentNode.removeChild(bubble);
-    }
+    document.removeEventListener('pointerup', handleSelection);
+    document.removeEventListener('pointerdown', handlePointerDownOutside);
+    bubble.remove();
   };
 
   return {

@@ -8,6 +8,7 @@ export type Position = 'right' | 'left' | 'top' | 'bottom';
 export type BarLength = 'floating' | 'full';
 export type BarRadius = 'subtle' | 'pill' | 'sharp';
 export type Contrast = 'normal' | 'high';
+export type BookmarkColor = 'yellow' | 'green' | 'purple' | 'blue' | 'red';
 
 export interface Settings {
   version: 1;
@@ -27,6 +28,8 @@ export interface Settings {
   hideNativeScrollbar: boolean;
   smoothScroll: boolean;
   bookmarks: boolean;
+  autoToc: boolean;
+  zenMode: boolean;
   contrast: Contrast;
   allowFileUrls: boolean;
   blocklist: string[];
@@ -51,6 +54,8 @@ export const DEFAULT_SETTINGS: Settings = {
   hideNativeScrollbar: true,
   smoothScroll: false,
   bookmarks: true,
+  autoToc: true,
+  zenMode: false,
   contrast: 'normal',
   allowFileUrls: false,
   blocklist: [],
@@ -73,10 +78,19 @@ export interface BookmarkEntry {
   url: string;
   text: string;
   title?: string;
+  color?: BookmarkColor;
   scrollY: number;
   scrollRatio: number; // 0..1
   selector?: string;
   createdAt: number;
+}
+
+export interface TocEntry {
+  id: string;
+  level: number; // 1, 2, 3
+  text: string;
+  scrollY: number;
+  scrollRatio: number; // 0..1
 }
 
 export interface Metrics {

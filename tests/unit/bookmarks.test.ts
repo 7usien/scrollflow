@@ -98,6 +98,9 @@ describe('resolveBookmarksLocale', () => {
     expect(config.title).toBe('هوامش الصفحة');
     expect(config.empty).toBe('لا توجد هوامش محفوظة بعد');
     expect(config.triggerAria).toBe('فهرس هوامش الصفحة');
+    expect(config.bookmarksTab).toBe('الهوامش');
+    expect(config.tocTab).toBe('فهرس العناوين');
+    expect(config.exportBtn).toBe('نسخ كـ Markdown');
   });
 
   it('resolves English configuration for LTR pages', () => {
@@ -105,6 +108,9 @@ describe('resolveBookmarksLocale', () => {
     expect(config.title).toBe('Page Bookmarks');
     expect(config.empty).toBe('No bookmarks saved yet');
     expect(config.triggerAria).toBe('Page Bookmarks Index');
+    expect(config.bookmarksTab).toBe('Bookmarks');
+    expect(config.tocTab).toBe('Headings');
+    expect(config.exportBtn).toBe('Export Markdown');
   });
 });
 

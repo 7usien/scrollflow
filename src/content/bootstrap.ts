@@ -1,6 +1,6 @@
 // src/content/bootstrap.ts — Main content script lifecycle, scroll loop, and communication (FR-01..FR-24)
 import { MSG, type Req } from '../shared/messages';
-import type { Metrics, ScrollEntry, Settings } from '../shared/types';
+import type { BookmarkColor, BookmarkEntry, Metrics, ScrollEntry, Settings, TocEntry } from '../shared/types';
 import { DEFAULT_SETTINGS, SAVE_DEBOUNCE_MS } from '../shared/types';
 import { sanitizeSettings } from '../shared/settings-schema';
 import { computeProgress } from '../core/progress';
@@ -18,8 +18,9 @@ import { createBackToTop, type BackToTopController } from './ui/back-to-top';
 import { createSelectionBubble, type SelectionBubbleController } from './ui/selection-bubble';
 import { createMarkersManager, type MarkersController } from './ui/markers';
 import { createBookmarksMenu, type BookmarksMenuController } from './ui/bookmarks-menu';
+import { createTocObserver, type TocObserverController } from './toc-observer';
+import { computeZenVisualState, DEFAULT_ZEN_IDLE_TIMEOUT_MS } from '../core/zen';
 import { createBookmarkEntry } from '../core/bookmarks';
-import type { BookmarkEntry } from '../shared/types';
 
 let settings: Settings = { ...DEFAULT_SETTINGS };
 let shadowCtx: ShadowContext | null = null;
@@ -31,7 +32,10 @@ let backToTop: BackToTopController | null = null;
 let selectionBubble: SelectionBubbleController | null = null;
 let markersManager: MarkersController | null = null;
 let bookmarksMenu: BookmarksMenuController | null = null;
+let tocObserver: TocObserverController | null = null;
+
 let currentBookmarks: BookmarkEntry[] = [];
+let currentTocEntries: TocEntry[] = [];
 
 let currentMetrics: Metrics = computeMetrics();
 let currentUrl = window.location.href;
@@ -42,6 +46,13 @@ let isOverlayTemporarilyHidden = false;
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 let lastProgressUpdateSent = 0;
 let isTicking = false;
+
+// Zen Mode State
+let zenTimer: ReturnType<typeof setTimeout> | null = null;
+let lastActivityTs = Date.now();
+let isZenDimmed = false;
+let isRailHovered = false;
+let isRailScrubbing = false;
 
 // ── 1. Init Sequence ──
 async function init() {
@@ -85,6 +96,71 @@ function checkIsRTL(): boolean {
   return false;
 }
 
+function pokeZenMode() {
+  lastActivityTs = Date.now();
+
+  if (!settings.zenMode) {
+    if (isZenDimmed) {
+      isZenDimmed = false;
+      progressBar?.element.removeAttribute('data-zen');
+      bookmarksMenu?.setZenState(false);
+    }
+    if (zenTimer) {
+      clearTimeout(zenTimer);
+      zenTimer = null;
+    }
+    return;
+  }
+
+  if (isZenDimmed) {
+    isZenDimmed = false;
+    progressBar?.element.removeAttribute('data-zen');
+    bookmarksMenu?.setZenState(false);
+  }
+
+  if (zenTimer) {
+    clearTimeout(zenTimer);
+  }
+
+  zenTimer = setTimeout(() => {
+    const state = computeZenVisualState({
+      zenModeEnabled: settings.zenMode,
+      isHovered: isRailHovered,
+      isScrubbing: isRailScrubbing,
+      isMenuOpen: false,
+      lastActivityTs,
+      nowTs: Date.now(),
+    });
+
+    if (state === 'hidden') {
+      isZenDimmed = true;
+      progressBar?.element.setAttribute('data-zen', 'dimmed');
+      bookmarksMenu?.setZenState(true);
+    }
+  }, DEFAULT_ZEN_IDLE_TIMEOUT_MS);
+}
+
+function updateTocObserver() {
+  if (settings.autoToc && shouldShowOverlay() && currentMetrics.scrollable) {
+    if (!tocObserver) {
+      tocObserver = createTocObserver();
+      tocObserver.start((entries) => {
+        currentTocEntries = entries;
+        markersManager?.renderToc(currentTocEntries);
+        bookmarksMenu?.renderToc(currentTocEntries);
+      });
+    }
+  } else {
+    if (tocObserver) {
+      tocObserver.destroy();
+      tocObserver = null;
+      currentTocEntries = [];
+      markersManager?.renderToc([]);
+      bookmarksMenu?.renderToc([]);
+    }
+  }
+}
+
 function setupUI() {
   shadowCtx = createShadowHost(settings);
   progressBar = createProgressBar(shadowCtx.shadowRoot, {
@@ -93,11 +169,24 @@ function setupUI() {
     isRTL: checkIsRTL,
     onScrub: (ratio) => {
       userInteracted = true;
+      isRailScrubbing = true;
+      pokeZenMode();
       smoothedProgress = ratio;
       sendProgressUpdate();
       scheduleSave();
     },
   });
+
+  progressBar.element.addEventListener('mouseenter', () => {
+    isRailHovered = true;
+    pokeZenMode();
+  });
+
+  progressBar.element.addEventListener('mouseleave', () => {
+    isRailHovered = false;
+    pokeZenMode();
+  });
+
   toast = createToast(shadowCtx.shadowRoot);
   milestoneTracker = createMilestoneTracker();
   backToTop = createBackToTop(shadowCtx.shadowRoot, {
@@ -107,15 +196,23 @@ function setupUI() {
   if (settings.bookmarks) {
     const handleJumpToBookmark = (b: BookmarkEntry) => {
       userInteracted = true;
+      pokeZenMode();
       const targetY = b.scrollRatio * currentMetrics.maxScroll;
       const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.scrollTo({ top: targetY, behavior: isReduced ? 'instant' : 'smooth' });
     };
 
+    const handleJumpToToc = (entry: TocEntry) => {
+      userInteracted = true;
+      pokeZenMode();
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: entry.scrollY, behavior: isReduced ? 'instant' : 'smooth' });
+    };
+
     const handleDeleteBookmark = async (id: string) => {
       currentBookmarks = currentBookmarks.filter((b) => b.id !== id);
       markersManager?.render(currentBookmarks);
-      bookmarksMenu?.render(currentBookmarks);
+      bookmarksMenu?.render(currentBookmarks, currentTocEntries);
       try {
         const norm = normalizeUrl(currentUrl);
         await chrome.runtime.sendMessage({
@@ -134,12 +231,14 @@ function setupUI() {
       isRTL: checkIsRTL,
       onJumpToBookmark: handleJumpToBookmark,
       onDeleteBookmark: handleDeleteBookmark,
+      onJumpToToc: handleJumpToToc,
     });
 
     bookmarksMenu = createBookmarksMenu(shadowCtx.shadowRoot, {
       isRTL: checkIsRTL,
       onJumpToBookmark: handleJumpToBookmark,
       onDeleteBookmark: handleDeleteBookmark,
+      onJumpToToc: handleJumpToToc,
       onHoverBookmark: (id) => {
         markersManager?.highlight(id);
       },
@@ -147,16 +246,17 @@ function setupUI() {
 
     selectionBubble = createSelectionBubble(shadowCtx.shadowRoot, {
       isRTL: checkIsRTL,
-      onCreateBookmark: async (text) => {
+      onCreateBookmark: async (text, color?: BookmarkColor) => {
         const entry = createBookmarkEntry({
           url: normalizeUrl(currentUrl),
           text,
+          color,
           scrollY: currentMetrics.scrollY,
           maxScroll: currentMetrics.maxScroll,
         });
         currentBookmarks.push(entry);
         markersManager?.render(currentBookmarks);
-        bookmarksMenu?.render(currentBookmarks);
+        bookmarksMenu?.render(currentBookmarks, currentTocEntries);
         try {
           await chrome.runtime.sendMessage({
             type: MSG.BOOKMARK_ADD,
@@ -172,6 +272,8 @@ function setupUI() {
   }
 
   updateVisibility();
+  updateTocObserver();
+  pokeZenMode();
 }
 
 async function loadBookmarks() {
@@ -185,7 +287,7 @@ async function loadBookmarks() {
     if (res?.ok && Array.isArray(res.data)) {
       currentBookmarks = res.data;
       markersManager?.render(currentBookmarks);
-      bookmarksMenu?.render(currentBookmarks);
+      bookmarksMenu?.render(currentBookmarks, currentTocEntries);
     }
   } catch {
     // fail-soft
@@ -212,6 +314,9 @@ function updateVisibility() {
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
     setSmoothScrollEnabled(settings.smoothScroll);
   }
+
+  updateTocObserver();
+  pokeZenMode();
 }
 
 // ── 2. Measurement & Restoration ──
@@ -254,6 +359,7 @@ async function startInitialMeasurementAndRestoration() {
   updateVisibility();
   sendProgressUpdate();
   loadBookmarks();
+  updateTocObserver();
 
   // Start continuous observer for dynamic height (infinite scroll / resize)
   if (measureObserver) {
@@ -336,6 +442,7 @@ function tick() {
     requestAnimationFrame(tick);
   } else {
     isTicking = false;
+    isRailScrubbing = false;
     setTimeout(() => {
       if (!isTicking && progressBar?.element.getAttribute('data-state') !== 'hover') {
         progressBar?.setState('idle');
@@ -346,6 +453,7 @@ function tick() {
 
 function handleScroll() {
   userInteracted = true;
+  pokeZenMode();
 
   if (shouldShowOverlay() && currentMetrics.scrollable) {
     progressBar?.setState('active');
@@ -427,8 +535,10 @@ function setupEvents() {
 
   const markInteracted = () => {
     userInteracted = true;
+    pokeZenMode();
   };
   window.addEventListener('pointerdown', markInteracted, { passive: true, capture: true });
+  window.addEventListener('pointermove', pokeZenMode, { passive: true });
   window.addEventListener('keydown', markInteracted, { passive: true, capture: true });
   window.addEventListener('wheel', markInteracted, { passive: true, capture: true });
   window.addEventListener('touchstart', markInteracted, { passive: true, capture: true });
@@ -439,6 +549,12 @@ function setupEvents() {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       flushSave();
+      if (zenTimer) {
+        clearTimeout(zenTimer);
+        zenTimer = null;
+      }
+    } else {
+      pokeZenMode();
     }
   });
 
@@ -448,6 +564,8 @@ function setupEvents() {
       settings = sanitizeSettings(changes.settings.newValue);
       shadowCtx?.updateTheme(settings);
       updateVisibility();
+      updateTocObserver();
+      pokeZenMode();
     }
   });
 
@@ -469,8 +587,10 @@ function setupEvents() {
         milestoneTracker?.reset();
         backToTop?.reset();
         currentBookmarks = [];
+        currentTocEntries = [];
         markersManager?.render([]);
-        bookmarksMenu?.render([]);
+        markersManager?.renderToc([]);
+        bookmarksMenu?.render([], []);
 
         startInitialMeasurementAndRestoration();
         break;
@@ -480,6 +600,8 @@ function setupEvents() {
         settings = sanitizeSettings(message.settings);
         shadowCtx?.updateTheme(settings);
         updateVisibility();
+        updateTocObserver();
+        pokeZenMode();
         break;
       }
 

@@ -639,8 +639,8 @@ export const OVERLAY_STYLES = `
   z-index: calc(var(--sf-z) + 10);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 8px;
+  padding: 5px 10px;
   background: var(--sf-surface);
   border: 1px solid var(--sf-border);
   border-radius: var(--sf-radius, 999px);
@@ -651,7 +651,6 @@ export const OVERLAY_STYLES = `
   font-size: 12px;
   font-weight: 700;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   pointer-events: auto;
@@ -680,12 +679,106 @@ export const OVERLAY_STYLES = `
   border-color: var(--sf-brand-start);
 }
 
+.sf-selection-bubble-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  transition: color 140ms;
+}
+
+.sf-selection-bubble-main:hover {
+  color: #ffffff;
+}
+
+.sf-selection-bubble-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--sf-border);
+}
+
+.sf-selection-bubble-colors {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sf-color-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+  transition: transform 140ms var(--sf-ease), border-color 140ms;
+}
+
+.sf-color-dot:hover {
+  transform: scale(1.35);
+  border-color: #ffffff;
+}
+
+.sf-color-dot[data-color="yellow"] { background: #ffd166; }
+.sf-color-dot[data-color="green"]  { background: #06d6a0; }
+.sf-color-dot[data-color="purple"] { background: #b5179e; }
+.sf-color-dot[data-color="blue"]   { background: #00d4ff; }
+.sf-color-dot[data-color="red"]    { background: #ff4d6d; }
+
 .sf-selection-bubble-icon {
   width: 13px;
   height: 13px;
   stroke: var(--sf-brand-end);
   fill: none;
   flex-shrink: 0;
+}
+
+/* ── Auto-TOC Rail Ticks ── */
+.sf-toc-tick {
+  position: absolute;
+  top: calc(var(--sf-toc-progress, 0) * 100%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.40);
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 1;
+  transition: width 140ms var(--sf-ease), height 140ms var(--sf-ease), background 140ms var(--sf-ease);
+}
+
+.sf-toc-tick::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 18px;
+  pointer-events: auto;
+}
+
+.sf-toc-tick:hover,
+.sf-toc-tick[data-active="true"] {
+  width: 16px;
+  height: 3px;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  z-index: 3;
+}
+
+.sf-toc-tick[data-level="1"] {
+  width: 12px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.65);
 }
 
 /* ── Rail Marker Dots & Bookmark Tabs ── */
@@ -697,9 +790,9 @@ export const OVERLAY_STYLES = `
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--sf-brand-end);
+  background: var(--sf-marker-color, var(--sf-brand-end));
   border: 1.5px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 8px 2px var(--sf-brand-end), 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 8px 2px var(--sf-marker-color, var(--sf-brand-end)), 0 2px 4px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   pointer-events: auto;
   z-index: 2;
@@ -732,7 +825,7 @@ export const OVERLAY_STYLES = `
   transform: translateY(-50%);
   width: 12px;
   height: 5px;
-  background: var(--sf-brand-end);
+  background: var(--sf-marker-color, var(--sf-brand-end));
   border-radius: 3px 0 0 3px;
   opacity: 0.9;
   transition: width 150ms var(--sf-ease), opacity 150ms var(--sf-ease), background 150ms var(--sf-ease);
@@ -751,7 +844,7 @@ export const OVERLAY_STYLES = `
   transform: translate(-50%, -50%) scale(1.4);
   background: #ffffff;
   border-color: #ffffff;
-  box-shadow: 0 0 14px 4px var(--sf-brand-mid), 0 2px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 14px 4px var(--sf-marker-color, var(--sf-brand-mid)), 0 2px 8px rgba(0, 0, 0, 0.5);
   z-index: 3;
 }
 
@@ -760,7 +853,7 @@ export const OVERLAY_STYLES = `
   width: 16px;
   opacity: 1;
   background: #ffffff;
-  box-shadow: 0 0 8px var(--sf-brand-mid);
+  box-shadow: 0 0 8px var(--sf-marker-color, var(--sf-brand-mid));
 }
 
 /* ── Marker Preview Card ── */
@@ -1203,5 +1296,113 @@ export const OVERLAY_STYLES = `
   font-size: 11px;
   color: var(--sf-text-dim);
   line-height: 1.5;
+}
+
+/* ── Menu Tabs (Bookmarks vs TOC) ── */
+.sf-menu-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--sf-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sf-menu-tab {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--sf-text-dim);
+  cursor: pointer;
+  transition: color 140ms, border-color 140ms;
+}
+
+.sf-menu-tab:hover {
+  color: var(--sf-text);
+}
+
+.sf-menu-tab[data-active="true"] {
+  color: var(--sf-brand-end);
+  border-bottom-color: var(--sf-brand-end);
+}
+
+/* ── Color Filter Bar ── */
+.sf-menu-filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--sf-border);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.sf-filter-chip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  opacity: 0.55;
+  padding: 0;
+  transition: transform 120ms, opacity 120ms, border-color 120ms;
+}
+
+.sf-filter-chip:hover,
+.sf-filter-chip[data-active="true"] {
+  opacity: 1;
+  transform: scale(1.3);
+  border-color: #ffffff;
+}
+
+.sf-filter-chip[data-color="all"] {
+  background: var(--sf-text-dim);
+}
+
+/* ── Menu Export Footer Bar ── */
+.sf-menu-export-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid var(--sf-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sf-menu-export-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--sf-border);
+  border-radius: 6px;
+  color: var(--sf-text);
+  font-family: var(--sf-font);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 140ms, border-color 140ms;
+}
+
+.sf-menu-export-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--sf-brand-mid);
+}
+
+.sf-bookmarks-item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Zen / Auto-Hide Mode ── */
+.sf-rail[data-zen="dimmed"],
+.sf-bookmarks-trigger[data-zen="dimmed"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 350ms var(--sf-ease);
 }
 `;

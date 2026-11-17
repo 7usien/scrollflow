@@ -45,6 +45,10 @@ const STRINGS = {
     descSmoothScroll: 'جعل التمرير والتنقل بين أقسام الصفحة سلسًا وانسيابيًا (Smooth Scrolling)',
     titleBookmarks: 'هوامش ونقاط الصفحة',
     descBookmarks: 'إظهار خيار إضافة هامش عند تظليل النص وعرض نقاط التنقل على الشريط',
+    titleAutoToc: 'فهرس العناوين التلقائي',
+    descAutoToc: 'توليد نقاط وعلامات على الشريط بناءً على عناوين الصفحة (H1..H3) تلقائيًا',
+    titleZenMode: 'وضع القراءة الهادئ (Zen Mode)',
+    descZenMode: 'تلاشي وإخفاء الشريط تلقائيًا عند التوقف عن التمرير لإتاحة قراءة خالية من المشتتات',
     titleBadge: 'إظهار النسبة على الأيقونة',
     descBadge: 'عرض نسبة التقدّم الحالية على أيقونة الإضافة',
     titleToasts: 'التلميحات النصية',
@@ -124,6 +128,10 @@ const STRINGS = {
     descSmoothScroll: 'Make page scrolling and in-page anchor jumps silky smooth',
     titleBookmarks: 'Page margins & bookmarks',
     descBookmarks: 'Show bookmark bubble on text highlight and display rail navigation dots',
+    titleAutoToc: 'Auto Table of Contents',
+    descAutoToc: 'Automatically generate rail markers based on page headings (H1..H3)',
+    titleZenMode: 'Zen Mode (Auto-Hide)',
+    descZenMode: 'Smoothly fade out progress rail when idle to provide distraction-free reading',
     titleBadge: 'Show badge on icon',
     descBadge: 'Display current reading percentage badge on the extension toolbar icon',
     titleToasts: 'Toast notifications',
@@ -219,6 +227,10 @@ function applyLocale(lang: Locale) {
   setText('descSmoothScroll', t.descSmoothScroll);
   setText('titleBookmarks', t.titleBookmarks);
   setText('descBookmarks', t.descBookmarks);
+  setText('titleAutoToc', t.titleAutoToc);
+  setText('descAutoToc', t.descAutoToc);
+  setText('titleZenMode', t.titleZenMode);
+  setText('descZenMode', t.descZenMode);
   setText('titleBadge', t.titleBadge);
   setText('descBadge', t.descBadge);
   setText('titleToasts', t.titleToasts);
@@ -301,6 +313,8 @@ function renderSettings() {
   setSwitch('hideScrollbarSwitch', currentSettings.hideNativeScrollbar);
   setSwitch('smoothScrollSwitch', currentSettings.smoothScroll);
   setSwitch('bookmarksSwitch', currentSettings.bookmarks !== false);
+  setSwitch('autoTocSwitch', currentSettings.autoToc !== false);
+  setSwitch('zenModeSwitch', currentSettings.zenMode === true);
   setSwitch('shadowSwitch', currentSettings.shadow !== false);
   setSwitch('badgeSwitch', currentSettings.showBadge);
   setSwitch('toastsSwitch', currentSettings.showToasts);
@@ -380,6 +394,8 @@ bindSwitch('milestonesSwitch', 'milestones');
 bindSwitch('hideScrollbarSwitch', 'hideNativeScrollbar');
 bindSwitch('smoothScrollSwitch', 'smoothScroll');
 bindSwitch('bookmarksSwitch', 'bookmarks');
+bindSwitch('autoTocSwitch', 'autoToc');
+bindSwitch('zenModeSwitch', 'zenMode');
 bindSwitch('shadowSwitch', 'shadow');
 bindSwitch('badgeSwitch', 'showBadge');
 bindSwitch('toastsSwitch', 'showToasts');

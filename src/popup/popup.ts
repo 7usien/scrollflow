@@ -32,6 +32,8 @@ const shadowSwitch = document.getElementById('shadowSwitch');
 const hideScrollbarSwitch = document.getElementById('hideScrollbarSwitch');
 const smoothScrollSwitch = document.getElementById('smoothScrollSwitch');
 const bookmarksSwitch = document.getElementById('bookmarksSwitch');
+const autoTocSwitch = document.getElementById('autoTocSwitch');
+const zenModeSwitch = document.getElementById('zenModeSwitch');
 const optionsBtn = document.getElementById('optionsBtn');
 const clearBtn = document.getElementById('clearBtn');
 const popupBody = document.getElementById('popupBody');
@@ -48,6 +50,8 @@ const lblShadow = document.getElementById('lblShadow');
 const lblHideScrollbar = document.getElementById('lblHideScrollbar');
 const lblSmoothScroll = document.getElementById('lblSmoothScroll');
 const lblBookmarks = document.getElementById('lblBookmarks');
+const lblAutoToc = document.getElementById('lblAutoToc');
+const lblZenMode = document.getElementById('lblZenMode');
 
 const POPUP_STRINGS = {
   ar: {
@@ -70,6 +74,8 @@ const POPUP_STRINGS = {
     lblHideScrollbar: 'إخفاء سكرول المتصفح',
     lblSmoothScroll: 'تصفح سلس للصفحة',
     lblBookmarks: 'هوامش ونقاط الصفحة',
+    lblAutoToc: 'فهرس العناوين',
+    lblZenMode: 'وضع القراءة الهادئ',
     unsupported: 'الصفحة غير قابلة للقياس أو لا تدعم الإضافة هنا.',
     clearBtn: 'مسح بيانات التمرير',
     confirmClear: 'هل تريد بالتأكيد مسح جميع مواضع التمرير المحفوظة؟',
@@ -118,6 +124,8 @@ const POPUP_STRINGS = {
     lblHideScrollbar: 'Hide native scrollbar',
     lblSmoothScroll: 'Smooth page scrolling',
     lblBookmarks: 'Page margins & markers',
+    lblAutoToc: 'Auto Headings TOC',
+    lblZenMode: 'Zen Mode (Auto-Hide)',
     unsupported: 'Page cannot be measured or does not support ScrollFlow.',
     clearBtn: 'Clear scroll data',
     confirmClear: 'Are you sure you want to clear all saved scroll positions?',
@@ -171,6 +179,8 @@ function applyLocale(lang: Locale) {
   if (lblHideScrollbar) lblHideScrollbar.textContent = t.lblHideScrollbar;
   if (lblSmoothScroll) lblSmoothScroll.textContent = t.lblSmoothScroll;
   if (lblBookmarks) lblBookmarks.textContent = t.lblBookmarks;
+  if (lblAutoToc) lblAutoToc.textContent = t.lblAutoToc;
+  if (lblZenMode) lblZenMode.textContent = t.lblZenMode;
 
   if (clearBtn) clearBtn.textContent = t.clearBtn;
   if (unsupportedNote) unsupportedNote.textContent = t.unsupported;
@@ -313,6 +323,12 @@ function applySettingsToUI(s: Settings) {
   if (bookmarksSwitch) {
     bookmarksSwitch.setAttribute('aria-checked', String(s.bookmarks !== false));
   }
+  if (autoTocSwitch) {
+    autoTocSwitch.setAttribute('aria-checked', String(s.autoToc !== false));
+  }
+  if (zenModeSwitch) {
+    zenModeSwitch.setAttribute('aria-checked', String(s.zenMode === true));
+  }
 }
 
 function updateSiteBtn() {
@@ -420,6 +436,26 @@ bookmarksSwitch?.addEventListener('click', async () => {
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
     patch: { bookmarks: next },
+  });
+});
+
+autoTocSwitch?.addEventListener('click', async () => {
+  const cur = autoTocSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  autoTocSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { autoToc: next },
+  });
+});
+
+zenModeSwitch?.addEventListener('click', async () => {
+  const cur = zenModeSwitch.getAttribute('aria-checked') === 'true';
+  const next = !cur;
+  zenModeSwitch.setAttribute('aria-checked', String(next));
+  await chrome.runtime.sendMessage({
+    type: MSG.SETTINGS_PATCH,
+    patch: { zenMode: next },
   });
 });
 

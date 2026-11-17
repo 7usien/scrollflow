@@ -93,6 +93,8 @@ export function sanitizeSettings(raw: unknown): Settings {
     hideNativeScrollbar: typeof obj.hideNativeScrollbar === 'boolean' ? obj.hideNativeScrollbar : DEFAULT_SETTINGS.hideNativeScrollbar,
     smoothScroll: typeof obj.smoothScroll === 'boolean' ? obj.smoothScroll : DEFAULT_SETTINGS.smoothScroll,
     bookmarks: typeof obj.bookmarks === 'boolean' ? obj.bookmarks : DEFAULT_SETTINGS.bookmarks,
+    autoToc: typeof obj.autoToc === 'boolean' ? obj.autoToc : DEFAULT_SETTINGS.autoToc,
+    zenMode: typeof obj.zenMode === 'boolean' ? obj.zenMode : DEFAULT_SETTINGS.zenMode,
     contrast,
     allowFileUrls: typeof obj.allowFileUrls === 'boolean' ? obj.allowFileUrls : DEFAULT_SETTINGS.allowFileUrls,
     blocklist,

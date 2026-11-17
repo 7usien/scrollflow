@@ -1,6 +1,14 @@
 // src/core/bookmarks.ts — Pure logic for bookmarks / margins management (FR-36..FR-42)
-import type { BookmarkEntry } from '../shared/types';
+import type { BookmarkEntry, BookmarkColor } from '../shared/types';
 import { clamp01 } from './progress';
+
+export const BOOKMARK_COLORS: Record<BookmarkColor, { hex: string; labelAr: string; labelEn: string }> = {
+  yellow: { hex: '#ffd166', labelAr: 'مهم', labelEn: 'Important' },
+  green: { hex: '#06d6a0', labelAr: 'اقتباس', labelEn: 'Quote' },
+  purple: { hex: '#b5179e', labelAr: 'ملاحظة', labelEn: 'Note' },
+  blue: { hex: '#00d4ff', labelAr: 'مرجع', labelEn: 'Reference' },
+  red: { hex: '#ff4d6d', labelAr: 'تنبيه', labelEn: 'Warning' },
+};
 
 /**
  * Validates whether user-selected text qualifies for creating a bookmark.
@@ -38,12 +46,13 @@ export function createBookmarkEntry(params: {
   url: string;
   text: string;
   title?: string;
+  color?: BookmarkColor;
   scrollY: number;
   maxScroll: number;
   selector?: string;
   createdAt?: number;
 }): BookmarkEntry {
-  const { url, text, scrollY, maxScroll, selector } = params;
+  const { url, text, scrollY, maxScroll, selector, color = 'blue' } = params;
   const id = params.id || `bm_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
   const title = params.title || truncateSnippet(text, 40);
   const scrollRatio = computeMarkerRatio(scrollY, maxScroll);
@@ -54,6 +63,7 @@ export function createBookmarkEntry(params: {
     url,
     text: text.trim(),
     title,
+    color,
     scrollY: Math.max(0, scrollY),
     scrollRatio,
     selector,
@@ -75,6 +85,12 @@ export interface BookmarksLocaleConfig {
   closeAria: string;
   jumpAria: string;
   deleteAria: string;
+  bookmarksTab: string;
+  tocTab: string;
+  tocEmpty: string;
+  exportBtn: string;
+  copied: string;
+  filterAll: string;
 }
 
 /**
@@ -89,6 +105,12 @@ export function resolveBookmarksLocale(isRTL: boolean): BookmarksLocaleConfig {
         closeAria: 'إغلاق الفهرس',
         jumpAria: 'انتقال للهامش',
         deleteAria: 'حذف الهامش',
+        bookmarksTab: 'الهوامش',
+        tocTab: 'فهرس العناوين',
+        tocEmpty: 'لا توجد عناوين رئيسية في هذه الصفحة',
+        exportBtn: 'نسخ كـ Markdown',
+        copied: 'تم النسخ! ✓',
+        filterAll: 'الكل',
       }
     : {
         title: 'Page Bookmarks',
@@ -97,6 +119,12 @@ export function resolveBookmarksLocale(isRTL: boolean): BookmarksLocaleConfig {
         closeAria: 'Close Index',
         jumpAria: 'Jump to bookmark',
         deleteAria: 'Delete bookmark',
+        bookmarksTab: 'Bookmarks',
+        tocTab: 'Headings',
+        tocEmpty: 'No headings found on this page',
+        exportBtn: 'Export Markdown',
+        copied: 'Copied! ✓',
+        filterAll: 'All',
       };
 }
 
