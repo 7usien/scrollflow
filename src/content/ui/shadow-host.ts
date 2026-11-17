@@ -27,6 +27,7 @@ export function createShadowHost(settings: Settings): ShadowContext {
   host.style.width = '0';
   host.style.height = '0';
   host.style.overflow = 'visible';
+  host.style.pointerEvents = 'none';
 
   // Fallback for transform on documentElement
   try {

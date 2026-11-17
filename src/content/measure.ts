@@ -48,6 +48,8 @@ export function observeMetrics(onMetricsChanged: (m: Metrics) => void): MeasureO
   let isPaused = false;
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let lastDocHeight = 0;
+  let lastMaxScroll = 0;
+  let lastScrollable: boolean | null = null;
 
   const schedule = (delay = 150) => {
     if (isPaused || document.hidden) return;
@@ -56,8 +58,15 @@ export function observeMetrics(onMetricsChanged: (m: Metrics) => void): MeasureO
     debounceTimer = setTimeout(() => {
       debounceTimer = null;
       const m = computeMetrics();
-      if (m.docHeight !== lastDocHeight || m.scrollable) {
+      const hasChanged =
+        Math.abs(m.docHeight - lastDocHeight) > 2 ||
+        Math.abs(m.maxScroll - lastMaxScroll) > 2 ||
+        m.scrollable !== lastScrollable;
+
+      if (hasChanged) {
         lastDocHeight = m.docHeight;
+        lastMaxScroll = m.maxScroll;
+        lastScrollable = m.scrollable;
         onMetricsChanged(m);
       }
     }, delay);
@@ -69,7 +78,7 @@ export function observeMetrics(onMetricsChanged: (m: Metrics) => void): MeasureO
     ro.observe(document.body);
   }
 
-  const mo = new MutationObserver(() => schedule(200));
+  const mo = new MutationObserver(() => schedule(350));
   mo.observe(document.documentElement, {
     childList: true,
     subtree: true,

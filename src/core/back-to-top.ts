@@ -8,17 +8,24 @@ export interface BackToTopLocaleConfig {
 
 /**
  * Determines whether the Back to Top button should be visible.
- * Uses hysteresis (show at >=95%, hide at <90%) to avoid rapid flickering near the threshold.
+ * Uses hysteresis (show at >=85% or within 250px of bottom, hide at <75%)
+ * to avoid rapid flickering and ensure visibility on pages with large footers or fractional scaling.
  */
 export function shouldShowBackToTop(
   progress: number,
   scrollable: boolean,
   currentlyVisible: boolean,
-  showThreshold = 0.95,
-  hideThreshold = 0.90
+  showThreshold = 0.85,
+  hideThreshold = 0.75,
+  remainingPixels?: number
 ): boolean {
   if (!scrollable) {
     return false;
+  }
+
+  // If user is within 250px of the document bottom, show it reliably
+  if (remainingPixels !== undefined && remainingPixels <= 250 && remainingPixels >= 0) {
+    return true;
   }
 
   if (currentlyVisible) {

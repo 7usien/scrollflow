@@ -8,7 +8,7 @@ export interface BackToTopCallbacks {
 
 export interface BackToTopController {
   element: HTMLElement;
-  update: (progress: number, scrollable: boolean) => void;
+  update: (progress: number, scrollable: boolean, remainingPixels?: number) => void;
   setLocale: (isRTL: boolean) => void;
   reset: () => void;
   destroy: () => void;
@@ -47,8 +47,10 @@ export function createBackToTop(
   container.appendChild(button);
 
   let isCurrentlyVisible = false;
+  let currentRTL: boolean | null = null;
 
   const setLocale = (isRTL: boolean) => {
+    currentRTL = isRTL;
     const config = resolveBackToTopLocale(isRTL);
     textSpan.textContent = config.text;
     button.setAttribute('aria-label', config.ariaLabel);
@@ -63,23 +65,35 @@ export function createBackToTop(
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior: ScrollBehavior = isReduced ? 'instant' : 'smooth';
     window.scrollTo({
       top: 0,
-      behavior: isReduced ? 'instant' : 'smooth',
+      behavior,
     });
+    const scrollEl = document.scrollingElement || document.documentElement;
+    if (scrollEl && scrollEl.scrollTop > 0) {
+      try {
+        scrollEl.scrollTo({ top: 0, behavior });
+      } catch {
+        // fail-soft
+      }
+    }
     button.blur();
     callbacks?.onScrollToTop?.();
   };
 
   button.addEventListener('click', handleClick);
 
-  const update = (progress: number, scrollable: boolean) => {
-    // If callbacks provide isRTL, update locale dynamically in case DOM dir changed
+  const update = (progress: number, scrollable: boolean, remainingPixels?: number) => {
+    // Only update locale if RTL state changed to prevent unnecessary layout/DOM churn
     if (callbacks?.isRTL) {
-      setLocale(callbacks.isRTL());
+      const nextRTL = callbacks.isRTL();
+      if (nextRTL !== currentRTL) {
+        setLocale(nextRTL);
+      }
     }
 
-    const nextVisible = shouldShowBackToTop(progress, scrollable, isCurrentlyVisible);
+    const nextVisible = shouldShowBackToTop(progress, scrollable, isCurrentlyVisible, 0.85, 0.75, remainingPixels);
     if (nextVisible !== isCurrentlyVisible) {
       isCurrentlyVisible = nextVisible;
       button.setAttribute('data-show', isCurrentlyVisible ? 'true' : 'false');

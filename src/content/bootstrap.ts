@@ -56,12 +56,32 @@ function shouldShowOverlay(): boolean {
   return true;
 }
 
+function checkIsRTL(): boolean {
+  const docDir = (document.documentElement.dir || '').toLowerCase();
+  const bodyDir = (document.body?.dir || '').toLowerCase();
+  if (docDir === 'rtl' || bodyDir === 'rtl') return true;
+
+  const lang = (document.documentElement.lang || document.body?.lang || '').toLowerCase();
+  if (lang.startsWith('ar') || lang.startsWith('fa') || lang.startsWith('he') || lang.startsWith('ur')) {
+    return true;
+  }
+
+  try {
+    const computedDir = window.getComputedStyle(document.body || document.documentElement).direction;
+    if (computedDir === 'rtl') return true;
+  } catch {
+    // Fail-soft
+  }
+
+  return false;
+}
+
 function setupUI() {
   shadowCtx = createShadowHost(settings);
   progressBar = createProgressBar(shadowCtx.shadowRoot, {
     getMaxScroll: () => currentMetrics.maxScroll,
     getOrientation: () => settings.orientation,
-    isRTL: () => document.documentElement.dir === 'rtl' || document.body?.dir === 'rtl',
+    isRTL: checkIsRTL,
     onScrub: (ratio) => {
       userInteracted = true;
       smoothedProgress = ratio;
@@ -72,7 +92,7 @@ function setupUI() {
   toast = createToast(shadowCtx.shadowRoot);
   milestoneTracker = createMilestoneTracker();
   backToTop = createBackToTop(shadowCtx.shadowRoot, {
-    isRTL: () => document.documentElement.dir === 'rtl' || document.body?.dir === 'rtl',
+    isRTL: checkIsRTL,
   });
 
   updateVisibility();
@@ -89,7 +109,8 @@ function updateVisibility() {
     setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
-    backToTop?.update(smoothedProgress, true);
+    const remainingPixels = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
+    backToTop?.update(smoothedProgress, true, remainingPixels);
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
     setSmoothScrollEnabled(settings.smoothScroll);
   }
@@ -130,7 +151,8 @@ async function startInitialMeasurementAndRestoration() {
   const initialProgress = computeProgress(currentMetrics.scrollY, currentMetrics.maxScroll);
   smoothedProgress = initialProgress;
   progressBar?.render(smoothedProgress);
-  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
+  const remainingInitial = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
+  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingInitial);
   updateVisibility();
   sendProgressUpdate();
 
@@ -145,7 +167,8 @@ async function startInitialMeasurementAndRestoration() {
     const targetProgress = computeProgress(currentMetrics.scrollY, currentMetrics.maxScroll);
     smoothedProgress = targetProgress;
     progressBar?.render(smoothedProgress);
-    backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
+    const remainingObs = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
+    backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingObs);
     sendProgressUpdate();
   });
 }
@@ -202,7 +225,8 @@ function tick() {
     }
   }
 
-  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay());
+  const remainingTick = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
+  backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingTick);
   sendProgressUpdate();
 
   // Continue lerping if not close enough
@@ -299,6 +323,14 @@ function sendProgressUpdate() {
 function setupEvents() {
   window.addEventListener('scroll', handleScroll, { passive: true });
 
+  const markInteracted = () => {
+    userInteracted = true;
+  };
+  window.addEventListener('pointerdown', markInteracted, { passive: true, capture: true });
+  window.addEventListener('keydown', markInteracted, { passive: true, capture: true });
+  window.addEventListener('wheel', markInteracted, { passive: true, capture: true });
+  window.addEventListener('touchstart', markInteracted, { passive: true, capture: true });
+
   window.addEventListener('pagehide', () => flushSave(), { capture: true });
   window.addEventListener('beforeunload', () => flushSave());
 
@@ -322,10 +354,14 @@ function setupEvents() {
     switch (message.type) {
       case MSG.NAV_CHANGED: {
         // SPA navigation (FR-23)
+        // If the URL is unchanged or just a fragment/hash, ignore it to prevent disrupting in-page browsing
+        if (message.url && message.url === currentUrl) {
+          break;
+        }
+
         flushSave(currentUrl);
         currentUrl = window.location.href;
         userInteracted = false;
-        window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
         smoothedProgress = 0;
         progressBar?.render(0);
         milestoneTracker?.reset();
