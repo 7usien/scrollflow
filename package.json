@@ -10,7 +10,8 @@
     "lint": "eslint . --ext .ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "verify": "npm run typecheck && npm run lint && npm run test"
+    "verify": "npm run typecheck && npm run lint && npm run test",
+    "pack": "node scripts/pack.js"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",

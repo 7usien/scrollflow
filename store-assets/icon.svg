@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1222" />
+      <stop offset="50%" stop-color="#0a0c16" />
+      <stop offset="100%" stop-color="#05070d" />
+    </linearGradient>
+
+    <!-- Aurora Brand Flow Gradient -->
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7928ca" />
+      <stop offset="35%" stop-color="#6d5bff" />
+      <stop offset="70%" stop-color="#4e8cff" />
+      <stop offset="100%" stop-color="#00d4ff" />
+    </linearGradient>
+
+    <!-- Rail Track Gradient -->
+    <linearGradient id="trackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6d5bff" />
+      <stop offset="50%" stop-color="#4e8cff" />
+      <stop offset="100%" stop-color="#00d4ff" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="28" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base Container -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bgGrad)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="4" />
+
+  <!-- Ambient Glow Behind Elements -->
+  <circle cx="210" cy="230" r="140" fill="#6d5bff" opacity="0.22" filter="blur(40px)" />
+  <circle cx="330" cy="310" r="130" fill="#00d4ff" opacity="0.20" filter="blur(40px)" />
+
+  <!-- Flowing Dynamic Waves (Representing Smooth Continuous Scrolling & Reading Flow) -->
+  <path d="M 96 352 C 140 376, 200 368, 256 312 C 320 248, 360 216, 416 232" 
+        fill="none" 
+        stroke="url(#flowGrad)" 
+        stroke-width="26" 
+        stroke-linecap="round" 
+        opacity="0.35" 
+        filter="url(#neonGlow)" />
+
+  <path d="M 96 288 C 150 288, 190 224, 256 200 C 322 176, 370 216, 416 200" 
+        fill="none" 
+        stroke="url(#flowGrad)" 
+        stroke-width="34" 
+        stroke-linecap="round" 
+        filter="url(#neonGlow)" />
+
+  <!-- Vertical Scroll Rail (Right Side, Characteristic of ScrollFlow) -->
+  <rect x="364" y="104" width="24" height="304" rx="12" fill="rgba(255, 255, 255, 0.14)" />
+  
+  <!-- Active Progress Fill on Rail -->
+  <rect x="364" y="104" width="24" height="188" rx="12" fill="url(#trackGrad)" filter="url(#neonGlow)" />
+
+  <!-- Glowing Thumb Indicator -->
+  <circle cx="376" cy="292" r="22" fill="#ffffff" filter="drop-shadow(0 0 14px #00d4ff)" />
+  <circle cx="376" cy="292" r="12" fill="#00d4ff" />
+
+  <!-- Marginalia Bookmark Dot (Representing Highlights & Margins) -->
+  <circle cx="376" cy="180" r="14" fill="#ffd166" stroke="#ffffff" stroke-width="3" filter="drop-shadow(0 0 8px #ffd166)" />
+  <!-- Small Bookmark Tag Ribbon -->
+  <path d="M 364 180 L 340 180 L 348 174 L 340 168 L 364 168 Z" fill="#ffd166" opacity="0.9" />
+
+  <!-- TOC Heading Tick (Representing Auto-TOC) -->
+  <rect x="354" y="234" width="44" height="6" rx="3" fill="#ffffff" opacity="0.85" filter="drop-shadow(0 0 4px #ffffff)" />
+
+  <!-- Inner Sparkle / Star (Representing Celebration Confetti & Polish) -->
+  <path d="M 172 136 Q 172 168 140 168 Q 172 168 172 200 Q 172 168 204 168 Q 172 168 172 136 Z" fill="#ffd166" opacity="0.85" filter="drop-shadow(0 0 8px #ffd166)" />
+  <circle cx="120" cy="220" r="6" fill="#00d4ff" opacity="0.7" />
+</svg>

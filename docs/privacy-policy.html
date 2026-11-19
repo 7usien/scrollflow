@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScrollFlow — سياسة الخصوصية | Privacy Policy</title>
+  <meta name="description" content="سياسة الخصوصية الرسمية لإضافة ScrollFlow لمتصفح جوجل كروم — خصوصية تامة، صفر تتبع، تخزين محلي 100%. Official Privacy Policy for ScrollFlow Chrome Extension.">
+  <link rel="icon" type="image/png" href="../public/icons/icon32.png">
+  <style>
+    :root {
+      --bg: #090d16;
+      --bg-surface: rgba(18, 26, 44, 0.75);
+      --bg-surface-hover: rgba(28, 38, 64, 0.85);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-accent: rgba(56, 189, 248, 0.3);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --gradient-aurora: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #a855f7 100%);
+      --gradient-subtle: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, transparent 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 24px rgba(56, 189, 248, 0.2);
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Cairo', 'Alexandria', sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-surface: rgba(255, 255, 255, 0.88);
+      --bg-surface-hover: rgba(241, 245, 249, 0.95);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-accent: rgba(14, 165, 233, 0.35);
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-glow: 0 0 24px rgba(14, 165, 233, 0.15);
+      --gradient-subtle: linear-gradient(180deg, rgba(14, 165, 233, 0.08) 0%, transparent 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent 70%),
+        radial-gradient(circle 400px at 100% 30%, rgba(168, 85, 247, 0.08), transparent 60%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* Header Nav */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--gradient-aurora);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .brand-name {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid var(--border-accent);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      margin-inline-start: 6px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn-toggle {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-toggle:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--accent-cyan);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Hero Banner */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      background: var(--gradient-aurora);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .pill {
+      font-size: 0.825rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .pill strong {
+      color: var(--text);
+    }
+
+    /* Quick Badges Grid */
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .highlight-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-cyan);
+    }
+
+    .highlight-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .highlight-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+    }
+
+    .highlight-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Content Sections */
+    .section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-card h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-card h2 .sec-num {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      display: inline-grid;
+      place-items: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .section-card p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    /* Modern Table */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: start;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 0.85rem 1.15rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.85rem 1.15rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tag-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .tag-ram {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    /* Lists */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    li {
+      position: relative;
+      padding-inline-start: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    li::before {
+      content: '✔';
+      position: absolute;
+      inset-inline-start: 0;
+      color: var(--accent-emerald);
+      font-weight: bold;
+    }
+
+    .negative-list li::before {
+      content: '✖';
+      color: var(--accent-rose);
+    }
+
+    /* Alert Box */
+    .callout {
+      border-inline-start: 4px solid var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.08);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.15rem 1.35rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    [dir="rtl"] .callout {
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 2.5rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: text-decoration 0.2s ease;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Language View Toggle */
+    .lang-section {
+      display: none;
+    }
+
+    .lang-section.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Navigation Header -->
+    <header>
+      <a href="https://github.com/husienadel/scrollflow" class="brand" target="_blank" rel="noopener">
+        <div class="brand-icon">SF</div>
+        <div>
+          <span class="brand-name">ScrollFlow</span>
+          <span class="brand-tag">v1.2</span>
+        </div>
+      </a>
+
+      <div class="controls">
+        <button id="themeToggle" class="btn-toggle" aria-label="تبديل الثيم / Toggle Theme">
+          <span id="themeIcon">☀️</span>
+          <span id="themeText">الوضع النهاري</span>
+        </button>
+        <button id="langToggle" class="btn-toggle" aria-label="تبديل اللغة / Switch Language">
+          <span>🌐</span>
+          <span id="langText">English</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- ARABIC CONTENT SECTION (القسم باللغة العربية) -->
+    <!-- ========================================== -->
+    <div id="section-ar" class="lang-section active">
+      <div class="hero">
+        <div class="hero-badge">
+          <span>🛡️</span>
+          <span>خصوصية تامة عبر التصميم (Zero-Knowledge Architecture)</span>
+        </div>
+        <h1>وثيقة سياسة الخصوصية</h1>
+        <p>لا نجمع، ولا نخزن، ولا ننقل أي بيانات تخصك خارج جهازك الشخصي. تصفح، اقرأ، وظلل نصوصك بحرية وأمان مطلق.</p>
+        
+        <div class="meta-pills">
+          <div class="pill">آخر تحديث: <strong>19 نوفمبر 2026</strong></div>
+          <div class="pill">الإصدار: <strong>1.2.0</strong></div>
+          <div class="pill">الترخيص: <strong>MIT مفتوح المصدر</strong></div>
+        </div>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="highlights-grid">
+        <div class="highlight-card">
+          <span class="highlight-icon">💻</span>
+          <div class="highlight-title">محلي 100%</div>
+          <div class="highlight-desc">كل العمليات الحسابية والتخزين تتم داخل المتصفح فقط.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">🚫</span>
+          <div class="highlight-title">صفر خوادم خارجية</div>
+          <div class="highlight-desc">لا يوجد أي سيرفر أو قاعدة بيانات سحابية خلف الإضافة.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">🔒</span>
+          <div class="highlight-title">صفر تتبع وتحليلات</div>
+          <div class="highlight-desc">خالية تماماً من Google Analytics أو ملفات الـ Cookies.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">⚡</span>
+          <div class="highlight-title">تحكم كامل بالحذف</div>
+          <div class="highlight-desc">زر مسح فوري شامل للبيانات، وحذف كلي عند إزالة الإضافة.</div>
+        </div>
+      </div>
+
+      <!-- Section 1 -->
+      <div class="section-card">
+        <h2><span class="sec-num">1</span> الملخص في سطر واحد</h2>
+        <div class="callout">
+          <strong>عهد الخصوصية الصارم:</strong> إضافة ScrollFlow لا تجمع، ولا تسجل، ولا تشارك أي بيانات شخصية أو سجلات تصفح إطلاقاً. ملاحظاتك وهوامشك ومواضع قراءتك تبقى ملكك وحدك داخل مساحة التخزين المحلية لمتصفحك.
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-card">
+        <h2><span class="sec-num">2</span> مصفوفة معالجة وتخزين البيانات</h2>
+        <p>يوضح الجدول التالي كافة البيانات الفنية التي تتعامل معها الإضافة وكيفية معالجتها:</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع البيانات</th>
+                <th>الغرض الفني والتشغيلي</th>
+                <th>مكان المعالجة والحفظ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>ارتفاع الصفحة وموضع التمرير</strong></td>
+                <td>حساب نسبة القراءة وعرض الشريط واستعادة موضعك عند العودة</td>
+                <td><span class="tag-badge">chrome.storage.local</span> محلياً فقط</td>
+              </tr>
+              <tr>
+                <td><strong>رابط الصفحة (مطبَّعاً)</strong></td>
+                <td>مفتاح فهرسة محلي لربط موضع التمرير والهوامش بالصفحة</td>
+                <td><span class="tag-badge">chrome.storage.local</span> محلياً فقط</td>
+              </tr>
+              <tr>
+                <td><strong>هوامش النصوص وتظليلها (5 ألوان)</strong></td>
+                <td>حفظ الاقتباسات وإظهار نقاط المسار وبطاقات المعاينة السريعة</td>
+                <td><span class="tag-badge">chrome.storage.local</span> محلياً فقط بمفتاح منفصل</td>
+              </tr>
+              <tr>
+                <td><strong>فهرس العناوين (Auto-TOC)</strong></td>
+                <td>استخراج عناوين H1..H3 لرسم فصول المقال وشُرط الشريط</td>
+                <td><span class="tag-badge tag-ram">ذاكرة RAM المؤقتة</span> لا يُخزَّن دائماً</td>
+              </tr>
+              <tr>
+                <td><strong>تصدير الملاحظات لـ Markdown</strong></td>
+                <td>نسخ هوامش المقال إلى الحافظة (Clipboard) لتطبيقات Notion وObsidian</td>
+                <td><span class="tag-badge tag-ram">حافظة النظام المباشرة</span> بنقرة واحدة صريحة</td>
+              </tr>
+              <tr>
+                <td><strong>مؤقت وضع الزن (Zen Auto-Hide)</strong></td>
+                <td>إخفاء الشريط عند التوقف عن التمرير لمدة 2.5 ثانية للتركيز</td>
+                <td><span class="tag-badge tag-ram">ذاكرة RAM المؤقتة</span></td>
+              </tr>
+              <tr>
+                <td><strong>إحصائيات الصفحة (الكلمات والشاشات)</strong></td>
+                <td>تقدير وقت القراءة وعمق الصفحة في نافذة الإضافة</td>
+                <td><span class="tag-badge tag-ram">في الذاكرة المؤقتة فقط</span> — لا يُخزن نص المقال</td>
+              </tr>
+              <tr>
+                <td><strong>تفضيلات المظهر والإعدادات</strong></td>
+                <td>حفظ الثيم المختار، موضع الشريط، وقائمة المواقع المستثناة</td>
+                <td><span class="tag-badge">chrome.storage.local</span> محلياً فقط</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section-card">
+        <h2><span class="sec-num">3</span> ما لا نفعله بشكل قاطع (محظورات التصميم)</h2>
+        <ul class="negative-list">
+          <li><strong>لا خوادم خارجية:</strong> لا نمتلك ولا نتصل بأي سيرفر أو خادم سحابي عن بُعد.</li>
+          <li><strong>لا تتبع ولا تحليلات:</strong> لا نستخدم Google Analytics، ولا Mixpanel، ولا أي أداة لتحليل سلوك المستخدم.</li>
+          <li><strong>لا تلصص على البيانات الحساسة:</strong> لا نقرأ حقول الإدخال، ولا كلمات المرور، ولا البطاقات الائتمانية.</li>
+          <li><strong>لا بيع أو مشاركة للبيانات:</strong> لا نبيع أو نشارك أو نؤجر أي بيانات لأي شركة إعلانات أو جهات خارجية.</li>
+          <li><strong>لا حسابات ولا تسجيل دخول:</strong> لا نطلب بريداً إلكترونياً أو اسماً، وتعمل الإضافة فور تثبيتها بلا قيود.</li>
+        </ul>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="section-card">
+        <h2><span class="sec-num">4</span> سياسة الاحتفاظ والتحكم الكامل في البيانات</h2>
+        <p>أنت صاحب القرار الأول والأخير فيما يتم حفظه على جهازك:</p>
+        <ul>
+          <li><strong>زر المسح الفوري:</strong> يتوفر زر في نافذة الإضافة وصفحة الخيارات لمسح جميع المواضع والهوامش المحفوظة فوراً.</li>
+          <li><strong>تنظيف تلقائي دوري (LRU Pruning):</strong> تُحذف مواضع الصفحات غير المزارة تلقائياً بعد مرور 90 يوماً، مع سقف أقصى 1500 صفحة.</li>
+          <li><strong>إزالة شاملة وفورية:</strong> عند إزالة الإضافة من المتصفح، يحذف Chrome تلقائياً كافة بياناتها المخزنة دون أي بقايا.</li>
+        </ul>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="section-card">
+        <h2><span class="sec-num">5</span> الأذونات الفنية وتبريرها الصارم</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>الإذن المطلوب</th>
+                <th>سبب الحاجة إليه في الإضافة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>storage</code></td>
+                <td>لحفظ الإعدادات والمواضع والهوامش محلياً داخل المتصفح عبر <code>chrome.storage.local</code>.</td>
+              </tr>
+              <tr>
+                <td><code>activeTab</code></td>
+                <td>لقراءة رابط التبويب الحالي عند فتح نافذة الإضافة لحساب وقت القراءة وإتاحة خيار استثناء الموقع.</td>
+              </tr>
+              <tr>
+                <td><code>webNavigation</code></td>
+                <td>لرصد تغيير المسارات في تطبيقات الصفحة الواحدة (SPAs كـ React وVue) لحفظ واستعادة الموضع لكل مسار بدقة.</td>
+              </tr>
+              <tr>
+                <td><code>&lt;all_urls&gt;</code> (الوصول للمواقع)</td>
+                <td>لتشغيل شريط القراءة وكبسولة التظليل في أي مقال تقرأه، مع استبعاد حتمي لمتجر كروم والصفحات الداخلية للمتصفح.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="section-card">
+        <h2><span class="sec-num">6</span> الامتثال للسياسات العالمية والشفافية</h2>
+        <p>تلتزم الإضافة التزاماً كاملاً بجميع المعايير والسياسات التالية:</p>
+        <ul>
+          <li><strong>سياسة الغرض الأحادي لمتجر كروم (Single Purpose Policy):</strong> تركز الإضافة حصرياً على تحسين تجربة القراءة وتدوين الهوامش.</li>
+          <li><strong>اللائحة الأوروبية لحماية البيانات (GDPR):</strong> التزام تام عبر مبدأ الخصوصية بالامتناع عن المعالجة (Zero Data Processing).</li>
+          <li><strong>قانون خصوصية المستهلك في كاليفورنيا (CCPA):</strong> لا نجمع ولا نبيع أي معلومات للمستهلكين.</li>
+        </ul>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="section-card">
+        <h2><span class="sec-num">7</span> الكود المصدري وقنوات التواصل</h2>
+        <p>لأن الشفافية مبدأ غير قابل للتفاوض، فإن الكود المصدري لإضافة ScrollFlow متاح بالكامل للجميع للمراجعة والفحص:</p>
+        <p>🌐 المستودع على GitHub: <a href="https://github.com/husienadel/scrollflow" target="_blank" rel="noopener">github.com/husienadel/scrollflow</a></p>
+        <p>📧 للتواصل المباشر مع المطور: <a href="mailto:husienadel2022@gmail.com">husienadel2022@gmail.com</a></p>
+      </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- ENGLISH CONTENT SECTION (القسم باللغة الإنجليزية) -->
+    <!-- =========================================== -->
+    <div id="section-en" class="lang-section">
+      <div class="hero">
+        <div class="hero-badge">
+          <span>🛡️</span>
+          <span>Zero-Knowledge Architecture by Design</span>
+        </div>
+        <h1>Privacy Policy</h1>
+        <p>We do not collect, store, transmit, or monetize any of your browsing data or notes. Read, highlight, and explore the web with total peace of mind.</p>
+        
+        <div class="meta-pills">
+          <div class="pill">Last Updated: <strong>November 19, 2026</strong></div>
+          <div class="pill">Version: <strong>1.2.0</strong></div>
+          <div class="pill">License: <strong>MIT Open Source</strong></div>
+        </div>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="highlights-grid">
+        <div class="highlight-card">
+          <span class="highlight-icon">💻</span>
+          <div class="highlight-title">100% Offline</div>
+          <div class="highlight-desc">All calculations and storage happen exclusively inside your browser.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">🚫</span>
+          <div class="highlight-title">Zero Remote Servers</div>
+          <div class="highlight-desc">No backend servers or cloud databases exist behind ScrollFlow.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">🔒</span>
+          <div class="highlight-title">Zero Tracking</div>
+          <div class="highlight-desc">Completely free of Google Analytics, tracking scripts, and cookies.</div>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon">⚡</span>
+          <div class="highlight-title">Full User Control</div>
+          <div class="highlight-desc">One-click data purge and automatic total cleanup upon extension uninstall.</div>
+        </div>
+      </div>
+
+      <!-- Section 1 -->
+      <div class="section-card">
+        <h2><span class="sec-num">1</span> Executive Summary</h2>
+        <div class="callout">
+          <strong>Our Absolute Privacy Pledge:</strong> ScrollFlow does not collect, track, transmit, or share any personal information or web browsing activity whatsoever. Your reading progress, margin notes, and saved scroll positions remain strictly under your control inside your local browser storage.
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-card">
+        <h2><span class="sec-num">2</span> Data Processing Matrix</h2>
+        <p>The table below provides a full breakdown of technical data handled by ScrollFlow and where it is processed:</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Data Type</th>
+                <th>Technical & Operational Purpose</th>
+                <th>Storage Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Page Height & Scroll Percentage</strong></td>
+                <td>Computes reading percentage, renders the progress bar, and restores position upon return</td>
+                <td><span class="tag-badge">chrome.storage.local</span> (Local Only)</td>
+              </tr>
+              <tr>
+                <td><strong>Normalized Page URL</strong></td>
+                <td>Acts as a local dictionary key to associate scroll coordinates and margin notes with the page</td>
+                <td><span class="tag-badge">chrome.storage.local</span> (Local Only)</td>
+              </tr>
+              <tr>
+                <td><strong>Text Highlights & Margin Notes (5 Colors)</strong></td>
+                <td>Saves selected text snippets, displays margin dots on the rail, and renders preview cards</td>
+                <td><span class="tag-badge">chrome.storage.local</span> (Local Only)</td>
+              </tr>
+              <tr>
+                <td><strong>Table of Contents Headings (Auto-TOC)</strong></td>
+                <td>Scrapes H1..H3 semantic headings to generate chapter ticks on the rail and the TOC drawer</td>
+                <td><span class="tag-badge tag-ram">Transient RAM Only</span> (Never persisted)</td>
+              </tr>
+              <tr>
+                <td><strong>Markdown Export</strong></td>
+                <td>Copies formatted quotes and notes to your system clipboard for Notion and Obsidian</td>
+                <td><span class="tag-badge tag-ram">System Clipboard</span> (User-initiated click)</td>
+              </tr>
+              <tr>
+                <td><strong>Zen Auto-Hide Timer</strong></td>
+                <td>Softly fades out the progress bar after 2.5 seconds of inactivity for distraction-free reading</td>
+                <td><span class="tag-badge tag-ram">Transient RAM Only</span></td>
+              </tr>
+              <tr>
+                <td><strong>Reading Metrics (Words & Viewports)</strong></td>
+                <td>Calculates estimated reading time and page screen depth inside the popup</td>
+                <td><span class="tag-badge tag-ram">Transient RAM Only</span> (Never persisted)</td>
+              </tr>
+              <tr>
+                <td><strong>User Settings & Themes</strong></td>
+                <td>Saves chosen theme, bar geometry, Zen mode toggle, and whitelisted/blacklisted domains</td>
+                <td><span class="tag-badge">chrome.storage.local</span> (Local Only)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section-card">
+        <h2><span class="sec-num">3</span> What We Never Do (Architectural Boundaries)</h2>
+        <ul class="negative-list">
+          <li><strong>No Remote Servers:</strong> We do not operate or communicate with any cloud server or database.</li>
+          <li><strong>No Telemetry or Tracking:</strong> No Google Analytics, no telemetry beacons, no user fingerprinting.</li>
+          <li><strong>No Access to Sensitive Fields:</strong> We never inspect form inputs, passwords, or financial credentials.</li>
+          <li><strong>No Data Monetization:</strong> We do not sell, license, share, or broker user data with third parties.</li>
+          <li><strong>No User Accounts:</strong> No sign-in, no email registration, and no user profiles required.</li>
+        </ul>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="section-card">
+        <h2><span class="sec-num">4</span> Data Retention & User Control</h2>
+        <p>You have sovereign control over all data stored locally on your machine:</p>
+        <ul>
+          <li><strong>One-Click Manual Purge:</strong> A clear "Clear Stored Data" button is available in the popup and options page.</li>
+          <li><strong>Automatic LRU Pruning:</strong> Inactive pages older than 90 days are automatically deleted, with a strict 1,500-page cap.</li>
+          <li><strong>Total Removal upon Uninstall:</strong> Uninstalling ScrollFlow immediately and permanently wipes all extension storage in Chrome.</li>
+        </ul>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="section-card">
+        <h2><span class="sec-num">5</span> Technical Permission Justifications</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Declared Permission</th>
+                <th>Exact Technical Justification</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>storage</code></td>
+                <td>Used strictly to persist user display options, scroll coordinates, and margin notes locally via <code>chrome.storage.local</code>.</td>
+              </tr>
+              <tr>
+                <td><code>activeTab</code></td>
+                <td>Invoked only when opening the popup to read the current tab's URL/title for reading metrics and domain toggling.</td>
+              </tr>
+              <tr>
+                <td><code>webNavigation</code></td>
+                <td>Detects Single Page Application (SPA) route changes via HTML5 History events to preserve positions per route.</td>
+              </tr>
+              <tr>
+                <td><code>&lt;all_urls&gt;</code> (Host Access)</td>
+                <td>Enables the reading bar and margin highlights on user-selected reading material, with strict exclusions for Chrome Web Store and internal browser schemes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="section-card">
+        <h2><span class="sec-num">6</span> Regulatory & Policy Compliance</h2>
+        <p>ScrollFlow strictly aligns with all leading developer and privacy standards:</p>
+        <ul>
+          <li><strong>Chrome Web Store Single Purpose Policy:</strong> Exclusively focused on reading enhancement and annotation.</li>
+          <li><strong>European GDPR:</strong> Maximum compliance achieved through complete absence of personal data processing.</li>
+          <li><strong>California CCPA:</strong> Zero consumer data collection, selling, or sharing.</li>
+        </ul>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="section-card">
+        <h2><span class="sec-num">7</span> Source Code & Contact</h2>
+        <p>Transparency is foundational to our mission. ScrollFlow's complete source code is public and open for review:</p>
+        <p>🌐 GitHub Repository: <a href="https://github.com/husienadel/scrollflow" target="_blank" rel="noopener">github.com/husienadel/scrollflow</a></p>
+        <p>📧 Developer Contact: <a href="mailto:husienadel2022@gmail.com">husienadel2022@gmail.com</a></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>ScrollFlow &copy; 2026 — مصمم للقرّاء والمبرمجين والباحثين بأعلى معايير الخصوصية والأداء.</p>
+      <p style="margin-top: 0.5rem;">
+        <a href="https://github.com/husienadel/scrollflow" target="_blank" rel="noopener">GitHub</a> &bull; 
+        <a href="https://chromewebstore.google.com" target="_blank" rel="noopener">Chrome Web Store</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    let currentTheme = localStorage.getItem('sf_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+    function applyTheme(theme, isAr) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = isAr ? 'الوضع الليلي' : 'Dark Mode';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = isAr ? 'الوضع النهاري' : 'Light Mode';
+      }
+      localStorage.setItem('sf_theme', theme);
+    }
+
+    // Language Toggle Logic
+    const langBtn = document.getElementById('langToggle');
+    const langText = document.getElementById('langText');
+    const secAr = document.getElementById('section-ar');
+    const secEn = document.getElementById('section-en');
+    let currentLang = window.location.hash === '#en' ? 'en' : 'ar';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      if (lang === 'en') {
+        document.documentElement.setAttribute('lang', 'en');
+        document.documentElement.setAttribute('dir', 'ltr');
+        secAr.classList.remove('active');
+        secEn.classList.add('active');
+        langText.textContent = 'العربية';
+        window.location.hash = 'en';
+      } else {
+        document.documentElement.setAttribute('lang', 'ar');
+        document.documentElement.setAttribute('dir', 'rtl');
+        secEn.classList.remove('active');
+        secAr.classList.add('active');
+        langText.textContent = 'English';
+        window.location.hash = 'ar';
+      }
+      applyTheme(currentTheme, currentLang === 'ar');
+    }
+
+    themeBtn.addEventListener('click', () => {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(currentTheme, currentLang === 'ar');
+    });
+
+    langBtn.addEventListener('click', () => {
+      setLanguage(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // Initialize
+    setLanguage(currentLang);
+  </script>
+</body>
+</html>
