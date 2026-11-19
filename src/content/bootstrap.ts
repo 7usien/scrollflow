@@ -18,6 +18,7 @@ import { createBackToTop, type BackToTopController } from './ui/back-to-top';
 import { createSelectionBubble, type SelectionBubbleController } from './ui/selection-bubble';
 import { createMarkersManager, type MarkersController } from './ui/markers';
 import { createBookmarksMenu, type BookmarksMenuController } from './ui/bookmarks-menu';
+import { createTocMinimap, type TocMinimapController } from './ui/toc-minimap';
 import { createTocObserver, type TocObserverController } from './toc-observer';
 import { computeZenVisualState, DEFAULT_ZEN_IDLE_TIMEOUT_MS } from '../core/zen';
 import { createBookmarkEntry } from '../core/bookmarks';
@@ -32,6 +33,7 @@ let backToTop: BackToTopController | null = null;
 let selectionBubble: SelectionBubbleController | null = null;
 let markersManager: MarkersController | null = null;
 let bookmarksMenu: BookmarksMenuController | null = null;
+let tocMinimap: TocMinimapController | null = null;
 let tocObserver: TocObserverController | null = null;
 
 let currentBookmarks: BookmarkEntry[] = [];
@@ -104,6 +106,7 @@ function pokeZenMode() {
       isZenDimmed = false;
       progressBar?.element.removeAttribute('data-zen');
       bookmarksMenu?.setZenState(false);
+      tocMinimap?.setZenState(false);
     }
     if (zenTimer) {
       clearTimeout(zenTimer);
@@ -116,6 +119,7 @@ function pokeZenMode() {
     isZenDimmed = false;
     progressBar?.element.removeAttribute('data-zen');
     bookmarksMenu?.setZenState(false);
+    tocMinimap?.setZenState(false);
   }
 
   if (zenTimer) {
@@ -136,6 +140,7 @@ function pokeZenMode() {
       isZenDimmed = true;
       progressBar?.element.setAttribute('data-zen', 'dimmed');
       bookmarksMenu?.setZenState(true);
+      tocMinimap?.setZenState(true);
     }
   }, DEFAULT_ZEN_IDLE_TIMEOUT_MS);
 }
@@ -146,15 +151,25 @@ function updateTocObserver() {
       tocObserver = createTocObserver();
       tocObserver.start((entries) => {
         currentTocEntries = entries;
+        tocMinimap?.render(currentTocEntries);
+        tocMinimap?.updateScroll(currentMetrics.scrollY);
         markersManager?.renderToc(currentTocEntries);
         bookmarksMenu?.renderToc(currentTocEntries);
       });
+    } else {
+      const entries = tocObserver.scan();
+      currentTocEntries = entries;
+      tocMinimap?.render(currentTocEntries);
+      tocMinimap?.updateScroll(currentMetrics.scrollY);
+      markersManager?.renderToc(currentTocEntries);
+      bookmarksMenu?.renderToc(currentTocEntries);
     }
   } else {
     if (tocObserver) {
       tocObserver.destroy();
       tocObserver = null;
       currentTocEntries = [];
+      tocMinimap?.render([]);
       markersManager?.renderToc([]);
       bookmarksMenu?.renderToc([]);
     }
@@ -193,6 +208,18 @@ function setupUI() {
     isRTL: checkIsRTL,
   });
 
+  const handleJumpToToc = (entry: TocEntry) => {
+    userInteracted = true;
+    pokeZenMode();
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: entry.scrollY, behavior: isReduced ? 'instant' : 'smooth' });
+  };
+
+  tocMinimap = createTocMinimap(shadowCtx.shadowRoot, {
+    isRTL: checkIsRTL,
+    onJumpToHeading: handleJumpToToc,
+  });
+
   if (settings.bookmarks) {
     const handleJumpToBookmark = (b: BookmarkEntry) => {
       userInteracted = true;
@@ -200,13 +227,6 @@ function setupUI() {
       const targetY = b.scrollRatio * currentMetrics.maxScroll;
       const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.scrollTo({ top: targetY, behavior: isReduced ? 'instant' : 'smooth' });
-    };
-
-    const handleJumpToToc = (entry: TocEntry) => {
-      userInteracted = true;
-      pokeZenMode();
-      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top: entry.scrollY, behavior: isReduced ? 'instant' : 'smooth' });
     };
 
     const handleDeleteBookmark = async (id: string) => {
@@ -303,12 +323,14 @@ function updateVisibility() {
     backToTop?.reset();
     selectionBubble?.element.style.setProperty('display', 'none');
     bookmarksMenu?.triggerElement.style.setProperty('display', 'none');
+    tocMinimap?.element.style.setProperty('display', 'none');
     setNativeScrollbarHidden(false);
     setSmoothScrollEnabled(false);
   } else {
     progressBar.setState('idle');
     selectionBubble?.element.style.removeProperty('display');
     bookmarksMenu?.triggerElement.style.removeProperty('display');
+    tocMinimap?.element.style.removeProperty('display');
     const remainingPixels = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
     backToTop?.update(smoothedProgress, true, remainingPixels);
     setNativeScrollbarHidden(settings.hideNativeScrollbar);
@@ -435,6 +457,7 @@ function tick() {
 
   const remainingTick = Math.max(0, currentMetrics.maxScroll - currentMetrics.scrollY);
   backToTop?.update(smoothedProgress, currentMetrics.scrollable && shouldShowOverlay(), remainingTick);
+  tocMinimap?.updateScroll(currentMetrics.scrollY);
   sendProgressUpdate();
 
   // Continue lerping if not close enough
@@ -454,6 +477,7 @@ function tick() {
 function handleScroll() {
   userInteracted = true;
   pokeZenMode();
+  tocMinimap?.updateScroll(window.scrollY);
 
   if (shouldShowOverlay() && currentMetrics.scrollable) {
     progressBar?.setState('active');

@@ -1,6 +1,6 @@
 // tests/unit/toc.test.ts — Unit tests for pure TOC logic
 import { describe, it, expect } from 'vitest';
-import { isValidHeading, computeTocEntries, type RawHeading } from '../../src/core/toc';
+import { isValidHeading, computeTocEntries, computeActiveHeadingIndex, type RawHeading } from '../../src/core/toc';
 
 describe('isValidHeading', () => {
   it('rejects empty, null, or undefined headings', () => {
@@ -63,5 +63,28 @@ describe('computeTocEntries', () => {
     const entries = computeTocEntries(raw, 3000, 10);
     expect(entries.length).toBe(10);
     expect(entries[0].scrollRatio).toBeLessThan(entries[9].scrollRatio);
+  });
+});
+
+describe('computeActiveHeadingIndex', () => {
+  const entries = [
+    { id: '1', level: 1, text: 'Intro', scrollY: 100, scrollRatio: 0.1 },
+    { id: '2', level: 2, text: 'Architecture', scrollY: 600, scrollRatio: 0.3 },
+    { id: '3', level: 2, text: 'Benchmarks', scrollY: 1200, scrollRatio: 0.6 },
+    { id: '4', level: 1, text: 'Conclusion', scrollY: 1800, scrollRatio: 0.9 },
+  ];
+
+  it('returns -1 for empty entries', () => {
+    expect(computeActiveHeadingIndex([], 200)).toBe(-1);
+  });
+
+  it('activates the first heading when near the top', () => {
+    expect(computeActiveHeadingIndex(entries, 0)).toBe(0);
+  });
+
+  it('tracks active section as user scrolls down', () => {
+    expect(computeActiveHeadingIndex(entries, 500)).toBe(1); // 500 + 120 = 620 >= 600
+    expect(computeActiveHeadingIndex(entries, 1100)).toBe(2); // 1100 + 120 = 1220 >= 1200
+    expect(computeActiveHeadingIndex(entries, 2000)).toBe(3); // past conclusion
   });
 });

@@ -137,6 +137,7 @@ export function createBookmarksMenu(
 
   tabsWrap.appendChild(bookmarksTabBtn);
   tabsWrap.appendChild(tocTabBtn);
+  tabsWrap.style.display = 'none'; // Separated into dedicated TOC Minimap
   menu.appendChild(tabsWrap);
 
   // Color Filter Bar
@@ -515,8 +516,6 @@ export function createBookmarksMenu(
     }
 
     const bookmarkCount = currentBookmarks.length;
-    const tocCount = currentTocEntries.length;
-    const totalCount = bookmarkCount + tocCount;
 
     badge.textContent = bookmarkCount.toString();
     countSpan.textContent = `(${bookmarkCount})`;
@@ -529,9 +528,9 @@ export function createBookmarksMenu(
     trigger.setAttribute('title', `${locale.title} (${bookmarkCount})`);
     closeBtn.setAttribute('aria-label', locale.closeAria);
 
-    trigger.setAttribute('data-show', totalCount > 0 ? 'true' : 'false');
+    trigger.setAttribute('data-show', bookmarkCount > 0 ? 'true' : 'false');
 
-    if (totalCount === 0 && isOpen) {
+    if (bookmarkCount === 0 && isOpen) {
       closeMenu();
     }
 

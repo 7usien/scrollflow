@@ -68,3 +68,24 @@ export function computeTocEntries(headings: RawHeading[], maxScroll: number, max
 
   return validEntries;
 }
+
+/**
+ * Determines the currently active heading index based on the current vertical scroll position.
+ * Uses an offset buffer (default 120px) so the heading becomes active as it scrolls into the reading zone.
+ */
+export function computeActiveHeadingIndex(entries: TocEntry[], currentScrollY: number, bufferPx = 120): number {
+  if (!entries || entries.length === 0) return -1;
+
+  const targetY = currentScrollY + bufferPx;
+  let activeIdx = 0;
+
+  for (let i = 0; i < entries.length; i++) {
+    if (entries[i].scrollY <= targetY) {
+      activeIdx = i;
+    } else {
+      break;
+    }
+  }
+
+  return activeIdx;
+}
