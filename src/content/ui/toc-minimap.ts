@@ -193,6 +193,8 @@ export function createTocMinimap(
     const isRtl = callbacks.isRTL ? callbacks.isRTL() : false;
     titleText.textContent = isRtl ? 'فهرس المقال' : 'Document Outline';
     countBadge.textContent = count.toString();
+    card.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+    hoverPill.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
 
     // Show only if there are valid headings
     root.setAttribute('data-show', count > 0 ? 'true' : 'false');
@@ -259,12 +261,7 @@ export function createTocMinimap(
       textSpan.setAttribute('title', entry.text);
       content.appendChild(textSpan);
 
-      const pctSpan = document.createElement('span');
-      pctSpan.className = 'sf-minimap-item-pct';
-      pctSpan.textContent = `${Math.round(entry.scrollRatio * 100)}%`;
-
       item.appendChild(content);
-      item.appendChild(pctSpan);
 
       item.addEventListener('click', (e) => {
         e.stopPropagation();
