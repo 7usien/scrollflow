@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "Elegant vertical & horizontal reading progress indicator, native scrollbar concealment, smooth scrolling, scroll restoration, and celebratory confetti.",
+    "message": "Smart reading progress bar with highlight margins, auto-TOC, position restore, and Markdown export. 100% private & fast.",
     "description": "Extension description"
   },
   "cmdToggle": {
