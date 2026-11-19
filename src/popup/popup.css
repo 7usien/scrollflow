@@ -222,6 +222,38 @@ header .gear:hover {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+.popup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: 6px;
+  border-top: 1px solid var(--sf-border);
+}
+
+.popup-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--sf-brand-mid);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.popup-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(78, 140, 255, 0.25), transparent);
+}
+
+body[dir="rtl"] .popup-section-title::after {
+  background: linear-gradient(-90deg, rgba(78, 140, 255, 0.25), transparent);
+}
+
 .row {
   display: flex;
   justify-content: space-between;

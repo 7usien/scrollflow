@@ -402,4 +402,24 @@ clearPositionsBtn?.addEventListener('click', async () => {
   }
 });
 
-loadOptions();
+function checkHashNavigation() {
+  if (window.location.hash === '#secAboutSection' || window.location.hash === '#secAbout') {
+    setTimeout(() => {
+      const el = document.getElementById('secAboutSection');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'box-shadow 0.4s ease';
+        el.style.boxShadow = '0 0 0 2px var(--sf-brand-mid), 0 8px 32px rgba(109, 91, 255, 0.25)';
+        setTimeout(() => {
+          el.style.boxShadow = '';
+        }, 1500);
+      }
+    }, 120);
+  }
+}
+
+window.addEventListener('hashchange', checkHashNavigation);
+
+loadOptions().then(() => {
+  checkHashNavigation();
+});

@@ -104,6 +104,10 @@ export const ru: I18nDictionary = {
   },
   popup: {
     langBtn: 'Язык',
+    btnAbout: 'О расширении и поддержка',
+    secReading: 'Чтение и поведение',
+    secAppearance: 'Внешний вид и стиль',
+    secNavigation: 'Заметки и навигация',
     lblScreens: 'Длина страницы',
     lblTime: 'Время чтения',
     screensSuffix: 'экранов',

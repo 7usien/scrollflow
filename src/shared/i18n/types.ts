@@ -98,6 +98,10 @@ export interface I18nDictionary {
   };
   popup: {
     langBtn: string;
+    btnAbout: string;
+    secReading: string;
+    secAppearance: string;
+    secNavigation: string;
     lblScreens: string;
     lblTime: string;
     screensSuffix: string;

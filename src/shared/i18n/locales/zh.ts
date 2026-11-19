@@ -104,6 +104,10 @@ export const zh: I18nDictionary = {
   },
   popup: {
     langBtn: '语言',
+    btnAbout: '关于与支持',
+    secReading: '阅读与行为',
+    secAppearance: '外观与布局',
+    secNavigation: '批注与大纲',
     lblScreens: '页面长度',
     lblTime: '预计阅读用时',
     screensSuffix: '屏',

@@ -104,6 +104,10 @@ export const en: I18nDictionary = {
   },
   popup: {
     langBtn: 'Language',
+    btnAbout: 'About & Support',
+    secReading: 'Reading & Behavior',
+    secAppearance: 'Appearance & Layout',
+    secNavigation: 'Notes & Navigation',
     lblScreens: 'Page length',
     lblTime: 'Estimated read time',
     screensSuffix: 'screens',

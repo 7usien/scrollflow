@@ -22,7 +22,14 @@
         <option value="de">Deutsch</option>
         <option value="hi">हिन्दी</option>
       </select>
-      <button class="gear" id="optionsBtn" aria-label="الإعدادات">
+      <button class="gear" id="aboutBtn" title="حول ودعم المطور / About & Support" aria-label="About & Support">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+      </button>
+      <button class="gear" id="optionsBtn" title="الإعدادات / Settings" aria-label="الإعدادات">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
@@ -49,7 +56,7 @@
         <div class="pct" id="donutPct">0%</div>
       </div>
       <div class="stats">
-        <div><b id="statScreens">— شاشة</b><br/><span id="lblScreens">طول الصفحة</span></div>
+        <div><b id="statScreens">—</b><br/><span id="lblScreens">طول الصفحة</span></div>
         <div><b id="statTime">—</b><br/><span id="lblTime">وقت قراءة مُقدَّر</span></div>
       </div>
     </div>
@@ -62,83 +69,83 @@
       <span id="siteBtnText">إيقاف على هذا الموقع</span>
     </button>
 
-    <div class="row">
-      <span id="lblRestore">استعادة موضع التمرير</span>
-      <div class="switch" id="restoreSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+    <div class="popup-section">
+      <div class="popup-section-title" id="secReadingTitle">تجربة القراءة</div>
+      <div class="row">
+        <span id="lblRestore">استعادة موضع التمرير</span>
+        <div class="switch" id="restoreSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+      <div class="row">
+        <span id="lblCelebrate">احتفال عند الإكمال</span>
+        <div class="switch" id="celebrateSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+      <div class="row">
+        <span id="lblZenMode">وضع القراءة الهادئ</span>
+        <div class="switch" id="zenModeSwitch" role="switch" aria-checked="false" tabindex="0"></div>
+      </div>
+      <div class="row">
+        <span id="lblSmoothScroll">تصفح سلس للصفحة</span>
+        <div class="switch" id="smoothScrollSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
     </div>
 
-    <div class="row">
-      <span id="lblCelebrate">احتفال عند الإكمال</span>
-      <div class="switch" id="celebrateSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+    <div class="popup-section">
+      <div class="popup-section-title" id="secAppearanceTitle">المظهر والتخطيط</div>
+      <div class="row">
+        <span id="lblTheme">الستايل</span>
+        <select id="themeSelect">
+          <option value="aurora">Aurora (تدرج كوني)</option>
+          <option value="sunset">Sunset (غروب دافئ)</option>
+          <option value="cyberpunk">Cyberpunk (نيون متوهج)</option>
+          <option value="minimal">Minimal (نحيف وبسيط)</option>
+          <option value="glass">Glass Pill (كبسولة زجاجية)</option>
+          <option value="mono">Mono (رمادي كلاسيكي)</option>
+        </select>
+      </div>
+      <div class="row">
+        <span id="lblPosition">الموضع</span>
+        <select id="positionSelect">
+          <option value="right">يمين (رأسي)</option>
+          <option value="left">يسار (رأسي)</option>
+          <option value="top">أعلى (أفقي)</option>
+          <option value="bottom">أسفل (أفقي)</option>
+        </select>
+      </div>
+      <div class="row">
+        <span id="lblLength">امتداد الشريط</span>
+        <select id="lengthSelect">
+          <option value="floating">عائم متمركز (60%)</option>
+          <option value="full">كامل 100%</option>
+        </select>
+      </div>
+      <div class="row">
+        <span id="lblRadius">انحناء الحواف</span>
+        <select id="radiusSelect">
+          <option value="subtle">دائرية خفيفة (6px)</option>
+          <option value="pill">كبسولة كاملة (999px)</option>
+          <option value="sharp">مستطيلة حادة (2px)</option>
+        </select>
+      </div>
+      <div class="row">
+        <span id="lblShadow">إظهار الظل والتوهج</span>
+        <div class="switch" id="shadowSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+      <div class="row">
+        <span id="lblHideScrollbar">إخفاء سكرول المتصفح</span>
+        <div class="switch" id="hideScrollbarSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
     </div>
 
-    <div class="row">
-      <span id="lblTheme">الستايل</span>
-      <select id="themeSelect">
-        <option value="aurora">Aurora (تدرج كوني)</option>
-        <option value="sunset">Sunset (غروب دافئ)</option>
-        <option value="cyberpunk">Cyberpunk (نيون متوهج)</option>
-        <option value="minimal">Minimal (نحيف وبسيط)</option>
-        <option value="glass">Glass Pill (كبسولة زجاجية)</option>
-        <option value="mono">Mono (رمادي كلاسيكي)</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <span id="lblPosition">الموضع</span>
-      <select id="positionSelect">
-        <option value="right">يمين (رأسي)</option>
-        <option value="left">يسار (رأسي)</option>
-        <option value="top">أعلى (أفقي)</option>
-        <option value="bottom">أسفل (أفقي)</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <span id="lblLength">امتداد الشريط</span>
-      <select id="lengthSelect">
-        <option value="floating">عائم متمركز (60%)</option>
-        <option value="full">كامل 100%</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <span id="lblRadius">انحناء الحواف</span>
-      <select id="radiusSelect">
-        <option value="subtle">دائرية خفيفة (6px)</option>
-        <option value="pill">كبسولة كاملة (999px)</option>
-        <option value="sharp">مستطيلة حادة (2px)</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <span id="lblShadow">إظهار الظل والتوهج</span>
-      <div class="switch" id="shadowSwitch" role="switch" aria-checked="true" tabindex="0"></div>
-    </div>
-
-    <div class="row">
-      <span id="lblHideScrollbar">إخفاء سكرول المتصفح</span>
-      <div class="switch" id="hideScrollbarSwitch" role="switch" aria-checked="true" tabindex="0"></div>
-    </div>
-
-    <div class="row">
-      <span id="lblSmoothScroll">تصفح سلس للصفحة</span>
-      <div class="switch" id="smoothScrollSwitch" role="switch" aria-checked="true" tabindex="0"></div>
-    </div>
-
-    <div class="row">
-      <span id="lblBookmarks">هوامش ونقاط الصفحة</span>
-      <div class="switch" id="bookmarksSwitch" role="switch" aria-checked="true" tabindex="0"></div>
-    </div>
-
-    <div class="row">
-      <span id="lblAutoToc">فهرس العناوين</span>
-      <div class="switch" id="autoTocSwitch" role="switch" aria-checked="true" tabindex="0"></div>
-    </div>
-
-    <div class="row">
-      <span id="lblZenMode">وضع القراءة الهادئ</span>
-      <div class="switch" id="zenModeSwitch" role="switch" aria-checked="false" tabindex="0"></div>
+    <div class="popup-section">
+      <div class="popup-section-title" id="secNavigationTitle">الهوامش والفهرس</div>
+      <div class="row">
+        <span id="lblBookmarks">هوامش ونقاط الصفحة</span>
+        <div class="switch" id="bookmarksSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
+      <div class="row">
+        <span id="lblAutoToc">فهرس العناوين</span>
+        <div class="switch" id="autoTocSwitch" role="switch" aria-checked="true" tabindex="0"></div>
+      </div>
     </div>
   </div>
 

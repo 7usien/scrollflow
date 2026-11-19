@@ -41,11 +41,16 @@ const smoothScrollSwitch = document.getElementById('smoothScrollSwitch');
 const bookmarksSwitch = document.getElementById('bookmarksSwitch');
 const autoTocSwitch = document.getElementById('autoTocSwitch');
 const zenModeSwitch = document.getElementById('zenModeSwitch');
+const aboutBtn = document.getElementById('aboutBtn');
 const optionsBtn = document.getElementById('optionsBtn');
 const clearBtn = document.getElementById('clearBtn');
 const popupBody = document.getElementById('popupBody');
 const unsupportedNote = document.getElementById('unsupportedNote');
 const langSelect = document.getElementById('langSelect') as HTMLSelectElement | null;
+
+const secReadingTitle = document.getElementById('secReadingTitle');
+const secAppearanceTitle = document.getElementById('secAppearanceTitle');
+const secNavigationTitle = document.getElementById('secNavigationTitle');
 
 const lblRestore = document.getElementById('lblRestore');
 const lblCelebrate = document.getElementById('lblCelebrate');
@@ -69,6 +74,15 @@ function applyLocale(lang: SupportedLocale) {
   document.body.dir = dict.dir;
 
   const t = dict.popup;
+
+  if (aboutBtn) {
+    aboutBtn.title = t.btnAbout;
+    aboutBtn.setAttribute('aria-label', t.btnAbout);
+  }
+
+  if (secReadingTitle) secReadingTitle.textContent = t.secReading;
+  if (secAppearanceTitle) secAppearanceTitle.textContent = t.secAppearance;
+  if (secNavigationTitle) secNavigationTitle.textContent = t.secNavigation;
 
   if (lblScreens) lblScreens.textContent = t.lblScreens;
   if (lblTime) lblTime.textContent = t.lblTime;
@@ -159,7 +173,7 @@ async function initPopup() {
 
 function showUnsupported() {
   if (popupBody) {
-    const rows = popupBody.querySelectorAll('.row, .donut-row, .site-btn');
+    const rows = popupBody.querySelectorAll('.row, .donut-row, .site-btn, .popup-section');
     rows.forEach((r) => ((r as HTMLElement).style.display = 'none'));
   }
   if (unsupportedNote) {
@@ -187,6 +201,9 @@ function renderProgress(percent: number, metrics: Metrics | null) {
     const approxWords = Math.round(sc * 350);
     const mins = estimateReadingMinutes(approxWords);
     statTime.textContent = mins <= 1 ? t.minSingle : `${mins} ${t.minsSuffix}`;
+  } else {
+    if (statScreens) statScreens.textContent = '—';
+    if (statTime) statTime.textContent = '—';
   }
 }
 
@@ -395,6 +412,12 @@ langSelect?.addEventListener('change', async () => {
   await setStoredLocale(val);
   const effective = resolveActiveLocale(val);
   applyLocale(effective);
+});
+
+// About & Support button in popup header
+aboutBtn?.addEventListener('click', () => {
+  const url = chrome.runtime.getURL('src/options/options.html#secAboutSection');
+  chrome.tabs.create({ url });
 });
 
 optionsBtn?.addEventListener('click', () => {

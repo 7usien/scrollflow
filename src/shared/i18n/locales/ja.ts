@@ -104,6 +104,10 @@ export const ja: I18nDictionary = {
   },
   popup: {
     langBtn: '言語',
+    btnAbout: '情報とサポート',
+    secReading: '読書と動作',
+    secAppearance: '外観とレイアウト',
+    secNavigation: 'メモと目次',
     lblScreens: 'ページ長',
     lblTime: '推定読了時間',
     screensSuffix: '画面分',
