@@ -49,105 +49,50 @@
 > ⚠️ **تنبيه صارم من Google:** متجر كروم يرفض أي نص يتجاوز 132 حرفاً بدقة. تم التحقق من أطوال النصوص برمجياً.
 
 ### باللغة العربية (Arabic Options):
-* **الخيار الأول (الموصى به - 113 حرفًا):**
+* **الخيار الأول (الموصى به - 120 حرفًا):**
   ```text
-  شريط قراءة ذكي مع هوامش وتظليل ملون، فهرس تلقائي، حفظ الموضع وتصدير لـ Markdown. خفيف، سريع، وخاص 100% بلا خوادم.
+  أداة خفيفة تساعدك على متابعة قراءة المقالات الطويلة، وتظليل النصوص بعدة ألوان، والرجوع التلقائي لمكان توقفك بكل خصوصية.
   ```
-  *(113 حرفًا — مؤهل بنسبة 100% ومطابق للحد الأقصى 132)*
-* **الخيار الثاني (111 حرفًا):**
-  ```text
-  مؤشر قراءة ذكي مع هوامش ملونة، فهرس تلقائي، حفظ موضع التصفح وتصدير Markdown. سريع، خفيف، وخاص 100% بلا أي تتبع.
-  ```
-  *(111 حرفًا)*
+  *(120 حرفًا — مؤهل بنسبة 100% ومطابق للحد الأقصى 132)*
 
 ### باللغة الإنجليزية (English Options):
-* **Option 1 (Recommended - 119 chars):**
+* **Option 1 (Recommended - 118 chars):**
   ```text
-  Smart reading bar with 5-color highlights, auto-TOC, Markdown export, position restore & Zen mode. Fast & 100% private.
+  Smart reading progress bar with 5-color highlights, TOC minimap & Markdown export. Fast, distraction-free & 100% private.
   ```
-  *(119 characters — fully compliant with the 132 max limit)*
-* **Option 2 (126 chars):**
-  ```text
-  Smart reading progress bar with 5-color margin notes, auto-TOC, position restore & Markdown export. Ultra-fast & 100% private.
-  ```
-  *(126 characters)*
+  *(118 characters — fully compliant with the 132 max limit)*
 
 ---
 
 ## 4. الوصف التفصيلي باللغة الإنجليزية (Detailed Description — EN)
 
 ```markdown
-**Upgrade your web reading experience with a smart reading bar, color-coded margin notes, instant table of contents, and seamless position recovery — 100% private and offline.**
+Upgrade your web reading experience with a smart reading bar, color-coded margin notes, an interactive document outline, and seamless position recovery — 100% private and offline.
 
-Whether you are reading long technical documentation, academic papers, research essays, or deep-dive articles, **ScrollFlow** transforms your browser into an elegant, distraction-free reading canvas. It quietly anchors your reading progress, lets you highlight and annotate insights in 5 curated colors, extracts an instant chapter index, and exports your study notes to Notion or Obsidian with a single click.
+Whether reading long technical documentation, research papers, or deep-dive articles, ScrollFlow transforms your browser into an elegant reading canvas. It quietly anchors your reading progress, lets you annotate insights in 5 pastel colors, extracts an instant chapter minimap, and exports notes to Notion or Obsidian with one click.
 
----
+KEY FEATURES:
 
-### 🌟 KEY FEATURES
+Smart Adaptive Reading Progress Bar:
+Unobtrusive progress indicator along the screen edge without covering text. Place it horizontally (top or bottom) or vertically (left or right). Includes 6 handcrafted color themes with automatic contrast balancing for dark and light mode web pages.
 
-#### 📊 1. Smart Adaptive Reading Progress Bar
-- **Unobtrusive & Responsive:** Visualizes your exact reading percentage along the screen edge without covering body text.
-- **Customizable Placement:** Position it horizontally (Top / Bottom) or vertically (Left / Right).
-- **Flexible Geometries:** Choose between Floating Centered (60%), Full Length (100%), and corner radiuses (Subtle 6px, Pill Capsule 999px, Sharp 2px).
-- **Optional Native Scrollbar Replacement:** Cleanly hides bulky OS scrollbars with smooth scrolling behavior.
+Five-Color Margin Notes:
+Select any text on any page to reveal a floating bubble with 5 curated pastel colors. Annotated quotes appear as glowing markers on the scroll rail with instant hover cards and a quick drawer.
 
-#### 🎨 2. Six Handcrafted Color Themes
-- **Curated Aesthetics:** Switch between **Aurora** (Cosmic Gradient), **Sunset** (Warm Amber), **Cyberpunk** (Neon Cyan/Magenta), **Minimal** (Ultra-thin subtle line), **Glass Pill** (Frosted Glass backdrop), and **Mono** (Classic slate gray).
-- **Adaptive Contrast:** Automatically balances tone against dark mode and light mode web pages.
+Interactive TOC Minimap:
+Automatically extracts H1 through H3 document headings into a slim vertical spine. The live Scroll Spy dynamically highlights the active chapter as you scroll down the page.
 
-#### 🖍️ 3. Five-Color Margin Notes & Text Highlighting
-- **Highlight Instantly:** Select any text to reveal a sleek floating bubble with 5 vivid pastel colors (Yellow, Green, Purple, Blue, Red).
-- **Interactive Navigation Dots:** Your annotated quotes appear as glowing markers on the progress rail. Hover over any dot to see an instant snippet preview card.
-- **Click to Jump:** Click any margin dot to smoothly glide directly to that exact paragraph.
-- **Zero DOM Pollution:** All UI elements live in an isolated Shadow Root — web page layout, styles, and scripts remain 100% untouched.
+One-Click Export to Markdown:
+Export all annotated highlights with page titles, source URLs, and timestamps formatted cleanly for Notion, Obsidian, and Bear.
 
-#### 📑 4. Auto-Generated Table of Contents (Auto-TOC)
-- **Instant Chapter Map:** Automatically detects semantic page headings (H1, H2, H3) and places subtle tick marks along the progress bar.
-- **Quick-Access Drawer:** Open the side menu to view an interactive outline of the entire document with real-time reading progress for each section.
+Automatic Reading Position Restore:
+Remembers your exact reading coordinates per URL so you can pick up right where you left off when reopening articles.
 
-#### 📝 5. One-Click Markdown Export (Notion & Obsidian Ready)
-- **Instant Clipboard Export:** Export all saved quotes, margin notes, timestamps, percentages, and page titles formatted in clean Markdown.
-- **Ready for Your Knowledge Base:** Paste directly into **Notion**, **Obsidian**, **Bear**, **Logseq**, or **Apple Notes** with complete source links and structure.
+Zen Auto-Hide Mode:
+Progress bar and triggers gracefully dim after 2.5 seconds of inactivity to keep your screen distraction-free.
 
-#### 🧘 6. Zen Auto-Hide Mode
-- **Distraction-Free Immersion:** When you pause scrolling for 2.5 seconds to focus on reading, the indicator and markers gently fade away.
-- **Instant Recall:** Resurfaces smoothly as soon as you scroll, move your mouse, or hit a navigation key.
-
-#### 🔖 7. Never Lose Your Place (Smart Position Restore)
-- **Automatic Bookmark:** Remembers your exact reading position across thousands of articles and documentation pages.
-- **SPA & Dynamic Web Friendly:** Fully compatible with Single Page Applications (React, Next.js, Vue, Docs sites) by tracking `history.pushState` changes.
-- **Polite Toast Notification:** Reopens the page with a gentle "Resumed where you left off" indicator without ever overriding manual scrolling.
-
-#### ⏱️ 8. Reading Metrics & Quick Back-to-Top
-- **Estimated Reading Time:** Calculates reading time based on human words-per-minute metrics.
-- **Screen Depth Counter:** See page length measured in viewport screens.
-- **Discreet Back-to-Top:** One-click smooth return to the beginning of the article.
-
----
-
-### 🛡️ PRIVACY BY ARCHITECTURE (Zero Tracking, Zero Servers)
-
-We believe reading should be completely personal. ScrollFlow is engineered with a strict **Zero-Knowledge Architecture**:
-- ❌ **NO Remote Servers:** There is no backend, no cloud database, and no server infrastructure.
-- ❌ **NO Telemetry or Analytics:** No Google Analytics, no tracking scripts, no cookies, and no fingerprinting.
-- ❌ **NO Data Selling or Sharing:** Your reading habits, URLs, highlights, and notes never leave your personal computer.
-- ❌ **NO Third-Party Runtime Dependencies:** 0 external libraries, < 20KB gzipped, ultra-fast and lightweight.
-- ✅ **100% Local Storage:** All positions, notes, and preferences reside exclusively in `chrome.storage.local`.
-- ✅ **Full User Control:** Clear all saved data or disable the extension for specific domains with one click.
-
----
-
-### 💡 PERFECT FOR:
-- **Researchers & Academics:** Annotate long papers and synthesize notes into Obsidian or Notion.
-- **Software Engineers:** Navigate complex API documentation and long GitHub pull requests with Auto-TOC.
-- **Students & Writers:** Keep track of reading goals and extract study quotes cleanly.
-- **Casual & Book Readers:** Never lose your spot in serialized blogs, newsletters, and long-form journalism.
-
----
-
-### ⌨️ KEYBOARD SHORTCUTS
-- **Alt + Shift + P:** Toggle ScrollFlow overlay visibility on/off anytime.
-- Customizable via `chrome://extensions/shortcuts`.
+Privacy & Performance First:
+100% offline and local. Zero analytics, zero external network requests, and zero remote scripts. Under 101 KB bundle size with zero runtime dependencies for smooth 60fps scrolling.
 ```
 
 ---
@@ -155,77 +100,32 @@ We believe reading should be completely personal. ScrollFlow is engineered with 
 ## 5. الوصف التفصيلي باللغة العربية (Detailed Description — AR)
 
 ```markdown
-**ارتقِ بتجربة قراءة المقالات والتوثيقات البرمجية على الويب: مؤشر قراءة ذكي، هوامش وتظليل ملون، فهرس تلقائي، واستعادة ذكية لموضعك — خفيف، أنيق، وخاص 100% داخل جهازك.**
+إذا كنت تقرأ مقالات تقنية، أو أبحاثاً، أو دراسات طويلة على المتصفح، فمن السهل أن تفقد تركيزك، أو تنسى أين وصلت عند مقاطعة القراءة، أو ترغب في حفظ فكرة مهمة دون الحاجة لفتح تطبيق ملاحظات جانبي.
 
-سواء كنت تقرأ توثيقاً برمجياً طويلاً، أو بحثاً أكاديمياً، أو مقالات رأي متعمقة، أو نشرات بريدية مطولة؛ يحول **ScrollFlow** متصفحك إلى بيئة قراءة هادئة واحترافية. يوضح لك نسبة تقدمك بدقة بالغة، ويتيح لك تظليل النصوص وتدوين الهوامش بخمسة ألوان منتقاة، وينشئ فهرساً تلقائياً لعناوين المقال، مع إمكانية تصدير ملاحظاتك إلى Notion أو Obsidian بنقرة واحدة!
+صُممت ScrollFlow لتعيد الهدوء والتركيز إلى تجربة القراءة على الويب، من خلال مجموعة أدوات بسيطة تعمل بصمت دون أن تعيقك عن المحتوى الأساسي.
 
----
+ما الذي تقدمه لك الإضافة؟
 
-### 🌟 أبرز المزايا والمواصفات
+مؤشر قراءة دقيق ومنسجم مع الصفحة:
+شريط انسيابي يوضح نسبة ما قرأته بدقة على حافة الشاشة. يمكنك تخصيص موضعه ليكون أفقياً في الأعلى أو رأسياً على الجانب، مع ستة مظاهر لونية تتكيف تلقائياً مع المواقع الفاتحة والداكنة لتريح عينيك أثناء القراءة الطويلة.
 
-#### 📊 1. مؤشر قراءة ذكي وتكيفي
-- **خفيف وغير حاجب:** يُظهر نسبة القراءة المئوية على حافة الشاشة بتصميم زجاجي أنيق دون تغطية أي جزء من محتوى الصفحة.
-- **حرية كاملة في الموضع:** يمكن وضعه أفقياً (أعلى أو أسفل الشاشة) أو رأسياً (يمين أو يسار الشاشة).
-- **أشكال هندسية متعددة:** اختر بين الشريط العائم المتمركز (60%) أو الطول الكامل (100%)، مع تحكم كامل بنصف قطر الحواف (دائرية خفيفة 6px، كبسولة كاملة 999px، أو حادة 2px).
-- **إخفاء شريط المتصفح الأصلي:** إمكانية إخفاء شريط التمرير التقليدي لنظام التشغيل لتجربة تصفح غامرة وسلسة.
+هوامش ملونة لحفظ الاقتباسات:
+عند تظليل أي نص يعجبك، تظهر لك نافذة صغيرة لاختيار لون من بين خمسة ألوان هادئة. تتحول هذه التظليلات إلى نقاط مرجعية أنيقة على مسار التمرير، لتتمكن من استعراضها بالماوس أو القفز إلى موضعها فوراً بنقرة واحدة.
 
-#### 🎨 2. ستة ثيمات مظهر مصممة بعناية
-- **تنوع بصري ساحر:** ثيم **Aurora** (تدرج أورورا الكوني)، **Sunset** (دفء ألوان الغروب)، **Cyberpunk** (نيون متوهج)، **Minimal** (خط نحيف وبسيط)، **Glass Pill** (تأثير الزجاج المصنفر)، و**Mono** (الرمادي الكلاسيكي).
-- **تباين ذكي:** ينسجم تلقائياً مع خلفيات الصفحات سواء كانت في الوضع الليلي (Dark Mode) أو الفاتح (Light Mode).
+فهرس تلقائي يتتبع قراءتك:
+تستخرج الإضافة عناوين المقال الرئيسية والفرعية تلقائياً وتضعها في شريط مصغر بجانب مسار التصفح. وأثناء نزولك في المقال، يضيء القسم الذي تقرأه حالياً لتعرف دائماً موقعك داخل هيكل الموضوع.
 
-#### 🖍️ 3. هوامش وتظليل النصوص بـ 5 ألوان (Marginalia)
-- **تظليل فوري:** ما عليك سوى تحديد أي فقرة نصية لتظهر كبسولة عائمة تتيح حفظ النص وتظليله بخمسة ألوان مريحة للعين (أصفر، أخضر، بنفسجي، أزرق، أحمر).
-- **نقاط تنقل تفاعلية:** تظهر مقتطفاتك كهوامش مضيئة على مسار شريط التمرير. بمجرد تمرير الماوس فوق أي نقطة، تظهر بطاقة معاينة أنيقة لمقتطف النص.
-- **قفز فوري:** انقر على أي هامش لتنتقل فوراً وبسلاسة إلى موضع الفقرة داخل المقال.
-- **عزل تام للأنماط (Shadow DOM):** كافة عناصر الإضافة معزولة داخل Shadow Root مستقل، مما يضمن عدم المساس بكود أو تصميم أو سرعة الموقع الأصلي.
+تصدير الملاحظات لبرامج إدارة المعرفة:
+إذا كنت تعتمد على برامج مثل Notion أو Obsidian، يمكنك بنقرة واحدة نسخ كل الاقتباسات التي حددتها في الصفحة كملف Markdown منسق، متضمناً عنوان المقال ورابطه وتاريخ القراءة.
 
-#### 📑 4. فهرس العناوين التلقائي (Auto-TOC)
-- **خريطة تفاعلية للمحتوى:** تتعرف الإضافة تلقائياً على العناوين الهيكلية للمقال (H1, H2, H3) وتضع علامات فصول خفيفة على مسار الشريط.
-- **درج جانبي سريع:** افتح قائمة الهوامش لتستعرض فهرس فصول المقال الكامل مع نسبة التقدم في كل قسم والقفز بنقرة واحدة.
+استعادة موضع القراءة تلقائياً:
+إذا أغلقت المقال وعدت إليه بعد أيام، ستتذكر الإضافة تلقائياً آخر موضع كنت تقرأ فيه وتعرض عليك إعادتك إليه بسلاسة.
 
-#### 📝 5. تصدير الملاحظات إلى Markdown بنقرة واحدة
-- **تصدير فوري للحافظة (Clipboard):** انسخ كافة اقتباساتك وهوامشك مصنفة حسب ألوانها ونسبتها المئوية ورابط الصفحة بتنسيق Markdown قياسي ونظيف.
-- **جاهز لتطبيقاتك المفضلة:** الصق الملاحظات مباشرة داخل **Notion** أو **Obsidian** أو **Logseq** أو **Bear** كملخص منظم للقراءة والدراسة.
+وضع القراءة الهادئ:
+يختفي شريط التمرير وكل المؤشرات الإضافية بعد ثانيتين ونصف من هدوء الصفحة، ليبقى المقال وحده أمامك، ويعود كل شيء للظهور فور حركة الماوس أو التمرير.
 
-#### 🧘 6. وضع القراءة الهادئ (Zen Auto-Hide)
-- **تركيز بلا تشتيت:** عند التوقف عن التمرير لمدة 2.5 ثانية للاندماج في القراءة، يتلاشى الشريط والنقاط بلطف ليترك لك كامل مساحة الشاشة.
-- **استجابة فورية:** يعود الشريط للظهور بنعومة تامة بمجرد لمس عجلة الماوس أو التمرير أو تحريك المؤشر.
-
-#### 🔖 7. حفظ واستعادة موضع التمرير تلقائياً
-- **لا تفقد مكانك أبداً:** تحفظ الإضافة موضع توقفك في آلاف المقالات والصفحات.
-- **دعم كامل لتطبيقات الصفحة الواحدة (SPA):** يتعرف بدقة على تنقلات المسار الداخلية (React, Next.js, Vue) ويحفظ موضع كل صفحة على حدة.
-- **إشعار استعادة مهذب:** عند العودة للصفحة يُعيدك تلقائياً إلى موضعك مع إشعار خفيف دون أن يقاطع تمريرك اليدوي إن أردت تجاوزه.
-
-#### ⏱️ 8. مؤشرات القراءة وزر الصعود للأعلى
-- **تقدير وقت القراءة:** قياس سرعة القراءة بناءً على معدل الكلمات في الدقيقة.
-- **عمق الصفحة بعدد الشاشات:** تعرف على طول المقال بدقة لمعرفة الوقت المتبقي لإكماله.
-- **زر الصعود للأعلى (Back to Top):** زر عائم مدمج وذكي يعيدك إلى قمة الصفحة بسلاسة.
-- **احتفال خفيف عند الإنجاز:** وميض احتفالي بالكونفيتي عند وصولك إلى 100% من المقال الطويل (يمكن إيقافه بحرية).
-
----
-
-### 🛡️ الخصوصية أولاً وبشكل قاطع (Zero Tracking, Zero Servers)
-
-نؤمن بأن قراءتك وملاحظاتك ملكك وحدك. صُممت ScrollFlow وفق مبدأ **انعدام المعرفة التام (Zero-Knowledge Architecture)**:
-- ❌ **لا خوادم خارجية:** لا يوجد خادم، ولا قاعدة بيانات سحابية، ولا أي وسيط خارجي.
-- ❌ **لا تحليلات ولا تتبع:** لا نستخدم Google Analytics، ولا ملفات تعريف ارتباط (Cookies)، ولا نجمع أي بصمة للمتصفح.
-- ❌ **لا بيع ولا مشاركة للبيانات:** روابط المقالات وهوامشك لا تغادر جهازك الشخصي إطلاقاً.
-- ❌ **صفر مكتبات خارجية:** كود مكتوب بلغة TypeScript نقية بحجم يقل عن 20 كيلوبايت، وسرعة فائقة لا تؤثر على موارد جهازك.
-- ✅ **تخزين محلي 100%:** كافة الإعدادات والملاحظات تحفظ داخل مساحة `chrome.storage.local` في متصفحك.
-- ✅ **تحكم كامل بالحذف:** زر مسح شامل للملاحظات والمواضع بضغطة واحدة، وإمكانية تعطيل الإضافة لأي نطاق تختاره.
-
----
-
-### 💡 الإضافة المثالية لكل من:
-- **المبرمجين والمطورين:** لمتابعة التوثيقات التقنية ومراجعة التغييرات الطويلة على GitHub.
-- **الباحثين وطلبة الجامعات:** لتظليل الاقتباسات وحفظ الهوامش وتصديرها مباشرة لأدوات البحث كـ Notion وObsidian.
-- **القرّاء والكتّاب:** للاستمتاع بالمقالات المعمقة دون فقدان فقرة التوقف ودون تشتيت بصري.
-
----
-
-### ⌨️ اختصارات لوحة المفاتيح
-- **Alt + Shift + P:** إظهار أو إخفاء شريط ومؤشرات ScrollFlow في أي لحظة.
-- يمكن تخصيص الاختصار بسهولة عبر: `chrome://extensions/shortcuts`.
+الخصوصية والأداء أولاً:
+تعمل ScrollFlow محلياً بنسبة مائة بالمائة على جهازك. لا توجد خوادم خارجية، ولا حسابات مستخدمين، ولا يتم إرسال أي معلومة أو رابط تفتحه إلى أي طرف ثالث. بالإضافة إلى ذلك، كود الإضافة نقي بالكامل وخالٍ من أي مكتبات ثقيلة، مما يضمن سرعة فائقة واستهلاكاً شبه معدوم للذاكرة وبطارية الجهاز.
 ```
 
 ---
