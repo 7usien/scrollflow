@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Название расширения"
+  },
+  "extDesc": {
+    "message": "Умный индикатор чтения с заметками на полях, автооглавлением, сохранением позиции и экспортом в Markdown. Быстро и 100% локально.",
+    "description": "Описание расширения"
+  },
+  "cmdToggle": {
+    "message": "Показать/скрыть индикатор чтения",
+    "description": "Горячая клавиша переключения"
+  },
+  "toastRestored": {
+    "message": "Возврат к месту остановки",
+    "description": "Уведомление о восстановлении позиции"
+  },
+  "toastComplete": {
+    "message": "Страница прочитана 🎉",
+    "description": "Уведомление о завершении страницы"
+  },
+  "themeAurora": {
+    "message": "Аврора (Космический градиент)",
+    "description": "Тема aurora"
+  },
+  "themeSunset": {
+    "message": "Закат (Теплый коралл)",
+    "description": "Тема sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Киберпанк (Неоновое свечение)",
+    "description": "Тема cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Минимал (Графитовый)",
+    "description": "Тема minimal"
+  },
+  "themeGlass": {
+    "message": "Матовое стекло (Капсула)",
+    "description": "Тема glass"
+  },
+  "themeMono": {
+    "message": "Моно (Классический серый)",
+    "description": "Тема mono"
+  },
+  "posRight": {
+    "message": "Справа (Вертикально)",
+    "description": "Положение справа"
+  },
+  "posLeft": {
+    "message": "Слева (Вертикально)",
+    "description": "Положение слева"
+  },
+  "posTop": {
+    "message": "Сверху (Горизонтально)",
+    "description": "Положение сверху"
+  },
+  "posBottom": {
+    "message": "Снизу (Горизонтально)",
+    "description": "Положение снизу"
+  },
+  "hideNativeScrollbar": {
+    "message": "Скрыть системную полосу прокрутки",
+    "description": "Скрыть полосу ОС"
+  },
+  "smoothScroll": {
+    "message": "Плавная прокрутка страницы",
+    "description": "Плавная прокрутка"
+  },
+  "lenFloating": {
+    "message": "Парящая капсула (60%)",
+    "description": "Длина парящая"
+  },
+  "lenFull": {
+    "message": "Во весь экран 100%",
+    "description": "Полная длина"
+  },
+  "radSubtle": {
+    "message": "Мягкое скругление (6px)",
+    "description": "Радиус мягкий"
+  },
+  "radPill": {
+    "message": "Округлая капсула (999px)",
+    "description": "Радиус капсула"
+  },
+  "radSharp": {
+    "message": "Прямоугольная (2px)",
+    "description": "Радиус прямой"
+  },
+  "lblShadow": {
+    "message": "Показывать тень и свечение",
+    "description": "Тень и свечение"
+  },
+  "btnBackToTop": {
+    "message": "ВВЕРХ",
+    "description": "Кнопка наверх"
+  },
+  "btnBackToTopAria": {
+    "message": "Прокрутить на самый верх страницы",
+    "description": "Метка доступности наверх"
+  },
+  "lblBookmarks": {
+    "message": "Поля и закладки страницы",
+    "description": "Поля и закладки"
+  },
+  "bookmarkAdded": {
+    "message": "Закладка сохранена 🔖",
+    "description": "Создание закладки"
+  },
+  "bookmarkDeleted": {
+    "message": "Закладка удалена",
+    "description": "Удаление закладки"
+  },
+  "bookmarksIndexTitle": {
+    "message": "Закладки страницы",
+    "description": "Заголовок меню закладок"
+  },
+  "bookmarksEmpty": {
+    "message": "Пока нет сохраненных закладок",
+    "description": "Пустое меню закладок"
+  },
+  "bookmarksTriggerAria": {
+    "message": "Список закладок страницы",
+    "description": "Метка доступности списка закладок"
+  }
+}

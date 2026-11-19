@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "扩展名称"
+  },
+  "extDesc": {
+    "message": "智能阅读进度条，支持多色边注、自动文档大纲、位置恢复与 Markdown 导出。100% 本地隐私与极致流畅。",
+    "description": "扩展描述"
+  },
+  "cmdToggle": {
+    "message": "切换显示/隐藏阅读进度覆盖层",
+    "description": "快捷键说明"
+  },
+  "toastRestored": {
+    "message": "已回到上次离开的位置",
+    "description": "恢复位置提示"
+  },
+  "toastComplete": {
+    "message": "阅读完毕 🎉",
+    "description": "完成提示"
+  },
+  "themeAurora": {
+    "message": "极光 Aurora (宇宙渐变)",
+    "description": "主题 aurora"
+  },
+  "themeSunset": {
+    "message": "日落 Sunset (暖色珊瑚)",
+    "description": "主题 sunset"
+  },
+  "themeCyberpunk": {
+    "message": "赛博朋克 Cyberpunk (霓虹光效)",
+    "description": "主题 cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "极简 Minimal (深石板灰)",
+    "description": "主题 minimal"
+  },
+  "themeGlass": {
+    "message": "毛玻璃 Glass Pill (磨砂胶囊)",
+    "description": "主题 glass"
+  },
+  "themeMono": {
+    "message": "黑白 Mono (经典灰调)",
+    "description": "主题 mono"
+  },
+  "posRight": {
+    "message": "屏幕右侧 (垂直)",
+    "description": "位置右侧"
+  },
+  "posLeft": {
+    "message": "屏幕左侧 (垂直)",
+    "description": "位置左侧"
+  },
+  "posTop": {
+    "message": "屏幕顶部 (水平)",
+    "description": "位置顶部"
+  },
+  "posBottom": {
+    "message": "屏幕底部 (水平)",
+    "description": "位置底部"
+  },
+  "hideNativeScrollbar": {
+    "message": "隐藏原生滚动条",
+    "description": "隐藏系统滚动条"
+  },
+  "smoothScroll": {
+    "message": "页面平滑滚动",
+    "description": "平滑滚动"
+  },
+  "lenFloating": {
+    "message": "居中浮动微胶囊 (60%)",
+    "description": "浮动长度"
+  },
+  "lenFull": {
+    "message": "满屏贯穿 100%",
+    "description": "全部长度"
+  },
+  "radSubtle": {
+    "message": "微圆角 (6px)",
+    "description": "微圆角"
+  },
+  "radPill": {
+    "message": "完整胶囊圆角 (999px)",
+    "description": "胶囊圆角"
+  },
+  "radSharp": {
+    "message": "平直直角 (2px)",
+    "description": "直角"
+  },
+  "lblShadow": {
+    "message": "显示投影与霓虹光晕",
+    "description": "阴影与光晕"
+  },
+  "btnBackToTop": {
+    "message": "顶部",
+    "description": "返回顶部按钮"
+  },
+  "btnBackToTopAria": {
+    "message": "滚动至页面顶部",
+    "description": "无障碍标签"
+  },
+  "lblBookmarks": {
+    "message": "边注批注与页面标记",
+    "description": "边注与标记"
+  },
+  "bookmarkAdded": {
+    "message": "边注已保存 🔖",
+    "description": "创建提示"
+  },
+  "bookmarkDeleted": {
+    "message": "边注已删除",
+    "description": "删除提示"
+  },
+  "bookmarksIndexTitle": {
+    "message": "页面批注索引",
+    "description": "批注菜单标题"
+  },
+  "bookmarksEmpty": {
+    "message": "暂无保存的批注",
+    "description": "空状态"
+  },
+  "bookmarksTriggerAria": {
+    "message": "页面批注索引列表",
+    "description": "无障碍触发按钮"
+  }
+}

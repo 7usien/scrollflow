@@ -1,13 +1,22 @@
-// src/options/options.ts — Full settings management, blocklist editor, and bilingual localization (FR-27, FR-29)
+// src/options/options.ts — Full settings management, blocklist editor, and 9-language i18n
 import { MSG } from '../shared/messages';
-import type { Contrast, Settings, Side, Position, Theme, BarLength, BarRadius } from '../shared/types';
+import type { Settings } from '../shared/types';
 import { DEFAULT_SETTINGS } from '../shared/types';
 import { sanitizeSettings } from '../shared/settings-schema';
-
-type Locale = 'ar' | 'en';
+import {
+  getDictionary,
+  getStoredLocale,
+  setStoredLocale,
+  resolveActiveLocale,
+  type LocaleSetting,
+  type SupportedLocale,
+} from '../shared/i18n';
 
 let currentSettings: Settings = { ...DEFAULT_SETTINGS };
-let currentLocale: Locale = 'ar';
+let currentSetting: LocaleSetting = 'auto';
+let currentLocale: SupportedLocale = 'en';
+
+const langSelect = document.getElementById('langSelect') as HTMLSelectElement | null;
 
 const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement | null;
 const positionSelect = document.getElementById('positionSelect') as HTMLSelectElement | null;
@@ -23,185 +32,20 @@ const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile') as HTMLInputElement | null;
 const clearPositionsBtn = document.getElementById('clearPositionsBtn');
-const langToggleBtn = document.getElementById('langToggleBtn');
 
-const STRINGS = {
-  ar: {
-    pageTitle: 'ScrollFlow — الإعدادات',
-    pageSubtitle: 'تخصيص مؤشر القراءة، الاستعادة، والاحتفال',
-    langToggle: '🌐 English',
-    secGeneral: 'عام',
-    titleEnabled: 'تفعيل الإضافة بشكل عام',
-    descEnabled: 'إظهار أو إخفاء المؤشر على جميع المواقع',
-    titleRestore: 'استعادة موضع التمرير',
-    descRestore: 'العودة تلقائيًا إلى حيث توقفت عند إعادة فتح الصفحة',
-    titleCelebrate: 'احتفال عند الإكمال',
-    descCelebrate: 'إطلاق Confetti خفيف عند الوصول لنهاية الصفحة',
-    titleMilestones: 'نبضات المحطات',
-    descMilestones: 'نبضة خفيفة على الشريط عند اجتياز 25% و 50% و 75%',
-    titleHideScrollbar: 'إخفاء شريط المتصفح الأصلي',
-    descHideScrollbar: 'إخفاء شريط التمرير التقليدي لنظام التشغيل واستخدام ScrollFlow بدلاً منه',
-    titleSmoothScroll: 'التصفح السلس للصفحة',
-    descSmoothScroll: 'جعل التمرير والتنقل بين أقسام الصفحة سلسًا وانسيابيًا (Smooth Scrolling)',
-    titleBookmarks: 'هوامش ونقاط الصفحة',
-    descBookmarks: 'إظهار خيار إضافة هامش عند تظليل النص وعرض نقاط التنقل على الشريط',
-    titleAutoToc: 'فهرس العناوين التلقائي',
-    descAutoToc: 'توليد نقاط وعلامات على الشريط بناءً على عناوين الصفحة (H1..H3) تلقائيًا',
-    titleZenMode: 'وضع القراءة الهادئ (Zen Mode)',
-    descZenMode: 'تلاشي وإخفاء الشريط تلقائيًا عند التوقف عن التمرير لإتاحة قراءة خالية من المشتتات',
-    titleBadge: 'إظهار النسبة على الأيقونة',
-    descBadge: 'عرض نسبة التقدّم الحالية على أيقونة الإضافة',
-    titleToasts: 'التلميحات النصية',
-    descToasts: 'إظهار إشعارات عند الاستعادة أو الإكمال',
-    titleFileUrls: 'السماح لصفحات الملفات المحلية',
-    descFileUrls: 'تشغيل الإضافة على روابط file://',
-    secAppearance: 'المظهر والتخطيط',
-    titleTheme: 'الستايل والثيم اللوني',
-    descTheme: 'تدرّج ومظهر شريط القراءة',
-    titlePosition: 'موضع وتخطيط الشريط',
-    descPosition: 'اختيار الموضع الرأسي أو الأفقي للشريط',
-    titleLength: 'امتداد وطول الشريط',
-    descLength: 'كامل بنسبة 100% (بارتفاع أو عرض الشاشة كاملاً) أو عائم متمركز (60%)',
-    titleRadius: 'انحناء زوايا الشريط',
-    descRadius: 'تحديد شكل الحواف والزوايا للشريط والمؤشر',
-    titleShadow: 'إظهار الظل والتوهج',
-    descShadow: 'تفعيل الظل الزجاجي العائم وتوهج المؤشر أو استخدام مظهر مسطح (Flat)',
-    titleContrast: 'مستوى التباين',
-    descContrast: 'وضوح المسار على الخلفيات المختلفة',
-    secBlocklist: 'المواقع المستثناة (Blocklist)',
-    descBlocklist: 'المواقع التي لا يظهر فيها الشريط. يدعم النطاقات المباشرة مثل example.com أو النطاقات الفرعية مثل *.example.com.',
-    blocklistPlaceholder: 'أدخل النطاق (مثال: docs.google.com)',
-    addBlocklist: 'إضافة',
-    removeBlocklist: 'إزالة',
-    secData: 'إدارة البيانات',
-    exportBtn: 'تصدير الإعدادات (JSON)',
-    importBtn: 'استيراد الإعدادات',
-    clearPositionsBtn: 'مسح بيانات التمرير المحفوظة',
-    confirmClear: 'هل أنت متأكد من مسح جميع بيانات التمرير المحفوظة؟',
-    alertCleared: 'تم مسح {n} موضع محفوظ.',
-    alertImportSuccess: 'تم استيراد الإعدادات بنجاح.',
-    alertImportError: 'الملف غير صالح أو تالف.',
-    themes: {
-      aurora: 'Aurora (تدرج كوني)',
-      sunset: 'Sunset (غروب دافئ)',
-      cyberpunk: 'Cyberpunk (نيون متوهج)',
-      minimal: 'Minimal (نحيف وبسيط)',
-      glass: 'Glass Pill (كبسولة زجاجية)',
-      mono: 'Mono (رمادي كلاسيكي)',
-    },
-    positions: {
-      right: 'يمين الشاشة (رأسي)',
-      left: 'يسار الشاشة (رأسي)',
-      top: 'أعلى الشاشة (أفقي)',
-      bottom: 'أسفل الشاشة (أفقي)',
-    },
-    lengths: {
-      floating: 'عائم متمركز (60%)',
-      full: 'كامل 100% (امتداد كامل)',
-    },
-    radii: {
-      subtle: 'دائرية خفيفة (6px - دائرية بعض الشيء)',
-      pill: 'كبسولة دائرية كاملة (999px)',
-      sharp: 'مستطيلة حادة (2px)',
-    },
-    contrasts: {
-      normal: 'عادي',
-      high: 'تباين عالٍ',
-    },
-  },
-  en: {
-    pageTitle: 'ScrollFlow — Settings',
-    pageSubtitle: 'Customize reading progress, restoration, and celebration',
-    langToggle: '🌐 العربية',
-    secGeneral: 'General',
-    titleEnabled: 'Enable extension globally',
-    descEnabled: 'Show or hide reading indicator across all websites',
-    titleRestore: 'Restore scroll position',
-    descRestore: 'Automatically return to where you left off when reopening a page',
-    titleCelebrate: 'Celebrate on complete',
-    descCelebrate: 'Burst celebratory confetti upon reaching the bottom of a page',
-    titleMilestones: 'Milestone pulses',
-    descMilestones: 'Subtle rail pulse when crossing 25%, 50%, and 75%',
-    titleHideScrollbar: 'Hide native scrollbar',
-    descHideScrollbar: 'Hide OS default scrollbar and rely exclusively on ScrollFlow',
-    titleSmoothScroll: 'Smooth page scrolling',
-    descSmoothScroll: 'Make page scrolling and in-page anchor jumps silky smooth',
-    titleBookmarks: 'Page margins & bookmarks',
-    descBookmarks: 'Show bookmark bubble on text highlight and display rail navigation dots',
-    titleAutoToc: 'Auto Table of Contents',
-    descAutoToc: 'Automatically generate rail markers based on page headings (H1..H3)',
-    titleZenMode: 'Zen Mode (Auto-Hide)',
-    descZenMode: 'Smoothly fade out progress rail when idle to provide distraction-free reading',
-    titleBadge: 'Show badge on icon',
-    descBadge: 'Display current reading percentage badge on the extension toolbar icon',
-    titleToasts: 'Toast notifications',
-    descToasts: 'Show brief notifications on restoration or page completion',
-    titleFileUrls: 'Allow on local file URLs',
-    descFileUrls: 'Enable extension features on file:// URLs',
-    secAppearance: 'Appearance & Layout',
-    titleTheme: 'Theme & color palette',
-    descTheme: 'Gradient styling and aesthetic theme of the progress bar',
-    titlePosition: 'Bar position & layout',
-    descPosition: 'Select vertical side or horizontal top/bottom placement',
-    titleLength: 'Bar length',
-    descLength: 'Full 100% (full height/width) or centered floating capsule (60%)',
-    titleRadius: 'Corner radius',
-    descRadius: 'Define corner curvature for the rail and thumb',
-    titleShadow: 'Show shadow & glow',
-    descShadow: 'Enable frosted glass shadow and thumb glow or use flat mode',
-    titleContrast: 'Contrast level',
-    descContrast: 'Visibility and contrast of the rail on varied backgrounds',
-    secBlocklist: 'Excluded Sites (Blocklist)',
-    descBlocklist: 'Sites where ScrollFlow overlay is disabled. Supports direct domains like example.com or wildcards like *.example.com.',
-    blocklistPlaceholder: 'Enter domain (e.g. docs.google.com)',
-    addBlocklist: 'Add',
-    removeBlocklist: 'Remove',
-    secData: 'Data Management',
-    exportBtn: 'Export settings (JSON)',
-    importBtn: 'Import settings',
-    clearPositionsBtn: 'Clear saved scroll positions',
-    confirmClear: 'Are you sure you want to clear all saved scroll positions?',
-    alertCleared: 'Cleared {n} saved positions.',
-    alertImportSuccess: 'Settings imported successfully.',
-    alertImportError: 'Invalid or corrupted settings file.',
-    themes: {
-      aurora: 'Aurora (Cosmic Gradient)',
-      sunset: 'Sunset (Warm Coral)',
-      cyberpunk: 'Cyberpunk (Neon Glow)',
-      minimal: 'Minimal (Sleek Slate)',
-      glass: 'Glass Pill (Frosted Capsule)',
-      mono: 'Mono (Classic Gray)',
-    },
-    positions: {
-      right: 'Right Screen (Vertical)',
-      left: 'Left Screen (Vertical)',
-      top: 'Top Screen (Horizontal)',
-      bottom: 'Bottom Screen (Horizontal)',
-    },
-    lengths: {
-      floating: 'Centered Floating (60%)',
-      full: 'Full 100% (Full Height/Width)',
-    },
-    radii: {
-      subtle: 'Subtle Rounded (6px)',
-      pill: 'Full Capsule (999px)',
-      sharp: 'Sharp Rectangle (2px)',
-    },
-    contrasts: {
-      normal: 'Normal',
-      high: 'High Contrast',
-    },
-  },
-};
+// About and Support elements
+const shareBtn = document.getElementById('shareBtn');
+const shareToast = document.getElementById('shareToast');
 
-function applyLocale(lang: Locale) {
+function applyLocale(lang: SupportedLocale) {
   currentLocale = lang;
-  const isRTL = lang === 'ar';
-  document.documentElement.lang = lang;
-  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
-  document.body.dir = isRTL ? 'rtl' : 'ltr';
+  const dict = getDictionary(lang);
 
-  const t = STRINGS[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = dict.dir;
+  document.body.dir = dict.dir;
+
+  const t = dict.options;
 
   const setText = (id: string, text: string) => {
     const el = document.getElementById(id);
@@ -210,7 +54,6 @@ function applyLocale(lang: Locale) {
 
   setText('pageTitle', t.pageTitle);
   setText('pageSubtitle', t.pageSubtitle);
-  setText('langToggleBtn', t.langToggle);
 
   setText('secGeneral', t.secGeneral);
   setText('titleEnabled', t.titleEnabled);
@@ -262,6 +105,19 @@ function applyLocale(lang: Locale) {
   setText('importBtn', t.importBtn);
   setText('clearPositionsBtn', t.clearPositionsBtn);
 
+  // About & Support Section
+  setText('secAbout', t.secAbout.titleAbout);
+  setText('aboutDesc', t.secAbout.descAbout);
+  setText('supportTitle', t.secAbout.supportTitle);
+  setText('supportDesc', t.secAbout.supportDesc);
+  setText('patreonBtnText', t.secAbout.patreonBtn);
+  setText('coffeeBtnText', t.secAbout.coffeeBtn);
+  setText('emailContactLabel', t.secAbout.emailContactLabel);
+  setText('rateShareTitle', t.secAbout.rateShareTitle);
+  setText('rateShareDesc', t.secAbout.rateShareDesc);
+  setText('rateStoreBtn', t.secAbout.rateStoreBtn);
+  setText('shareBtnText', t.secAbout.shareBtn);
+
   const updateSelect = (select: HTMLSelectElement | null, map: Record<string, string>) => {
     if (!select) return;
     for (const opt of Array.from(select.options)) {
@@ -275,21 +131,18 @@ function applyLocale(lang: Locale) {
   updateSelect(radiusSelect, t.radii);
   updateSelect(contrastSelect, t.contrasts);
 
+  if (langSelect) {
+    langSelect.value = currentSetting;
+    const autoOpt = langSelect.querySelector('option[value="auto"]');
+    if (autoOpt) autoOpt.textContent = `🌐 ${t.langAuto}`;
+  }
+
   renderBlocklist();
 }
 
 async function loadOptions() {
-  try {
-    const res = await chrome.storage.local.get('sf_ui_locale');
-    if (res?.sf_ui_locale === 'en' || res?.sf_ui_locale === 'ar') {
-      currentLocale = res.sf_ui_locale;
-    } else {
-      currentLocale = 'ar';
-    }
-  } catch {
-    currentLocale = 'ar';
-  }
-
+  currentSetting = await getStoredLocale();
+  currentLocale = resolveActiveLocale(currentSetting);
   applyLocale(currentLocale);
 
   try {
@@ -318,72 +171,63 @@ function renderSettings() {
   setSwitch('shadowSwitch', currentSettings.shadow !== false);
   setSwitch('badgeSwitch', currentSettings.showBadge);
   setSwitch('toastsSwitch', currentSettings.showToasts);
-  setSwitch('fileUrlsSwitch', currentSettings.allowFileUrls);
 
   if (themeSelect) themeSelect.value = currentSettings.theme;
-  if (positionSelect) {
-    positionSelect.value = currentSettings.position || (currentSettings.side === 'left' ? 'left' : 'right');
-  }
+  if (positionSelect) positionSelect.value = currentSettings.position;
   if (lengthSelect) lengthSelect.value = currentSettings.barLength || 'floating';
   if (radiusSelect) radiusSelect.value = currentSettings.barRadius || 'subtle';
   if (contrastSelect) contrastSelect.value = currentSettings.contrast;
+
+  checkFileUrlPermission();
 }
 
-function setSwitch(id: string, value: boolean) {
+async function checkFileUrlPermission() {
+  try {
+    const allowed = await chrome.extension.isAllowedFileSchemeAccess();
+    setSwitch('fileUrlsSwitch', allowed);
+  } catch {
+    setSwitch('fileUrlsSwitch', false);
+  }
+}
+
+function setSwitch(id: string, active: boolean) {
   const el = document.getElementById(id);
-  if (el) {
-    el.setAttribute('aria-checked', String(value));
+  if (!el) return;
+  if (active) {
+    el.classList.add('active');
+    el.setAttribute('aria-checked', 'true');
+  } else {
+    el.classList.remove('active');
+    el.setAttribute('aria-checked', 'false');
   }
 }
 
 async function patch(partial: Partial<Settings>) {
-  currentSettings = { ...currentSettings, ...partial };
   try {
     await chrome.runtime.sendMessage({
       type: MSG.SETTINGS_PATCH,
       patch: partial,
     });
-  } catch (err) {
-    console.error('Failed to patch settings:', err);
+  } catch {
+    // fail-soft
   }
 }
 
-function renderBlocklist() {
-  if (!blocklistUl) return;
-  blocklistUl.innerHTML = '';
-
-  const t = STRINGS[currentLocale];
-
-  for (const domain of currentSettings.blocklist) {
-    const li = document.createElement('li');
-    li.className = 'blocklist-item';
-
-    const span = document.createElement('span');
-    span.textContent = domain;
-    li.appendChild(span);
-
-    const btn = document.createElement('button');
-    btn.className = 'btn-remove';
-    btn.textContent = t.removeBlocklist;
-    btn.addEventListener('click', async () => {
-      const updated = currentSettings.blocklist.filter((d) => d !== domain);
-      await patch({ blocklist: updated });
-      renderBlocklist();
-    });
-    li.appendChild(btn);
-
-    blocklistUl.appendChild(li);
-  }
-}
-
-// ── Event Bindings ──
 function bindSwitch(id: string, key: keyof Settings) {
   const el = document.getElementById(id);
-  el?.addEventListener('click', async () => {
-    const cur = el.getAttribute('aria-checked') === 'true';
-    const next = !cur;
-    el.setAttribute('aria-checked', String(next));
-    await patch({ [key]: next });
+  if (!el) return;
+  const toggle = async () => {
+    const nextVal = !currentSettings[key];
+    (currentSettings as unknown as Record<string, unknown>)[key] = nextVal;
+    setSwitch(id, nextVal);
+    await patch({ [key]: nextVal });
+  };
+  el.addEventListener('click', toggle);
+  el.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      toggle();
+    }
   });
 }
 
@@ -399,53 +243,115 @@ bindSwitch('zenModeSwitch', 'zenMode');
 bindSwitch('shadowSwitch', 'shadow');
 bindSwitch('badgeSwitch', 'showBadge');
 bindSwitch('toastsSwitch', 'showToasts');
-bindSwitch('fileUrlsSwitch', 'allowFileUrls');
 
-themeSelect?.addEventListener('change', () => {
-  patch({ theme: themeSelect.value as Theme });
+document.getElementById('fileUrlsSwitch')?.addEventListener('click', () => {
+  chrome.tabs.create({ url: 'chrome://extensions/?id=' + chrome.runtime.id });
 });
 
-positionSelect?.addEventListener('change', () => {
-  const newPos = positionSelect.value as Position;
-  const newSide: Side = newPos === 'left' ? 'left' : 'right';
-  const newOrientation = newPos === 'top' || newPos === 'bottom' ? 'horizontal' : 'vertical';
-  patch({ position: newPos, side: newSide, orientation: newOrientation });
+themeSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['theme'];
+  currentSettings.theme = val;
+  await patch({ theme: val });
 });
 
-lengthSelect?.addEventListener('change', () => {
-  patch({ barLength: lengthSelect?.value as BarLength });
+positionSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['position'];
+  currentSettings.position = val;
+  await patch({ position: val });
 });
 
-radiusSelect?.addEventListener('change', () => {
-  patch({ barRadius: radiusSelect?.value as BarRadius });
+lengthSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['barLength'];
+  currentSettings.barLength = val;
+  await patch({ barLength: val });
 });
 
-contrastSelect?.addEventListener('change', () => {
-  patch({ contrast: contrastSelect.value as Contrast });
+radiusSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['barRadius'];
+  currentSettings.barRadius = val;
+  await patch({ barRadius: val });
 });
+
+contrastSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['contrast'];
+  currentSettings.contrast = val;
+  await patch({ contrast: val });
+});
+
+function renderBlocklist() {
+  if (!blocklistUl) return;
+  blocklistUl.innerHTML = '';
+  const dict = getDictionary(currentLocale);
+
+  for (const host of currentSettings.blocklist) {
+    const li = document.createElement('li');
+    li.className = 'blocklist-item';
+
+    const span = document.createElement('span');
+    span.textContent = host;
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-remove';
+    btn.textContent = dict.options.removeBlocklist;
+    btn.setAttribute('aria-label', `${dict.options.removeBlocklist} ${host}`);
+    btn.addEventListener('click', async () => {
+      currentSettings.blocklist = currentSettings.blocklist.filter((h) => h !== host);
+      await patch({ blocklist: currentSettings.blocklist });
+      renderBlocklist();
+    });
+
+    li.appendChild(span);
+    li.appendChild(btn);
+    blocklistUl.appendChild(li);
+  }
+}
 
 addBlocklistBtn?.addEventListener('click', async () => {
   if (!blocklistInput) return;
-  const val = blocklistInput.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-  if (!val) return;
+  const raw = blocklistInput.value.trim().toLowerCase();
+  if (!raw) return;
 
-  if (!currentSettings.blocklist.includes(val)) {
-    const updated = [...currentSettings.blocklist, val];
-    await patch({ blocklist: updated });
+  const clean = raw.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '');
+  if (clean && !currentSettings.blocklist.includes(clean)) {
+    currentSettings.blocklist.push(clean);
+    await patch({ blocklist: currentSettings.blocklist });
     renderBlocklist();
-    blocklistInput.value = '';
+  }
+  blocklistInput.value = '';
+});
+
+blocklistInput?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addBlocklistBtn?.click();
   }
 });
 
-// Language Switcher
-langToggleBtn?.addEventListener('click', async () => {
-  const nextLocale: Locale = currentLocale === 'ar' ? 'en' : 'ar';
+// Language Select listener
+langSelect?.addEventListener('change', async () => {
+  const val = (langSelect.value || 'auto') as LocaleSetting;
+  currentSetting = val;
+  await setStoredLocale(val);
+  const effective = resolveActiveLocale(val);
+  applyLocale(effective);
+});
+
+// Share button click handler
+shareBtn?.addEventListener('click', async () => {
+  const shareUrl = 'https://chromewebstore.google.com/detail/scrollflow';
   try {
-    await chrome.storage.local.set({ sf_ui_locale: nextLocale });
+    await navigator.clipboard.writeText(shareUrl);
+    if (shareToast) {
+      const dict = getDictionary(currentLocale);
+      shareToast.textContent = dict.options.secAbout.shareCopied;
+      shareToast.style.display = 'inline-block';
+      setTimeout(() => {
+        if (shareToast) shareToast.style.display = 'none';
+      }, 3000);
+    }
   } catch {
-    // fail-soft
+    // Fail soft if clipboard restricted
   }
-  applyLocale(nextLocale);
 });
 
 // Export JSON
@@ -467,7 +373,7 @@ importFile?.addEventListener('change', (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
-  const t = STRINGS[currentLocale];
+  const dict = getDictionary(currentLocale);
   const reader = new FileReader();
   reader.onload = async (event) => {
     try {
@@ -478,9 +384,9 @@ importFile?.addEventListener('change', (e) => {
       currentSettings = sanitized;
       renderSettings();
       renderBlocklist();
-      alert(t.alertImportSuccess);
+      alert(dict.options.alertImportSuccess);
     } catch {
-      alert(t.alertImportError);
+      alert(dict.options.alertImportError);
     }
   };
   reader.readAsText(file);
@@ -488,11 +394,11 @@ importFile?.addEventListener('change', (e) => {
 
 // Clear positions
 clearPositionsBtn?.addEventListener('click', async () => {
-  const t = STRINGS[currentLocale];
-  if (confirm(t.confirmClear)) {
+  const dict = getDictionary(currentLocale);
+  if (confirm(dict.options.confirmClear)) {
     const res = await chrome.runtime.sendMessage({ type: MSG.CLEAR_POSITIONS });
     const count = res?.ok ? res.data?.cleared ?? 0 : 0;
-    alert(t.alertCleared.replace('{n}', String(count)));
+    alert(dict.options.alertCleared.replace('{n}', String(count)));
   }
 });
 

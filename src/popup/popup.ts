@@ -1,13 +1,20 @@
-// src/popup/popup.ts — Popup logic, stats, switches, site exclusions, and bilingual localization (FR-09, FR-25, FR-27, FR-29)
+// src/popup/popup.ts — Popup logic, stats, switches, site exclusions, and 9-language i18n
 import { MSG } from '../shared/messages';
-import type { Metrics, Settings, Position, BarLength, BarRadius, Theme } from '../shared/types';
+import type { Metrics, Settings } from '../shared/types';
 import { screensOf, estimateReadingMinutes } from '../core/reading';
-
-type Locale = 'ar' | 'en';
+import {
+  getDictionary,
+  getStoredLocale,
+  setStoredLocale,
+  resolveActiveLocale,
+  type LocaleSetting,
+  type SupportedLocale,
+} from '../shared/i18n';
 
 let currentHostname = '';
 let isSiteEnabled = true;
-let currentLocale: Locale = 'ar';
+let currentSetting: LocaleSetting = 'auto';
+let currentLocale: SupportedLocale = 'en';
 let currentMetrics: Metrics | null = null;
 let currentPercent = 0;
 
@@ -38,7 +45,7 @@ const optionsBtn = document.getElementById('optionsBtn');
 const clearBtn = document.getElementById('clearBtn');
 const popupBody = document.getElementById('popupBody');
 const unsupportedNote = document.getElementById('unsupportedNote');
-const langToggleBtn = document.getElementById('langToggleBtn');
+const langSelect = document.getElementById('langSelect') as HTMLSelectElement | null;
 
 const lblRestore = document.getElementById('lblRestore');
 const lblCelebrate = document.getElementById('lblCelebrate');
@@ -53,119 +60,16 @@ const lblBookmarks = document.getElementById('lblBookmarks');
 const lblAutoToc = document.getElementById('lblAutoToc');
 const lblZenMode = document.getElementById('lblZenMode');
 
-const POPUP_STRINGS = {
-  ar: {
-    langBtn: 'EN',
-    lblScreens: 'طول الصفحة',
-    lblTime: 'وقت قراءة مُقدَّر',
-    screensSuffix: 'شاشة',
-    minsSuffix: 'دقيقة',
-    minSingle: 'أقل من دقيقة',
-    sitePause: 'إيقاف على {site}',
-    siteEnable: 'تفعيل على {site}',
-    siteDefault: 'هذا الموقع',
-    lblRestore: 'استعادة موضع التمرير',
-    lblCelebrate: 'احتفال عند الإكمال',
-    lblTheme: 'الستايل',
-    lblPosition: 'الموضع',
-    lblLength: 'امتداد الشريط',
-    lblRadius: 'انحناء الحواف',
-    lblShadow: 'إظهار الظل والتوهج',
-    lblHideScrollbar: 'إخفاء سكرول المتصفح',
-    lblSmoothScroll: 'تصفح سلس للصفحة',
-    lblBookmarks: 'هوامش ونقاط الصفحة',
-    lblAutoToc: 'فهرس العناوين',
-    lblZenMode: 'وضع القراءة الهادئ',
-    unsupported: 'الصفحة غير قابلة للقياس أو لا تدعم الإضافة هنا.',
-    clearBtn: 'مسح بيانات التمرير',
-    confirmClear: 'هل تريد بالتأكيد مسح جميع مواضع التمرير المحفوظة؟',
-    alertCleared: 'تم مسح {count} موضع محفوظ.',
-    themes: {
-      aurora: 'Aurora (تدرج كوني)',
-      sunset: 'Sunset (غروب دافئ)',
-      cyberpunk: 'Cyberpunk (نيون متوهج)',
-      minimal: 'Minimal (نحيف وبسيط)',
-      glass: 'Glass Pill (كبسولة زجاجية)',
-      mono: 'Mono (رمادي كلاسيكي)',
-    },
-    positions: {
-      right: 'يمين (رأسي)',
-      left: 'يسار (رأسي)',
-      top: 'أعلى (أفقي)',
-      bottom: 'أسفل (أفقي)',
-    },
-    lengths: {
-      floating: 'عائم متمركز (60%)',
-      full: 'كامل 100%',
-    },
-    radii: {
-      subtle: 'دائرية خفيفة (6px)',
-      pill: 'كبسولة كاملة (999px)',
-      sharp: 'مستطيلة حادة (2px)',
-    },
-  },
-  en: {
-    langBtn: 'عربي',
-    lblScreens: 'Page length',
-    lblTime: 'Est. reading time',
-    screensSuffix: 'screens',
-    minsSuffix: 'min',
-    minSingle: '< 1 min',
-    sitePause: 'Pause on {site}',
-    siteEnable: 'Enable on {site}',
-    siteDefault: 'this site',
-    lblRestore: 'Restore scroll position',
-    lblCelebrate: 'Celebrate on complete',
-    lblTheme: 'Theme & style',
-    lblPosition: 'Bar position',
-    lblLength: 'Bar length',
-    lblRadius: 'Corner radius',
-    lblShadow: 'Show shadow & glow',
-    lblHideScrollbar: 'Hide native scrollbar',
-    lblSmoothScroll: 'Smooth page scrolling',
-    lblBookmarks: 'Page margins & markers',
-    lblAutoToc: 'Auto Headings TOC',
-    lblZenMode: 'Zen Mode (Auto-Hide)',
-    unsupported: 'Page cannot be measured or does not support ScrollFlow.',
-    clearBtn: 'Clear scroll data',
-    confirmClear: 'Are you sure you want to clear all saved scroll positions?',
-    alertCleared: 'Cleared {count} saved positions.',
-    themes: {
-      aurora: 'Aurora (Cosmic Gradient)',
-      sunset: 'Sunset (Warm Coral)',
-      cyberpunk: 'Cyberpunk (Neon Glow)',
-      minimal: 'Minimal (Sleek Slate)',
-      glass: 'Glass Pill (Frosted Capsule)',
-      mono: 'Mono (Classic Gray)',
-    },
-    positions: {
-      right: 'Right (Vertical)',
-      left: 'Left (Vertical)',
-      top: 'Top (Horizontal)',
-      bottom: 'Bottom (Horizontal)',
-    },
-    lengths: {
-      floating: 'Centered Floating (60%)',
-      full: 'Full 100%',
-    },
-    radii: {
-      subtle: 'Subtle Rounded (6px)',
-      pill: 'Full Capsule (999px)',
-      sharp: 'Sharp Rectangle (2px)',
-    },
-  },
-};
-
-function applyLocale(lang: Locale) {
+function applyLocale(lang: SupportedLocale) {
   currentLocale = lang;
-  const isRTL = lang === 'ar';
+  const dict = getDictionary(lang);
+
   document.documentElement.lang = lang;
-  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
-  document.body.dir = isRTL ? 'rtl' : 'ltr';
+  document.documentElement.dir = dict.dir;
+  document.body.dir = dict.dir;
 
-  const t = POPUP_STRINGS[lang];
+  const t = dict.popup;
 
-  if (langToggleBtn) langToggleBtn.textContent = t.langBtn;
   if (lblScreens) lblScreens.textContent = t.lblScreens;
   if (lblTime) lblTime.textContent = t.lblTime;
 
@@ -197,22 +101,17 @@ function applyLocale(lang: Locale) {
   updateSelect(lengthSelect, t.lengths);
   updateSelect(radiusSelect, t.radii);
 
+  if (langSelect) {
+    langSelect.value = currentSetting;
+  }
+
   updateSiteBtn();
   renderProgress(currentPercent, currentMetrics);
 }
 
 async function initPopup() {
-  try {
-    const res = await chrome.storage.local.get('sf_ui_locale');
-    if (res?.sf_ui_locale === 'en' || res?.sf_ui_locale === 'ar') {
-      currentLocale = res.sf_ui_locale;
-    } else {
-      currentLocale = 'ar';
-    }
-  } catch {
-    currentLocale = 'ar';
-  }
-
+  currentSetting = await getStoredLocale();
+  currentLocale = resolveActiveLocale(currentSetting);
   applyLocale(currentLocale);
 
   try {
@@ -248,8 +147,8 @@ async function initPopup() {
       currentMetrics = metrics;
 
       applySettingsToUI(settings);
-      renderProgress(percent, metrics);
       updateSiteBtn();
+      renderProgress(percent, metrics);
     } else {
       showUnsupported();
     }
@@ -259,17 +158,17 @@ async function initPopup() {
 }
 
 function showUnsupported() {
-  if (popupBody && unsupportedNote) {
-    popupBody.classList.add('unsupported');
+  if (popupBody) {
+    const rows = popupBody.querySelectorAll('.row, .donut-row, .site-btn');
+    rows.forEach((r) => ((r as HTMLElement).style.display = 'none'));
+  }
+  if (unsupportedNote) {
     unsupportedNote.style.display = 'block';
   }
 }
 
 function renderProgress(percent: number, metrics: Metrics | null) {
-  currentPercent = percent;
-  currentMetrics = metrics;
-
-  const p = Math.max(0, Math.min(100, percent));
+  const p = Math.max(0, Math.min(100, Math.round(percent)));
   if (donutArc) {
     const offset = CIRCUMFERENCE - (p / 100) * CIRCUMFERENCE;
     donutArc.style.strokeDashoffset = String(offset);
@@ -278,7 +177,8 @@ function renderProgress(percent: number, metrics: Metrics | null) {
     donutPct.textContent = `${p}%`;
   }
 
-  const t = POPUP_STRINGS[currentLocale];
+  const dict = getDictionary(currentLocale);
+  const t = dict.popup;
 
   if (metrics && statScreens && statTime) {
     const sc = screensOf(metrics.docHeight, metrics.viewportH);
@@ -294,16 +194,18 @@ function applySettingsToUI(s: Settings) {
   document.body.setAttribute('data-theme', s.theme);
 
   if (restoreSwitch) {
+    restoreSwitch.classList.toggle('active', s.restoreScroll);
     restoreSwitch.setAttribute('aria-checked', String(s.restoreScroll));
   }
   if (celebrateSwitch) {
+    celebrateSwitch.classList.toggle('active', s.celebrate);
     celebrateSwitch.setAttribute('aria-checked', String(s.celebrate));
   }
   if (themeSelect) {
     themeSelect.value = s.theme;
   }
   if (positionSelect) {
-    positionSelect.value = s.position || (s.side === 'left' ? 'left' : 'right');
+    positionSelect.value = s.position;
   }
   if (lengthSelect) {
     lengthSelect.value = s.barLength || 'floating';
@@ -312,28 +214,35 @@ function applySettingsToUI(s: Settings) {
     radiusSelect.value = s.barRadius || 'subtle';
   }
   if (shadowSwitch) {
+    shadowSwitch.classList.toggle('active', s.shadow !== false);
     shadowSwitch.setAttribute('aria-checked', String(s.shadow !== false));
   }
   if (hideScrollbarSwitch) {
+    hideScrollbarSwitch.classList.toggle('active', s.hideNativeScrollbar);
     hideScrollbarSwitch.setAttribute('aria-checked', String(s.hideNativeScrollbar));
   }
   if (smoothScrollSwitch) {
+    smoothScrollSwitch.classList.toggle('active', s.smoothScroll);
     smoothScrollSwitch.setAttribute('aria-checked', String(s.smoothScroll));
   }
   if (bookmarksSwitch) {
+    bookmarksSwitch.classList.toggle('active', s.bookmarks !== false);
     bookmarksSwitch.setAttribute('aria-checked', String(s.bookmarks !== false));
   }
   if (autoTocSwitch) {
+    autoTocSwitch.classList.toggle('active', s.autoToc !== false);
     autoTocSwitch.setAttribute('aria-checked', String(s.autoToc !== false));
   }
   if (zenModeSwitch) {
+    zenModeSwitch.classList.toggle('active', s.zenMode === true);
     zenModeSwitch.setAttribute('aria-checked', String(s.zenMode === true));
   }
 }
 
 function updateSiteBtn() {
   if (!siteBtnText) return;
-  const t = POPUP_STRINGS[currentLocale];
+  const dict = getDictionary(currentLocale);
+  const t = dict.popup;
   const site = currentHostname || t.siteDefault;
   if (isSiteEnabled) {
     siteBtnText.textContent = t.sitePause.replace('{site}', site);
@@ -349,6 +258,7 @@ function updateSiteBtn() {
 restoreSwitch?.addEventListener('click', async () => {
   const cur = restoreSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  restoreSwitch.classList.toggle('active', next);
   restoreSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -359,6 +269,7 @@ restoreSwitch?.addEventListener('click', async () => {
 celebrateSwitch?.addEventListener('click', async () => {
   const cur = celebrateSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  celebrateSwitch.classList.toggle('active', next);
   celebrateSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -366,42 +277,43 @@ celebrateSwitch?.addEventListener('click', async () => {
   });
 });
 
-themeSelect?.addEventListener('change', async () => {
-  const theme = themeSelect.value as Theme;
-  document.body.setAttribute('data-theme', theme);
+themeSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['theme'];
+  document.body.setAttribute('data-theme', val);
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
-    patch: { theme },
+    patch: { theme: val },
   });
 });
 
-positionSelect?.addEventListener('change', async () => {
-  const newPos = positionSelect.value as Position;
-  const newSide = newPos === 'left' ? 'left' : 'right';
-  const newOrientation = newPos === 'top' || newPos === 'bottom' ? 'horizontal' : 'vertical';
+positionSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['position'];
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
-    patch: { position: newPos, side: newSide, orientation: newOrientation },
+    patch: { position: val },
   });
 });
 
-lengthSelect?.addEventListener('change', async () => {
+lengthSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['barLength'];
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
-    patch: { barLength: lengthSelect.value as BarLength },
+    patch: { barLength: val },
   });
 });
 
-radiusSelect?.addEventListener('change', async () => {
+radiusSelect?.addEventListener('change', async (e) => {
+  const val = (e.target as HTMLSelectElement).value as Settings['barRadius'];
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
-    patch: { barRadius: radiusSelect.value as BarRadius },
+    patch: { barRadius: val },
   });
 });
 
 shadowSwitch?.addEventListener('click', async () => {
   const cur = shadowSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  shadowSwitch.classList.toggle('active', next);
   shadowSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -412,6 +324,7 @@ shadowSwitch?.addEventListener('click', async () => {
 hideScrollbarSwitch?.addEventListener('click', async () => {
   const cur = hideScrollbarSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  hideScrollbarSwitch.classList.toggle('active', next);
   hideScrollbarSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -422,6 +335,7 @@ hideScrollbarSwitch?.addEventListener('click', async () => {
 smoothScrollSwitch?.addEventListener('click', async () => {
   const cur = smoothScrollSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  smoothScrollSwitch.classList.toggle('active', next);
   smoothScrollSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -432,6 +346,7 @@ smoothScrollSwitch?.addEventListener('click', async () => {
 bookmarksSwitch?.addEventListener('click', async () => {
   const cur = bookmarksSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  bookmarksSwitch.classList.toggle('active', next);
   bookmarksSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -442,6 +357,7 @@ bookmarksSwitch?.addEventListener('click', async () => {
 autoTocSwitch?.addEventListener('click', async () => {
   const cur = autoTocSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  autoTocSwitch.classList.toggle('active', next);
   autoTocSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -452,6 +368,7 @@ autoTocSwitch?.addEventListener('click', async () => {
 zenModeSwitch?.addEventListener('click', async () => {
   const cur = zenModeSwitch.getAttribute('aria-checked') === 'true';
   const next = !cur;
+  zenModeSwitch.classList.toggle('active', next);
   zenModeSwitch.setAttribute('aria-checked', String(next));
   await chrome.runtime.sendMessage({
     type: MSG.SETTINGS_PATCH,
@@ -464,7 +381,6 @@ siteBtn?.addEventListener('click', async () => {
   const nextEnabled = !isSiteEnabled;
   isSiteEnabled = nextEnabled;
   updateSiteBtn();
-
   await chrome.runtime.sendMessage({
     type: MSG.SITE_TOGGLE,
     hostname: currentHostname,
@@ -472,15 +388,13 @@ siteBtn?.addEventListener('click', async () => {
   });
 });
 
-// Language Toggle
-langToggleBtn?.addEventListener('click', async () => {
-  const nextLocale: Locale = currentLocale === 'ar' ? 'en' : 'ar';
-  try {
-    await chrome.storage.local.set({ sf_ui_locale: nextLocale });
-  } catch {
-    // fail-soft
-  }
-  applyLocale(nextLocale);
+// Language Select handler
+langSelect?.addEventListener('change', async () => {
+  const val = (langSelect.value || 'auto') as LocaleSetting;
+  currentSetting = val;
+  await setStoredLocale(val);
+  const effective = resolveActiveLocale(val);
+  applyLocale(effective);
 });
 
 optionsBtn?.addEventListener('click', () => {
@@ -492,7 +406,8 @@ optionsBtn?.addEventListener('click', () => {
 });
 
 clearBtn?.addEventListener('click', async () => {
-  const t = POPUP_STRINGS[currentLocale];
+  const dict = getDictionary(currentLocale);
+  const t = dict.popup;
   const confirmed = window.confirm(t.confirmClear);
   if (confirmed) {
     const res = await chrome.runtime.sendMessage({ type: MSG.CLEAR_POSITIONS });

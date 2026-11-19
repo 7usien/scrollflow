@@ -50,6 +50,37 @@ header {
   gap: 16px;
 }
 
+.lang-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-select {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--sf-border);
+  border-radius: 8px;
+  color: var(--sf-text);
+  font-family: var(--sf-font);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  outline: none;
+}
+
+.lang-select:hover,
+.lang-select:focus {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--sf-brand-mid);
+}
+
+.lang-select option {
+  background: #161b26;
+  color: #fff;
+}
+
 .lang-toggle-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--sf-border);
@@ -266,4 +297,222 @@ button:hover {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+/* About & Developer Support Section */
+.about-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--sf-border);
+}
+
+.about-logo {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(109, 91, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.about-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.about-app-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.version-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(109, 91, 255, 0.2);
+  color: var(--sf-brand-end);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.about-desc {
+  font-size: 13px;
+  color: var(--sf-text-dim);
+  line-height: 1.5;
+}
+
+.support-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--sf-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.support-header h4 {
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.support-header p {
+  font-size: 12px;
+  color: var(--sf-text-dim);
+}
+
+.support-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-support {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 180ms ease;
+}
+
+.btn-patreon {
+  background: #ff424d;
+  color: #fff;
+}
+
+.btn-patreon:hover {
+  background: #e0323c;
+  box-shadow: 0 4px 14px rgba(255, 66, 77, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-coffee {
+  background: #ffdd00;
+  color: #000;
+}
+
+.btn-coffee:hover {
+  background: #f0ce00;
+  box-shadow: 0 4px 14px rgba(255, 221, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.email-contact-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.email-label {
+  font-size: 12px;
+  color: var(--sf-text-dim);
+}
+
+.email-image-wrapper {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--sf-border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.email-img {
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
+.community-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--sf-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.community-header h4 {
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.community-header p {
+  font-size: 12px;
+  color: var(--sf-text-dim);
+}
+
+.community-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--sf-border);
+  color: #ffdf6d;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.btn-rate:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffdf6d;
+}
+
+.btn-share {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(109, 91, 255, 0.15);
+  border: 1px solid rgba(109, 91, 255, 0.4);
+  color: #c9c3ff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-share:hover {
+  background: rgba(109, 91, 255, 0.28);
+  color: #fff;
+}
+
+.share-toast {
+  font-size: 12px;
+  color: #00d4ff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  display: inline-block;
+  animation: fadeIn 200ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

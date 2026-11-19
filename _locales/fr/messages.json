@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Nom de l'extension"
+  },
+  "extDesc": {
+    "message": "Barre de progression intelligente, marges de notes, sommaire auto, reprise de lecture et export Markdown. 100% privé et fluide.",
+    "description": "Description de l'extension"
+  },
+  "cmdToggle": {
+    "message": "Afficher/masquer la barre de lecture",
+    "description": "Raccourci clavier pour basculer la barre"
+  },
+  "toastRestored": {
+    "message": "Reprise là où vous vous êtes arrêté",
+    "description": "Message de reprise de lecture"
+  },
+  "toastComplete": {
+    "message": "Page terminée 🎉",
+    "description": "Message de fin de page"
+  },
+  "themeAurora": {
+    "message": "Aurore (Dégradé cosmique)",
+    "description": "Thème aurore"
+  },
+  "themeSunset": {
+    "message": "Coucher de soleil (Corail chaud)",
+    "description": "Thème sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Cyberpunk (Néon vif)",
+    "description": "Thème cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Minimaliste (Gris ardoise)",
+    "description": "Thème minimal"
+  },
+  "themeGlass": {
+    "message": "Verre dépoli (Capsule givrée)",
+    "description": "Thème glass"
+  },
+  "themeMono": {
+    "message": "Monochrome (Gris classique)",
+    "description": "Thème mono"
+  },
+  "posRight": {
+    "message": "Droite (Vertical)",
+    "description": "Position droite"
+  },
+  "posLeft": {
+    "message": "Gauche (Vertical)",
+    "description": "Position gauche"
+  },
+  "posTop": {
+    "message": "Haut (Horizontal)",
+    "description": "Position haut"
+  },
+  "posBottom": {
+    "message": "Bas (Horizontal)",
+    "description": "Position bas"
+  },
+  "hideNativeScrollbar": {
+    "message": "Masquer la barre de défilement native",
+    "description": "Masquer la barre native"
+  },
+  "smoothScroll": {
+    "message": "Défilement fluide de la page",
+    "description": "Défilement fluide"
+  },
+  "lenFloating": {
+    "message": "Capsule flottante (60%)",
+    "description": "Longueur flottante"
+  },
+  "lenFull": {
+    "message": "Pleine longueur 100%",
+    "description": "Pleine longueur"
+  },
+  "radSubtle": {
+    "message": "Coins arrondis (6px)",
+    "description": "Rayon subtil"
+  },
+  "radPill": {
+    "message": "Capsule ronde (999px)",
+    "description": "Rayon capsule"
+  },
+  "radSharp": {
+    "message": "Rectangle net (2px)",
+    "description": "Rayon net"
+  },
+  "lblShadow": {
+    "message": "Ombre et lueur néon",
+    "description": "Ombre et lueur"
+  },
+  "btnBackToTop": {
+    "message": "HAUT",
+    "description": "Bouton retour en haut"
+  },
+  "btnBackToTopAria": {
+    "message": "Retourner en haut de la page",
+    "description": "Label accessibilité retour en haut"
+  },
+  "lblBookmarks": {
+    "message": "Marges et repères de page",
+    "description": "Marges et repères"
+  },
+  "bookmarkAdded": {
+    "message": "Note de marge enregistrée 🔖",
+    "description": "Message création de note"
+  },
+  "bookmarkDeleted": {
+    "message": "Note supprimée",
+    "description": "Message suppression de note"
+  },
+  "bookmarksIndexTitle": {
+    "message": "Repères de la page",
+    "description": "Titre du menu des repères"
+  },
+  "bookmarksEmpty": {
+    "message": "Aucun repère enregistré pour le moment",
+    "description": "État vide des repères"
+  },
+  "bookmarksTriggerAria": {
+    "message": "Index des repères de la page",
+    "description": "Label accessibilité déclencheur repères"
+  }
+}

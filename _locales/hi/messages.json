@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "एक्सटेंशन का नाम"
+  },
+  "extDesc": {
+    "message": "मार्जिन नोट्स, ऑटो-टीओसी, स्क्रॉल रीस्टोर और मार्कडाउन निर्यात के साथ स्मार्ट रीडिंग प्रोग्रेस बार। 100% निजी और तेज़।",
+    "description": "एक्सटेंशन विवरण"
+  },
+  "cmdToggle": {
+    "message": "रीडिंग प्रोग्रेस ओवरले चालू/बंद करें",
+    "description": "शॉर्टकट कमांड विवरण"
+  },
+  "toastRestored": {
+    "message": "वहीं वापस जहां आपने पढ़ना छोड़ा था",
+    "description": "रीस्टोर संदेश"
+  },
+  "toastComplete": {
+    "message": "पेज पूरा हुआ 🎉",
+    "description": "पेज पूरा होने का संदेश"
+  },
+  "themeAurora": {
+    "message": "अरोरा (अंतरिक्ष ग्रेडिएंट)",
+    "description": "थीम aurora"
+  },
+  "themeSunset": {
+    "message": "सनसेट (वार्म कोरल)",
+    "description": "थीम sunset"
+  },
+  "themeCyberpunk": {
+    "message": "साइबरपंक (नियॉन ग्लो)",
+    "description": "थीम cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "मिनिमल (स्लेट ग्रे)",
+    "description": "थीम minimal"
+  },
+  "themeGlass": {
+    "message": "ग्लास पिल (फ्रॉस्टेड कैप्सूल)",
+    "description": "थीम glass"
+  },
+  "themeMono": {
+    "message": "मोनो (क्लासिक ग्रे)",
+    "description": "थीम mono"
+  },
+  "posRight": {
+    "message": "दाईं ओर (वर्टिकल)",
+    "description": "स्थिति दाईं"
+  },
+  "posLeft": {
+    "message": "बाईं ओर (वर्टिकल)",
+    "description": "स्थिति बाईं"
+  },
+  "posTop": {
+    "message": "ऊपर (हॉरिज़ॉन्टल)",
+    "description": "स्थिति ऊपर"
+  },
+  "posBottom": {
+    "message": "नीचे (हॉरिज़ॉन्टल)",
+    "description": "स्थिति नीचे"
+  },
+  "hideNativeScrollbar": {
+    "message": "ब्राउज़र स्क्रॉलबार छिपाएं",
+    "description": "स्क्रॉलबार छिपाएं"
+  },
+  "smoothScroll": {
+    "message": "सहज स्क्रॉलिंग",
+    "description": "सहज स्क्रॉलिंग"
+  },
+  "lenFloating": {
+    "message": "फ़्लोटिंग कैप्सूल (60%)",
+    "description": "लंबाई फ़्लोटिंग"
+  },
+  "lenFull": {
+    "message": "पूरी लंबाई 100%",
+    "description": "लंबाई पूरी"
+  },
+  "radSubtle": {
+    "message": "हल्का गोल (6px)",
+    "description": "रेडियस हल्का"
+  },
+  "radPill": {
+    "message": "पूरा कैप्सूल (999px)",
+    "description": "रेडियस कैप्सूल"
+  },
+  "radSharp": {
+    "message": "नुकीला आयत (2px)",
+    "description": "रेडियस नुकीला"
+  },
+  "lblShadow": {
+    "message": "छाया और चमक दिखाएं",
+    "description": "छाया और चमक"
+  },
+  "btnBackToTop": {
+    "message": "ऊपर",
+    "description": "शीर्ष पर बटन"
+  },
+  "btnBackToTopAria": {
+    "message": "पेज के सबसे ऊपर स्क्रॉल करें",
+    "description": "एक्सेसिबिलिटी लेबल"
+  },
+  "lblBookmarks": {
+    "message": "पेज मार्जिन और नोट्स",
+    "description": "मार्जिन और नोट्स"
+  },
+  "bookmarkAdded": {
+    "message": "नोट सहेजा गया 🔖",
+    "description": "नोट बनने की सूचना"
+  },
+  "bookmarkDeleted": {
+    "message": "नोट हटा दिया गया",
+    "description": "नोट हटने की सूचना"
+  },
+  "bookmarksIndexTitle": {
+    "message": "पेज नोट्स सूची",
+    "description": "नोट्स मेनू शीर्षक"
+  },
+  "bookmarksEmpty": {
+    "message": "कोई नोट्स अभी तक नहीं सहेजे गए",
+    "description": "खाली नोट्स स्थिति"
+  },
+  "bookmarksTriggerAria": {
+    "message": "पेज नोट्स अनुक्रमणिका",
+    "description": "एक्सेसिबिलिटी ट्रिगर"
+  }
+}

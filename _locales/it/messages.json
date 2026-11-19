@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Nome dell'estensione"
+  },
+  "extDesc": {
+    "message": "Barra di lettura smart con note a margine, indice auto, ripristino posizione ed export Markdown. 100% privata e veloce.",
+    "description": "Descrizione dell'estensione"
+  },
+  "cmdToggle": {
+    "message": "Attiva/disattiva barra di lettura",
+    "description": "Scorciatoia tastiera"
+  },
+  "toastRestored": {
+    "message": "Tornato al punto in cui eri rimasto",
+    "description": "Messaggio ripristino posizione"
+  },
+  "toastComplete": {
+    "message": "Pagina completata 🎉",
+    "description": "Messaggio completamento pagina"
+  },
+  "themeAurora": {
+    "message": "Aurora (Gradiente cosmico)",
+    "description": "Tema aurora"
+  },
+  "themeSunset": {
+    "message": "Tramonto (Corallo caldo)",
+    "description": "Tema sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Cyberpunk (Bagliore neon)",
+    "description": "Tema cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Minimale (Grigio ardesia)",
+    "description": "Tema minimal"
+  },
+  "themeGlass": {
+    "message": "Vetro satinato (Capsula)",
+    "description": "Tema glass"
+  },
+  "themeMono": {
+    "message": "Monocromatico (Grigio classico)",
+    "description": "Tema mono"
+  },
+  "posRight": {
+    "message": "Destra (Verticale)",
+    "description": "Posizione destra"
+  },
+  "posLeft": {
+    "message": "Sinistra (Verticale)",
+    "description": "Posizione sinistra"
+  },
+  "posTop": {
+    "message": "Alto (Orizzontale)",
+    "description": "Posizione alto"
+  },
+  "posBottom": {
+    "message": "Basso (Orizzontale)",
+    "description": "Posizione basso"
+  },
+  "hideNativeScrollbar": {
+    "message": "Nascondi barra di scorrimento nativa",
+    "description": "Nascondi barra nativa"
+  },
+  "smoothScroll": {
+    "message": "Scorrimento fluido della pagina",
+    "description": "Scorrimento fluido"
+  },
+  "lenFloating": {
+    "message": "Fluttuante centrata (60%)",
+    "description": "Lunghezza fluttuante"
+  },
+  "lenFull": {
+    "message": "Intera 100%",
+    "description": "Lunghezza intera"
+  },
+  "radSubtle": {
+    "message": "Bordi morbidi (6px)",
+    "description": "Raggio morbido"
+  },
+  "radPill": {
+    "message": "Capsula arrotondata (999px)",
+    "description": "Raggio capsula"
+  },
+  "radSharp": {
+    "message": "Rettangolo netto (2px)",
+    "description": "Raggio netto"
+  },
+  "lblShadow": {
+    "message": "Mostra ombra e bagliore",
+    "description": "Ombra e bagliore"
+  },
+  "btnBackToTop": {
+    "message": "SU",
+    "description": "Pulsante torna su"
+  },
+  "btnBackToTopAria": {
+    "message": "Torna in cima alla pagina",
+    "description": "Etichetta accessibilità torna su"
+  },
+  "lblBookmarks": {
+    "message": "Margini e segnalibri della pagina",
+    "description": "Margini e segnalibri"
+  },
+  "bookmarkAdded": {
+    "message": "Segnalibro salvato 🔖",
+    "description": "Messaggio segnalibro salvato"
+  },
+  "bookmarkDeleted": {
+    "message": "Segnalibro rimosso",
+    "description": "Messaggio segnalibro rimosso"
+  },
+  "bookmarksIndexTitle": {
+    "message": "Segnalibri della pagina",
+    "description": "Titolo indice segnalibri"
+  },
+  "bookmarksEmpty": {
+    "message": "Nessun segnalibro salvato finora",
+    "description": "Stato vuoto segnalibri"
+  },
+  "bookmarksTriggerAria": {
+    "message": "Indice segnalibri della pagina",
+    "description": "Etichetta accessibilità indice segnalibri"
+  }
+}

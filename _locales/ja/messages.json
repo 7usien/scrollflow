@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "拡張機能名"
+  },
+  "extDesc": {
+    "message": "スマート読書進捗バー。余白メモ、自動目次、位置復元、Markdownエクスポート対応。100%ローカル保存で高速動作。",
+    "description": "拡張機能の説明"
+  },
+  "cmdToggle": {
+    "message": "読書進捗オーバーレイの表示切替",
+    "description": "ショートカットの説明"
+  },
+  "toastRestored": {
+    "message": "中断した位置に戻りました",
+    "description": "位置復元メッセージ"
+  },
+  "toastComplete": {
+    "message": "読了しました 🎉",
+    "description": "完了メッセージ"
+  },
+  "themeAurora": {
+    "message": "オーロラ (Cosmic Gradient)",
+    "description": "テーマ aurora"
+  },
+  "themeSunset": {
+    "message": "サンセット (Warm Coral)",
+    "description": "テーマ sunset"
+  },
+  "themeCyberpunk": {
+    "message": "サイバーパンク (Neon Glow)",
+    "description": "テーマ cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "ミニマル (Sleek Slate)",
+    "description": "テーマ minimal"
+  },
+  "themeGlass": {
+    "message": "フロストガラス (Frosted Capsule)",
+    "description": "テーマ glass"
+  },
+  "themeMono": {
+    "message": "モノクローム (Classic Gray)",
+    "description": "テーマ mono"
+  },
+  "posRight": {
+    "message": "右側 (垂直)",
+    "description": "位置 右"
+  },
+  "posLeft": {
+    "message": "左側 (垂直)",
+    "description": "位置 左"
+  },
+  "posTop": {
+    "message": "上部 (水平)",
+    "description": "位置 上"
+  },
+  "posBottom": {
+    "message": "下部 (水平)",
+    "description": "位置 下"
+  },
+  "hideNativeScrollbar": {
+    "message": "標準スクロールバーを非表示",
+    "description": "標準スクロールバー非表示"
+  },
+  "smoothScroll": {
+    "message": "スムーズスクロール",
+    "description": "スムーズスクロール"
+  },
+  "lenFloating": {
+    "message": "中央フローティング (60%)",
+    "description": "長さ フローティング"
+  },
+  "lenFull": {
+    "message": "全体 100%",
+    "description": "長さ 全体"
+  },
+  "radSubtle": {
+    "message": "わずかな角丸 (6px)",
+    "description": "角丸 微妙"
+  },
+  "radPill": {
+    "message": "カプセル型角丸 (999px)",
+    "description": "角丸 カプセル"
+  },
+  "radSharp": {
+    "message": "直線的な角 (2px)",
+    "description": "角丸 直角"
+  },
+  "lblShadow": {
+    "message": "影と光彩を表示",
+    "description": "影と光彩"
+  },
+  "btnBackToTop": {
+    "message": "上へ",
+    "description": "トップへ戻るボタン"
+  },
+  "btnBackToTopAria": {
+    "message": "ページ最上部へスクロール",
+    "description": "アクセシビリティラベル"
+  },
+  "lblBookmarks": {
+    "message": "余白メモとマーカー",
+    "description": "余白メモとマーカー"
+  },
+  "bookmarkAdded": {
+    "message": "メモを保存しました 🔖",
+    "description": "メモ作成トースト"
+  },
+  "bookmarkDeleted": {
+    "message": "メモを削除しました",
+    "description": "メモ削除トースト"
+  },
+  "bookmarksIndexTitle": {
+    "message": "ページのメモ一覧",
+    "description": "メモメニュータイトル"
+  },
+  "bookmarksEmpty": {
+    "message": "保存されたメモはありません",
+    "description": "空のメモ状態"
+  },
+  "bookmarksTriggerAria": {
+    "message": "ページメモ一覧メニュー",
+    "description": "アクセシビリティトリガー"
+  }
+}

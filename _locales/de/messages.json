@@ -1,0 +1,126 @@
+{
+  "extName": {
+    "message": "ScrollFlow",
+    "description": "Name der Erweiterung"
+  },
+  "extDesc": {
+    "message": "Smarter Lesefortschrittsbalken mit Randnotizen, Auto-Inhaltsverzeichnis, Positionswiederherstellung und Markdown-Export. 100% lokal & schnell.",
+    "description": "Beschreibung der Erweiterung"
+  },
+  "cmdToggle": {
+    "message": "Lesefortschritt-Overlay umschalten",
+    "description": "Tastaturkürzel-Beschreibung"
+  },
+  "toastRestored": {
+    "message": "Zurück zu Ihrer Leseposition",
+    "description": "Meldung bei Wiederherstellung"
+  },
+  "toastComplete": {
+    "message": "Seite abgeschlossen 🎉",
+    "description": "Meldung bei Seitenabschluss"
+  },
+  "themeAurora": {
+    "message": "Aurora (Kosmischer Verlauf)",
+    "description": "Thema aurora"
+  },
+  "themeSunset": {
+    "message": "Sunset (Warmes Korall)",
+    "description": "Thema sunset"
+  },
+  "themeCyberpunk": {
+    "message": "Cyberpunk (Neonleuchten)",
+    "description": "Thema cyberpunk"
+  },
+  "themeMinimal": {
+    "message": "Minimal (Schiefergrau)",
+    "description": "Thema minimal"
+  },
+  "themeGlass": {
+    "message": "Satiniertes Glas (Kapsel)",
+    "description": "Thema glass"
+  },
+  "themeMono": {
+    "message": "Monochrom (Klassisches Grau)",
+    "description": "Thema mono"
+  },
+  "posRight": {
+    "message": "Rechts (Vertikal)",
+    "description": "Position rechts"
+  },
+  "posLeft": {
+    "message": "Links (Vertikal)",
+    "description": "Position links"
+  },
+  "posTop": {
+    "message": "Oben (Horizontal)",
+    "description": "Position oben"
+  },
+  "posBottom": {
+    "message": "Unten (Horizontal)",
+    "description": "Position unten"
+  },
+  "hideNativeScrollbar": {
+    "message": "Native Scrollleiste ausblenden",
+    "description": "Native Leiste verbergen"
+  },
+  "smoothScroll": {
+    "message": "Sanftes Scrollen der Seite",
+    "description": "Sanftes Scrollen"
+  },
+  "lenFloating": {
+    "message": "Zentriert schwebend (60%)",
+    "description": "Länge schwebend"
+  },
+  "lenFull": {
+    "message": "Volle Länge 100%",
+    "description": "Volle Länge"
+  },
+  "radSubtle": {
+    "message": "Leicht abgerundet (6px)",
+    "description": "Radius leicht"
+  },
+  "radPill": {
+    "message": "Vollständige Kapsel (999px)",
+    "description": "Radius Kapsel"
+  },
+  "radSharp": {
+    "message": "Präzise Kante (2px)",
+    "description": "Radius Kante"
+  },
+  "lblShadow": {
+    "message": "Schatten & Leuchten anzeigen",
+    "description": "Schatten und Leuchten"
+  },
+  "btnBackToTop": {
+    "message": "HOCH",
+    "description": "Nach oben Button"
+  },
+  "btnBackToTopAria": {
+    "message": "Zum Anfang der Seite scrollen",
+    "description": "Barrierefreiheits-Label nach oben"
+  },
+  "lblBookmarks": {
+    "message": "Seitenränder & Notizen",
+    "description": "Ränder und Notizen"
+  },
+  "bookmarkAdded": {
+    "message": "Notiz gespeichert 🔖",
+    "description": "Notiz erstellt"
+  },
+  "bookmarkDeleted": {
+    "message": "Notiz entfernt",
+    "description": "Notiz gelöscht"
+  },
+  "bookmarksIndexTitle": {
+    "message": "Seitennotizen",
+    "description": "Titel Notizenmenü"
+  },
+  "bookmarksEmpty": {
+    "message": "Noch keine Notizen gespeichert",
+    "description": "Leeres Notizenmenü"
+  },
+  "bookmarksTriggerAria": {
+    "message": "Index der Seitennotizen",
+    "description": "Barrierefreiheits-Trigger Notizen"
+  }
+}
