@@ -43,6 +43,10 @@
     "message": "Mono (Classic Gray)",
     "description": "Theme mono"
   },
+  "posAuto": {
+    "message": "Auto (Page Direction)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "Right (Vertical)",
     "description": "Position right"

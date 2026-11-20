@@ -128,7 +128,7 @@ describe('i18n Dictionary Integrity & Completeness', () => {
 
   it('ensures all select options maps are populated across all 9 languages', () => {
     const themes = ['aurora', 'sunset', 'cyberpunk', 'minimal', 'glass', 'mono'];
-    const positions = ['right', 'left', 'top', 'bottom'];
+    const positions = ['auto', 'right', 'left', 'top', 'bottom'];
     const lengths = ['floating', 'full'];
     const radii = ['subtle', 'pill', 'sharp'];
 

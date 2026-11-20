@@ -43,6 +43,10 @@
     "message": "मोनो (क्लासिक ग्रे)",
     "description": "थीम mono"
   },
+  "posAuto": {
+    "message": "स्वचालित (पेज दिशा अनुसार)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "दाईं ओर (वर्टिकल)",
     "description": "स्थिति दाईं"

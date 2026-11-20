@@ -83,6 +83,7 @@ export const de: I18nDictionary = {
       mono: 'Monochrom (Klassisches Grau)',
     },
     positions: {
+      auto: 'Automatisch (Nach Seitenrichtung)',
       right: 'Rechts (Vertikal)',
       left: 'Links (Vertikal)',
       top: 'Oben (Horizontal)',
@@ -141,6 +142,7 @@ export const de: I18nDictionary = {
       mono: 'Monochrom',
     },
     positions: {
+      auto: 'Auto (Seitenrichtung)',
       right: 'Rechts (Vertikal)',
       left: 'Links (Vertikal)',
       top: 'Oben (Horizontal)',

@@ -177,7 +177,7 @@ function updateTocObserver() {
 }
 
 function setupUI() {
-  shadowCtx = createShadowHost(settings);
+  shadowCtx = createShadowHost(settings, { isRTL: checkIsRTL });
   progressBar = createProgressBar(shadowCtx.shadowRoot, {
     getMaxScroll: () => currentMetrics.maxScroll,
     getOrientation: () => settings.orientation,

@@ -15,7 +15,7 @@ export { DEFAULT_SETTINGS };
 
 const VALID_THEMES: Set<Theme> = new Set(['aurora', 'sunset', 'cyberpunk', 'minimal', 'glass', 'mono']);
 const VALID_SIDES: Set<Side> = new Set(['right', 'left', 'auto']);
-const VALID_POSITIONS: Set<Position> = new Set(['right', 'left', 'top', 'bottom']);
+const VALID_POSITIONS: Set<Position> = new Set(['auto', 'right', 'left', 'top', 'bottom']);
 const VALID_ORIENTATIONS: Set<Orientation> = new Set(['vertical', 'horizontal']);
 const VALID_LENGTHS: Set<BarLength> = new Set(['floating', 'full']);
 const VALID_RADII: Set<BarRadius> = new Set(['subtle', 'pill', 'sharp']);
@@ -38,7 +38,7 @@ export function sanitizeSettings(raw: unknown): Settings {
 
   const position: Position = typeof obj.position === 'string' && VALID_POSITIONS.has(obj.position as Position)
     ? (obj.position as Position)
-    : (side === 'left' ? 'left' : DEFAULT_SETTINGS.position);
+    : (side === 'left' ? 'left' : (side === 'right' ? 'right' : DEFAULT_SETTINGS.position));
 
   let orientation: Orientation = typeof obj.orientation === 'string' && VALID_ORIENTATIONS.has(obj.orientation as Orientation)
     ? (obj.orientation as Orientation)

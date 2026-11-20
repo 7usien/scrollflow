@@ -43,6 +43,10 @@
     "message": "Mono (رمادي كلاسيكي)",
     "description": "Theme mono"
   },
+  "posAuto": {
+    "message": "تلقائي (حسب اتجاه الصفحة)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "يمين (رأسي)",
     "description": "Position right"

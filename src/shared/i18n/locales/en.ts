@@ -83,6 +83,7 @@ export const en: I18nDictionary = {
       mono: 'Mono (Classic Gray)',
     },
     positions: {
+      auto: 'Auto (Follows Page Direction)',
       right: 'Right Screen (Vertical)',
       left: 'Left Screen (Vertical)',
       top: 'Top Screen (Horizontal)',
@@ -141,6 +142,7 @@ export const en: I18nDictionary = {
       mono: 'Mono (Classic Gray)',
     },
     positions: {
+      auto: 'Auto (Page Direction)',
       right: 'Right (Vertical)',
       left: 'Left (Vertical)',
       top: 'Top (Horizontal)',

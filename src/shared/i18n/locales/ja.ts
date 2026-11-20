@@ -83,6 +83,7 @@ export const ja: I18nDictionary = {
       mono: 'モノクローム (Mono)',
     },
     positions: {
+      auto: '自動（ページの言語・書字方向）',
       right: '画面右側（垂直）',
       left: '画面左側（垂直）',
       top: '画面上部（水平）',
@@ -141,6 +142,7 @@ export const ja: I18nDictionary = {
       mono: 'モノクローム',
     },
     positions: {
+      auto: '自動（ページ方向）',
       right: '右側（垂直）',
       left: '左側（垂直）',
       top: '上部（水平）',

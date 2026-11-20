@@ -43,6 +43,10 @@
     "message": "Моно (Классический серый)",
     "description": "Тема mono"
   },
+  "posAuto": {
+    "message": "Авто (По странице)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "Справа (Вертикально)",
     "description": "Положение справа"

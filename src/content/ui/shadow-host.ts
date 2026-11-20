@@ -12,7 +12,27 @@ export interface ShadowContext {
   updateTheme: (settings: Settings) => void;
 }
 
-export function createShadowHost(settings: Settings): ShadowContext {
+function detectIsRTL(): boolean {
+  const docDir = (document.documentElement.dir || '').toLowerCase();
+  const bodyDir = (document.body?.dir || '').toLowerCase();
+  if (docDir === 'rtl' || bodyDir === 'rtl') return true;
+
+  const lang = (document.documentElement.lang || document.body?.lang || '').toLowerCase();
+  if (lang.startsWith('ar') || lang.startsWith('fa') || lang.startsWith('he') || lang.startsWith('ur')) {
+    return true;
+  }
+
+  try {
+    const computedDir = window.getComputedStyle(document.body || document.documentElement).direction;
+    if (computedDir === 'rtl') return true;
+  } catch {
+    // Fail-soft
+  }
+
+  return false;
+}
+
+export function createShadowHost(settings: Settings, callbacks?: { isRTL?: () => boolean }): ShadowContext {
   const existing = document.getElementById(ROOT_ID);
   if (existing) {
     existing.remove();
@@ -55,8 +75,9 @@ export function createShadowHost(settings: Settings): ShadowContext {
 
   const isLight = detectLightBackground();
   const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isRtl = callbacks?.isRTL ? callbacks.isRTL() : detectIsRTL();
 
-  applyThemeToHost(host, settings, { isLight, isReduced });
+  applyThemeToHost(host, settings, { isLight, isReduced, isRTL: isRtl });
 
   // Attach to documentElement
   document.documentElement.appendChild(host);
@@ -64,9 +85,11 @@ export function createShadowHost(settings: Settings): ShadowContext {
   const updateTheme = (newSettings: Settings) => {
     const currentIsLight = detectLightBackground();
     const currentIsReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const currentIsRTL = callbacks?.isRTL ? callbacks.isRTL() : detectIsRTL();
     applyThemeToHost(host, newSettings, {
       isLight: currentIsLight,
       isReduced: currentIsReduced,
+      isRTL: currentIsRTL,
     });
   };
 

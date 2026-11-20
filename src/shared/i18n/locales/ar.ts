@@ -83,6 +83,7 @@ export const ar: I18nDictionary = {
       mono: 'Mono (رمادي كلاسيكي)',
     },
     positions: {
+      auto: 'تلقائي (حسب اتجاه ولغة الصفحة)',
       right: 'يمين الشاشة (رأسي)',
       left: 'يسار الشاشة (رأسي)',
       top: 'أعلى الشاشة (أفقي)',
@@ -141,6 +142,7 @@ export const ar: I18nDictionary = {
       mono: 'Mono (رمادي كلاسيكي)',
     },
     positions: {
+      auto: 'تلقائي (حسب اتجاه الصفحة)',
       right: 'يمين (رأسي)',
       left: 'يسار (رأسي)',
       top: 'أعلى (أفقي)',

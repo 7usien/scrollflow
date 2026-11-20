@@ -83,6 +83,7 @@ export const zh: I18nDictionary = {
       mono: '黑白 Mono (经典灰调)',
     },
     positions: {
+      auto: '自动（根据页面文本方向）',
       right: '屏幕右侧（垂直）',
       left: '屏幕左侧（垂直）',
       top: '屏幕顶部（水平）',
@@ -141,6 +142,7 @@ export const zh: I18nDictionary = {
       mono: '经典灰',
     },
     positions: {
+      auto: '自动（按页面方向）',
       right: '右侧 (垂直)',
       left: '左侧 (垂直)',
       top: '顶部 (水平)',

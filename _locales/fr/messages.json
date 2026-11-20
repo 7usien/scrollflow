@@ -43,6 +43,10 @@
     "message": "Monochrome (Gris classique)",
     "description": "Thème mono"
   },
+  "posAuto": {
+    "message": "Automatique (Sens de la page)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "Droite (Vertical)",
     "description": "Position droite"

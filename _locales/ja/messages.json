@@ -43,6 +43,10 @@
     "message": "モノクローム (Classic Gray)",
     "description": "テーマ mono"
   },
+  "posAuto": {
+    "message": "自動 (ページ方向)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "右側 (垂直)",
     "description": "位置 右"

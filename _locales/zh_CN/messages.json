@@ -43,6 +43,10 @@
     "message": "黑白 Mono (经典灰调)",
     "description": "主题 mono"
   },
+  "posAuto": {
+    "message": "自动 (根据页面方向)",
+    "description": "Position auto"
+  },
   "posRight": {
     "message": "屏幕右侧 (垂直)",
     "description": "位置右侧"
