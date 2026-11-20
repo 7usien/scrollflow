@@ -10,7 +10,16 @@ export async function getSettings(): Promise<Settings> {
 
   try {
     const res = await chrome.storage.sync.get('settings');
-    cachedSettings = sanitizeSettings(res?.settings);
+    const raw = res?.settings;
+    const rawVersion = raw && typeof raw === 'object' && 'version' in raw ? (raw as { version?: unknown }).version : undefined;
+    const isLegacy = typeof rawVersion !== 'number' || rawVersion < 2;
+    cachedSettings = sanitizeSettings(raw);
+
+    // If storage had older version, persist the migrated v2 settings immediately
+    if (isLegacy && chrome.storage?.sync) {
+      await chrome.storage.sync.set({ settings: cachedSettings }).catch(() => {});
+    }
+
     return cachedSettings;
   } catch {
     cachedSettings = { ...DEFAULT_SETTINGS };

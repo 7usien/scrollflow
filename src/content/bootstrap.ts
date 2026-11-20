@@ -616,6 +616,10 @@ function setupEvents() {
         markersManager?.renderToc([]);
         bookmarksMenu?.render([], []);
 
+        // Refresh UI theme & direction on SPA navigation in case page language or scheme changed
+        shadowCtx?.updateTheme(settings);
+        backToTop?.setLocale(checkIsRTL());
+
         startInitialMeasurementAndRestoration();
         break;
       }
@@ -623,6 +627,7 @@ function setupEvents() {
       case MSG.SETTINGS_CHANGED: {
         settings = sanitizeSettings(message.settings);
         shadowCtx?.updateTheme(settings);
+        backToTop?.setLocale(checkIsRTL());
         updateVisibility();
         updateTocObserver();
         pokeZenMode();

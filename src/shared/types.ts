@@ -10,7 +10,7 @@ export type Contrast = 'normal' | 'high';
 export type BookmarkColor = 'yellow' | 'green' | 'purple' | 'blue' | 'red';
 
 export interface Settings {
-  version: 1;
+  version: 2;
   enabled: boolean;
   restoreScroll: boolean;
   celebrate: boolean;
@@ -36,7 +36,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  version: 1,
+  version: 2,
   enabled: true,
   restoreScroll: true,
   celebrate: true,

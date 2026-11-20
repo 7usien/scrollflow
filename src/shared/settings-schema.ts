@@ -28,16 +28,33 @@ export function sanitizeSettings(raw: unknown): Settings {
 
   const obj = raw as Record<string, unknown>;
 
+  // Check if we need to migrate from v1 (or unversioned) settings.
+  // In v1, position was 'right' by default. We migrate that legacy default to 'auto'
+  // so that the bar adapts automatically to LTR/RTL on all pages out-of-the-box.
+  const isLegacy = typeof obj.version !== 'number' || obj.version < 2;
+
+  let rawPosition = obj.position;
+  let rawSide = obj.side;
+
+  if (isLegacy) {
+    if (rawPosition === 'right' || !rawPosition) {
+      rawPosition = 'auto';
+    }
+    if (rawSide === 'right' || !rawSide) {
+      rawSide = 'auto';
+    }
+  }
+
   const theme: Theme = typeof obj.theme === 'string' && VALID_THEMES.has(obj.theme as Theme)
     ? (obj.theme as Theme)
     : DEFAULT_SETTINGS.theme;
 
-  const side: Side = typeof obj.side === 'string' && VALID_SIDES.has(obj.side as Side)
-    ? (obj.side as Side)
+  const side: Side = typeof rawSide === 'string' && VALID_SIDES.has(rawSide as Side)
+    ? (rawSide as Side)
     : DEFAULT_SETTINGS.side;
 
-  const position: Position = typeof obj.position === 'string' && VALID_POSITIONS.has(obj.position as Position)
-    ? (obj.position as Position)
+  const position: Position = typeof rawPosition === 'string' && VALID_POSITIONS.has(rawPosition as Position)
+    ? (rawPosition as Position)
     : (side === 'left' ? 'left' : (side === 'right' ? 'right' : DEFAULT_SETTINGS.position));
 
   let orientation: Orientation = typeof obj.orientation === 'string' && VALID_ORIENTATIONS.has(obj.orientation as Orientation)
@@ -76,7 +93,7 @@ export function sanitizeSettings(raw: unknown): Settings {
     : DEFAULT_SETTINGS.hiddenOnce;
 
   return {
-    version: 1,
+    version: 2,
     enabled: typeof obj.enabled === 'boolean' ? obj.enabled : DEFAULT_SETTINGS.enabled,
     restoreScroll: typeof obj.restoreScroll === 'boolean' ? obj.restoreScroll : DEFAULT_SETTINGS.restoreScroll,
     celebrate: typeof obj.celebrate === 'boolean' ? obj.celebrate : DEFAULT_SETTINGS.celebrate,

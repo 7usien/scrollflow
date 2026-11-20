@@ -4,14 +4,14 @@
 export type Theme = 'aurora' | 'sunset' | 'cyberpunk' | 'minimal' | 'glass' | 'mono';
 export type Side = 'right' | 'left' | 'auto';
 export type Orientation = 'vertical' | 'horizontal';
-export type Position = 'right' | 'left' | 'top' | 'bottom';
+export type Position = 'auto' | 'right' | 'left' | 'top' | 'bottom';
 export type BarLength = 'floating' | 'full';
 export type BarRadius = 'subtle' | 'pill' | 'sharp';
 export type Contrast = 'normal' | 'high';
 export type BookmarkColor = 'yellow' | 'green' | 'purple' | 'blue' | 'red';
 
 export interface Settings {
-  version: 1;
+  version: 2;
   enabled: boolean;
   restoreScroll: boolean;
   celebrate: boolean;
@@ -37,7 +37,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  version: 1,
+  version: 2,
   enabled: true,
   restoreScroll: true,
   celebrate: true,
@@ -45,8 +45,8 @@ export const DEFAULT_SETTINGS: Settings = {
   showBadge: true,
   showToasts: true,
   theme: 'aurora',
-  side: 'right',
-  position: 'right',
+  side: 'auto',
+  position: 'auto',
   orientation: 'vertical',
   barLength: 'floating',
   barRadius: 'subtle',

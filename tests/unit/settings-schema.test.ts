@@ -34,13 +34,38 @@ describe('sanitizeSettings', () => {
     expect(left.position).toBe('left');
     expect(left.orientation).toBe('vertical');
 
-    const right = sanitizeSettings({ position: 'right' });
+    const right = sanitizeSettings({ version: 2, position: 'right' });
     expect(right.position).toBe('right');
     expect(right.orientation).toBe('vertical');
 
     const auto = sanitizeSettings({ position: 'auto' });
     expect(auto.position).toBe('auto');
     expect(auto.orientation).toBe('vertical');
+  });
+
+  it('يرقّي إعدادات الإصدار 1 القديمة تلقائيًا إلى الإصدار 2 مع تحويل الموضع الافتراضي القديم إلى auto', () => {
+    // Legacy v1 with default 'right' migrates to 'auto'
+    const legacyV1 = sanitizeSettings({ version: 1, position: 'right', side: 'right' });
+    expect(legacyV1.version).toBe(2);
+    expect(legacyV1.position).toBe('auto');
+    expect(legacyV1.side).toBe('auto');
+
+    // Unversioned legacy with default 'right' migrates to 'auto'
+    const legacyUnversioned = sanitizeSettings({ position: 'right' });
+    expect(legacyUnversioned.version).toBe(2);
+    expect(legacyUnversioned.position).toBe('auto');
+    expect(legacyUnversioned.side).toBe('auto');
+
+    // Legacy v1 with explicitly chosen 'left' or 'top' is preserved
+    const legacyCustom = sanitizeSettings({ version: 1, position: 'left', side: 'left' });
+    expect(legacyCustom.version).toBe(2);
+    expect(legacyCustom.position).toBe('left');
+    expect(legacyCustom.side).toBe('left');
+
+    // Version 2 explicit 'right' is strictly respected
+    const explicitV2 = sanitizeSettings({ version: 2, position: 'right' });
+    expect(explicitV2.version).toBe(2);
+    expect(explicitV2.position).toBe('right');
   });
 
   it('يحافظ على إعدادات إخفاء السكرول والسكرول السلس', () => {
