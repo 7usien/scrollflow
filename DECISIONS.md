@@ -236,6 +236,21 @@
 - **الأثر:** `src/shared/types.ts`, `src/shared/settings-schema.ts`, `src/background/settings.ts`, `tests/unit/settings-schema.test.ts`.
 - **قابل للعكس؟** نعم.
 
+---
+
+### D-017 — تنظيف مناطق النقر (`pointer-events`) وتقليص البصمة الجانبية لمنع حجب القوائم الجانبية للمواقع
+- **التاريخ:** 2026-11-24
+- **المهمة:** منع عناصر الـ Shadow DOM المخفية وعمود فهرس العناوين ومساحات `::before` من اعتراض النقرات فوق القوائم الجانبية وأزرار المواقع (مثل القائمة اليسرى وزر القائمة العلوي في YouTube)
+- **السياق:** أبلغ المستخدم عن تأثر أزرار YouTube والقوائم الجانبية اليسرى في الصفحات الإنجليزية عند تفعيل الإضافة. كشف الفحص أن `.sf-selection-bubble` و`.sf-marker-card` كانا يحملان `pointer-events: auto` حتى وهما مخفيان (`opacity: 0`)، وأن `.sf-toc-minimap` كان يمتص النقرات بكامل ارتفاع `60vh` ويفتح بطاقة `270px` بالتحويم فوق القائمة الجانبية.
+- **القرارات:**
+  1. فرض `pointer-events: none` و`visibility: hidden` افتراضيًا على `.sf-selection-bubble` و`.sf-marker-card` وتفعيلهما فقط مع `[data-show="true"]`.
+  2. إبقاء `.sf-toc-minimap` و`.sf-minimap-spine` و`.sf-minimap-spine-track` بـ `pointer-events: none` دائمًا وقصر `pointer-events: auto` على الزر والشرطات والبطاقة المفتوحة فقط.
+  3. تحويل فتح بطاقة فهرس العناوين من التحويم العرضي إلى النقر الصريح على زر الفهرس مع إغلاقها عند النقر خارجها.
+  4. تقليص `--sf-rail-inset` إلى `4px` وتضييق مساحات `::before` لالتصاق تام بحافة الشاشة.
+- **الأثر:** `src/content/ui/styles.ts`, `src/content/ui/toc-minimap.ts`, `tests/unit/overlay-styles.test.ts`.
+- **قابل للعكس؟** نعم.
+
+
 
 
 

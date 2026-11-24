@@ -34,7 +34,7 @@ export const OVERLAY_STYLES = `
   --sf-rail-w-hover:  10px;
   --sf-rail-h:        60vh;
   --sf-rail-top:      20vh;
-  --sf-rail-inset:    6px;
+  --sf-rail-inset:    4px;
   --sf-thumb:         12px;
   --sf-radius:        6px;
 
@@ -198,6 +198,7 @@ export const OVERLAY_STYLES = `
   z-index: var(--sf-z);
   opacity: 0.55;
   cursor: pointer;
+  pointer-events: auto;
   touch-action: none;
   box-sizing: border-box;
 }
@@ -205,7 +206,7 @@ export const OVERLAY_STYLES = `
 .sf-rail[data-hidden="true"],
 .sf-rail[data-state="hidden"] {
   opacity: 0 !important;
-  pointer-events: none;
+  pointer-events: none !important;
   width: 0 !important;
   height: 0 !important;
 }
@@ -662,18 +663,22 @@ export const OVERLAY_STYLES = `
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   user-select: none;
   -webkit-user-select: none;
-  pointer-events: auto;
+  pointer-events: none;
+  visibility: hidden;
   opacity: 0;
   transform: translateY(6px) scale(0.92);
   transition:
     opacity 160ms var(--sf-ease),
     transform 160ms var(--sf-ease-pop),
     background 150ms var(--sf-ease),
-    border-color 150ms var(--sf-ease);
+    border-color 150ms var(--sf-ease),
+    visibility 160ms var(--sf-ease);
 }
 
 .sf-selection-bubble[data-show="true"] {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
   transform: translateY(0) scale(1);
 }
 
@@ -688,17 +693,6 @@ export const OVERLAY_STYLES = `
   border-color: rgba(15, 18, 30, 0.14);
   color: #141824;
   box-shadow: 0 8px 28px rgba(15, 18, 30, 0.16);
-}
-
-.sf-selection-bubble[data-show="true"] {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.sf-selection-bubble:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: var(--sf-brand-mid);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 10px 1px var(--sf-brand-end);
 }
 
 :host([data-scheme="light"]) .sf-selection-bubble:hover {
@@ -821,8 +815,8 @@ export const OVERLAY_STYLES = `
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 28px;
-  height: 18px;
+  width: 14px;
+  height: 12px;
   pointer-events: auto;
 }
 
@@ -863,16 +857,16 @@ export const OVERLAY_STYLES = `
     border-color 150ms var(--sf-ease);
 }
 
-/* Generous invisible hitbox for effortless targeting */
+/* Compact invisible hitbox hugging the rail edge */
 .sf-marker::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
-  height: 32px;
-  border-radius: 8px;
+  width: 18px;
+  height: 22px;
+  border-radius: 6px;
   pointer-events: auto;
 }
 
@@ -936,11 +930,12 @@ export const OVERLAY_STYLES = `
   font-family: var(--sf-font);
   font-size: 11px;
   line-height: 1.45;
-  pointer-events: auto;
+  pointer-events: none;
+  visibility: hidden;
   z-index: 10;
   opacity: 0;
   transform: translateY(-50%) scale(0.95);
-  transition: opacity 160ms var(--sf-ease), transform 160ms var(--sf-ease);
+  transition: opacity 160ms var(--sf-ease), transform 160ms var(--sf-ease), visibility 160ms var(--sf-ease);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -954,6 +949,8 @@ export const OVERLAY_STYLES = `
 
 .sf-marker-card[data-show="true"] {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
   transform: translateY(-50%) scale(1);
 }
 
@@ -1035,9 +1032,9 @@ export const OVERLAY_STYLES = `
 .sf-bookmarks-trigger {
   position: fixed;
   top: calc(var(--sf-rail-top) - 38px);
-  right: calc(var(--sf-rail-inset) - 11px);
-  width: 28px;
-  height: 28px;
+  right: var(--sf-rail-inset);
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--sf-surface);
   border: 1px solid var(--sf-border);
@@ -1061,21 +1058,21 @@ export const OVERLAY_STYLES = `
     color 150ms var(--sf-ease);
 }
 
-/* 44x44px touch target compliance */
+/* Compact touch target staying close to viewport edge */
 .sf-bookmarks-trigger::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 32px;
+  min-height: 32px;
 }
 
 :host([data-side="left"]) .sf-bookmarks-trigger,
 :host([data-position="left"]) .sf-bookmarks-trigger {
   right: auto;
-  left: calc(var(--sf-rail-inset) - 11px);
+  left: var(--sf-rail-inset);
 }
 
 :host([data-orientation="horizontal"]) .sf-bookmarks-trigger {
@@ -1550,7 +1547,9 @@ export const OVERLAY_STYLES = `
 /* ── Zen / Auto-Hide Mode ── */
 .sf-rail[data-zen="dimmed"],
 .sf-bookmarks-trigger[data-zen="dimmed"],
-.sf-toc-minimap[data-zen="dimmed"] {
+.sf-toc-minimap[data-zen="dimmed"],
+.sf-toc-minimap[data-zen="dimmed"] .sf-minimap-spine-btn,
+.sf-toc-minimap[data-zen="dimmed"] .sf-spine-tick {
   opacity: 0 !important;
   pointer-events: none !important;
   transition: opacity 350ms var(--sf-ease);
@@ -1560,7 +1559,7 @@ export const OVERLAY_STYLES = `
 .sf-toc-minimap {
   position: fixed;
   top: var(--sf-rail-top);
-  right: calc(var(--sf-rail-inset) + var(--sf-rail-w) + 14px);
+  right: calc(var(--sf-rail-inset) + var(--sf-rail-w) + 4px);
   height: var(--sf-rail-h);
   z-index: calc(var(--sf-z) + 1);
   display: flex;
@@ -1573,33 +1572,39 @@ export const OVERLAY_STYLES = `
 :host([data-side="left"]) .sf-toc-minimap,
 :host([data-position="left"]) .sf-toc-minimap {
   right: auto;
-  left: calc(var(--sf-rail-inset) + var(--sf-rail-w) + 14px);
+  left: calc(var(--sf-rail-inset) + var(--sf-rail-w) + 4px);
 }
 
 :host([data-orientation="horizontal"]) .sf-toc-minimap {
   display: none !important;
 }
 
+/* Keep container non-blocking so page clicks pass straight through gaps */
 .sf-toc-minimap[data-show="true"] {
   opacity: 1;
+  pointer-events: none;
+}
+
+.sf-toc-minimap[data-show="true"] .sf-minimap-spine-btn,
+.sf-toc-minimap[data-show="true"] .sf-spine-tick {
   pointer-events: auto;
 }
 
 /* Minimap Slim Vertical Spine */
 .sf-minimap-spine {
-  width: 24px;
+  width: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  cursor: pointer;
+  pointer-events: none;
 }
 
 .sf-minimap-spine-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
   background: var(--sf-surface);
   border: 1px solid var(--sf-border);
   backdrop-filter: var(--sf-blur);
@@ -1609,6 +1614,7 @@ export const OVERLAY_STYLES = `
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  pointer-events: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   transition: background 140ms var(--sf-ease), transform 140ms var(--sf-ease);
 }
@@ -1624,15 +1630,17 @@ export const OVERLAY_STYLES = `
   flex: 1;
   width: 100%;
   margin-top: 8px;
+  pointer-events: none;
 }
 
 .sf-spine-tick {
   position: absolute;
   top: var(--sf-spine-pct);
-  right: 4px;
+  right: 2px;
   border-radius: 2px;
   background: rgba(255, 255, 255, 0.45);
   cursor: pointer;
+  pointer-events: none;
   transform: translateY(-50%);
   transition: width 150ms var(--sf-ease), height 150ms var(--sf-ease), background 150ms var(--sf-ease), box-shadow 150ms var(--sf-ease);
 }
@@ -1640,23 +1648,23 @@ export const OVERLAY_STYLES = `
 :host([data-side="left"]) .sf-spine-tick,
 :host([data-position="left"]) .sf-spine-tick {
   right: auto;
-  left: 4px;
+  left: 2px;
 }
 
 .sf-spine-tick[data-level="1"] {
-  width: 18px;
+  width: 12px;
   height: 3px;
   background: rgba(255, 255, 255, 0.7);
 }
 
 .sf-spine-tick[data-level="2"] {
-  width: 13px;
+  width: 9px;
   height: 2.2px;
   background: rgba(255, 255, 255, 0.5);
 }
 
 .sf-spine-tick[data-level="3"] {
-  width: 8px;
+  width: 6px;
   height: 1.8px;
   background: rgba(255, 255, 255, 0.35);
 }
@@ -1664,15 +1672,15 @@ export const OVERLAY_STYLES = `
 .sf-spine-tick::before {
   content: "";
   position: absolute;
-  inset: -6px -10px;
+  inset: -3px -4px;
 }
 
 .sf-spine-tick:hover,
 .sf-spine-tick[data-active="true"] {
   background: var(--sf-brand-end, #00d4ff);
   box-shadow: 0 0 10px 1px var(--sf-brand-end, #00d4ff);
-  width: 22px;
-  height: 4px;
+  width: 15px;
+  height: 3.5px;
 }
 
 :host([data-scheme="light"]) .sf-spine-tick {

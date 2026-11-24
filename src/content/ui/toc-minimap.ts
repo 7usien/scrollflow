@@ -142,25 +142,26 @@ export function createTocMinimap(
     hoverPill.setAttribute('data-show', 'false');
   };
 
-  const collapse = () => {
+  const collapseImmediate = () => {
     if (collapseTimer) {
       clearTimeout(collapseTimer);
-    }
-    collapseTimer = setTimeout(() => {
-      isExpanded = false;
-      root.setAttribute('data-expanded', 'false');
       collapseTimer = null;
-    }, 180);
+    }
+    isExpanded = false;
+    root.setAttribute('data-expanded', 'false');
   };
 
   const toggleExpand = () => {
     if (isExpanded) {
-      isExpanded = false;
-      root.setAttribute('data-expanded', 'false');
+      collapseImmediate();
     } else {
       expand();
     }
   };
+
+  spineTrigger.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+  });
 
   spineTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -169,18 +170,19 @@ export function createTocMinimap(
 
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    isExpanded = false;
-    root.setAttribute('data-expanded', 'false');
+    collapseImmediate();
   });
 
-  // Hover to expand on desktop
-  root.addEventListener('mouseenter', () => {
-    expand();
-  });
+  // Dismiss expanded outline card when clicking outside the minimap
+  const handlePointerDownOutside = (e: PointerEvent) => {
+    if (!isExpanded) return;
+    const path = e.composedPath();
+    if (!path.includes(root)) {
+      collapseImmediate();
+    }
+  };
 
-  root.addEventListener('mouseleave', () => {
-    collapse();
-  });
+  window.addEventListener('pointerdown', handlePointerDownOutside, { passive: true });
 
   // ── Render Items ──
   const tickElements: HTMLElement[] = [];
@@ -310,6 +312,7 @@ export function createTocMinimap(
       clearTimeout(collapseTimer);
       collapseTimer = null;
     }
+    window.removeEventListener('pointerdown', handlePointerDownOutside);
     root.remove();
   };
 
