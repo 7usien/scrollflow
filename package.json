@@ -1,6 +1,6 @@
 {
   "name": "scrollflow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chrome extension displaying vertical reading progress, saving scroll positions, and celebrating completion.",
   "type": "module",
   "scripts": {
